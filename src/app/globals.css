@@ -1,26 +1,137 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+  Brand palette derived from the Shivashree Developers logo.
+    primary  #5A2D85  (deep purple — used for main CTAs, headings accent, links)
+    accent   #4379BA  (steel blue — used for status / secondary accent)
+    surface  #FFFFFF
+  Neutrals are Tailwind's stone scale (warm grey).
+  Shades below are hand-tuned around the two base colours so designers can use
+  `bg-brand-purple-100`, `text-brand-blue-700`, etc. through Tailwind v4's
+  utility generation.
+*/
+@theme {
+  --color-brand-purple-50: #f4ebfa;
+  --color-brand-purple-100: #e3cef2;
+  --color-brand-purple-200: #c6a0e1;
+  --color-brand-purple-300: #a874d0;
+  --color-brand-purple-400: #8a4cbf;
+  --color-brand-purple-500: #6e30a4;
+  --color-brand-purple-600: #5a2d85;
+  --color-brand-purple-700: #4a2570;
+  --color-brand-purple-800: #3a1d59;
+  --color-brand-purple-900: #2c1644;
+  --color-brand-purple-950: #1a0d28;
+
+  --color-brand-blue-50: #ecf2fb;
+  --color-brand-blue-100: #d1e1f5;
+  --color-brand-blue-200: #a3c2eb;
+  --color-brand-blue-300: #75a4e0;
+  --color-brand-blue-400: #5187ce;
+  --color-brand-blue-500: #4379ba;
+  --color-brand-blue-600: #356297;
+  --color-brand-blue-700: #294d75;
+  --color-brand-blue-800: #1e3858;
+  --color-brand-blue-900: #15263c;
+
+  /* Convenience aliases mapped to the exact logo colours */
+  --color-brand-purple: #5a2d85;
+  --color-brand-blue: #4379ba;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    font-feature-settings: "kern" 1, "liga" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #1c1917;
+    background-color: #ffffff;
+  }
+
+  /* Selection in brand purple instead of the OS blue */
+  ::selection {
+    background-color: var(--color-brand-purple-100);
+    color: var(--color-brand-purple-900);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1c1917;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.01em;
+  }
+
+  .prose h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #292524;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .prose p {
+    color: #44403c;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+  }
+
+  .prose ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .prose li {
+    color: #44403c;
+    margin-bottom: 0.25rem;
+  }
+
+  .prose blockquote {
+    border-left: 3px solid var(--color-brand-purple);
+    padding-left: 1rem;
+    color: #57534e;
+    font-style: italic;
+  }
+
+  .prose a {
+    color: var(--color-brand-purple);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .prose img {
+    border-radius: 0.75rem;
+    margin: 1.5rem 0;
+  }
+}
+
+/* TipTap empty-state placeholder */
+.tiptap p.is-editor-empty:first-child::before {
+  color: #a8a29e;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/*
+  Hero overlay sits on top of the property image so headline + CTA always
+  remain readable. The gradient leans on brand-purple at the bottom-left to
+  carry the brand mood instead of a neutral black wash.
+*/
+.hero-overlay {
+  background: linear-gradient(
+    115deg,
+    rgba(44, 22, 68, 0.78) 0%,
+    rgba(44, 22, 68, 0.45) 45%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
 }

@@ -1,0 +1,222 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  // For Supabase: DATABASE_URL is the *pooled* connection string (port 6543).
+  // DIRECT_URL is the *direct* connection string (port 5432) used for migrations.
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── Admin Users ──────────────────────────────────────────────────────────────
+
+model AdminUser {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  role      AdminRole @default(EDITOR)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("admin_users")
+}
+
+enum AdminRole {
+  SUPER_ADMIN
+  EDITOR
+}
+
+// ─── Properties ───────────────────────────────────────────────────────────────
+
+model Property {
+  id               Int              @id @default(autoincrement())
+  title            String
+  slug             String           @unique
+  city             String
+  locality         String
+  fullAddress      String           @db.Text
+  status           PropertyStatus   @default(PROPOSED)
+  priceStartingFrom Float?
+  reraNumber       String?
+  heroImage        String?
+  heroImageAlt     String?
+  bhkTypes         String           @db.Text // JSON array stored as string
+  highlights       String           @db.Text // JSON array
+  keySpecifications String          @db.Text // JSON object: { building: "", kitchen: "", bathroom: "" }
+  locationAdvantages String         @db.Text // JSON array
+  mapEmbedUrl      String?          @db.Text
+  seoTitle         String?
+  seoDescription   String?
+  isPublished      Boolean          @default(false)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  galleryImages    PropertyGallery[]
+  floorPlans       FloorPlan[]
+  amenities        Amenity[]
+  faqs             PropertyFAQ[]
+  leads            Lead[]
+
+  @@map("properties")
+}
+
+enum PropertyStatus {
+  PROPOSED
+  ONGOING
+  COMPLETED
+}
+
+model PropertyGallery {
+  id         Int      @id @default(autoincrement())
+  propertyId Int
+  url        String
+  alt        String?
+  sortOrder  Int      @default(0)
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@map("property_gallery")
+}
+
+model FloorPlan {
+  id         Int      @id @default(autoincrement())
+  propertyId Int
+  label      String
+  imageUrl   String
+  sortOrder  Int      @default(0)
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@map("floor_plans")
+}
+
+model Amenity {
+  id         Int      @id @default(autoincrement())
+  propertyId Int
+  icon       String
+  label      String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@map("amenities")
+}
+
+model PropertyFAQ {
+  id         Int      @id @default(autoincrement())
+  propertyId Int
+  question   String   @db.Text
+  answer     String   @db.Text
+  sortOrder  Int      @default(0)
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@map("property_faqs")
+}
+
+// ─── Blog ─────────────────────────────────────────────────────────────────────
+
+model BlogPost {
+  id              Int       @id @default(autoincrement())
+  title           String
+  slug            String    @unique
+  excerpt         String    @db.Text
+  body            String    @db.Text
+  coverImage      String?
+  authorName      String
+  authorAvatar    String?
+  category        String
+  tags            String    @db.Text // JSON array
+  readTimeMinutes Int       @default(5)
+  isPublished     Boolean   @default(false)
+  publishedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("blog_posts")
+}
+
+// ─── FAQs ─────────────────────────────────────────────────────────────────────
+
+model FAQEntry {
+  id        Int         @id @default(autoincrement())
+  question  String      @db.Text
+  answer    String      @db.Text
+  category  FAQCategory @default(GENERAL)
+  sortOrder Int         @default(0)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@map("faq_entries")
+}
+
+enum FAQCategory {
+  GENERAL
+  BUYING
+  SELLING
+  RENTING
+}
+
+// ─── Leads ────────────────────────────────────────────────────────────────────
+
+model Lead {
+  id              Int        @id @default(autoincrement())
+  name            String
+  email           String?
+  mobile          String
+  lookingIn       String?
+  projectEnquiry  String?
+  propertyId      Int?
+  source          String     @default("website")
+  status          LeadStatus @default(NEW)
+  notes           String?    @db.Text
+  submittedAt     DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  property        Property?  @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+
+  @@map("leads")
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  CLOSED
+}
+
+// ─── Site Settings ────────────────────────────────────────────────────────────
+
+model SiteSettings {
+  id                    Int    @id @default(1) // singleton row
+  corporateOfficeAddress String @db.Text
+  corporateOfficeEmail  String
+  corporateOfficePhone  String
+  registeredOfficeAddress String @db.Text
+  registeredOfficeTel   String
+  whatsappNumber        String
+  facebookUrl           String?
+  instagramUrl          String?
+  youtubeUrl            String?
+  // Google Maps "embed" URL (the src from the iframe Google gives you when you
+  // click Share → Embed a map). Rendered in the website footer below the
+  // corporate office address. Editable from the admin Site Settings page.
+  corporateMapEmbedUrl  String? @db.Text
+  footerText            String @db.Text
+  updatedAt             DateTime @updatedAt
+
+  @@map("site_settings")
+}
+
+// ─── Hero Slides ──────────────────────────────────────────────────────────────
+
+model HeroSlide {
+  id             Int      @id @default(autoincrement())
+  imageUrl       String
+  overlayHeading String
+  subheading     String?
+  ctaLabel       String   @default("View Projects")
+  ctaUrl         String   @default("/projects")
+  sortOrder      Int      @default(0)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+
+  @@map("hero_slides")
+}
