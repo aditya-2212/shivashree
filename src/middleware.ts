@@ -1,39 +1,30 @@
-import { withAuth } from "next-auth/middleware";
+import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
 
-export default withAuth(
-  function middleware(req) {
-    const { pathname } = req.nextUrl;
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
 
-    // If already on login page, don't redirect
-    if (pathname === "/admin/login") {
-      return NextResponse.next();
-    }
-
-    // All other /admin routes require authentication
+  if (pathname === "/admin/login") {
     return NextResponse.next();
-  },
-  {
-    callbacks: {
-      authorized({ req, token }) {
-        const { pathname } = req.nextUrl;
-
-        // Login page is always accessible
-        if (pathname === "/admin/login") return true;
-
-        // All other admin routes require a valid token
-        if (pathname.startsWith("/admin")) {
-          return !!token;
-        }
-
-        return true;
-      },
-    },
-    pages: {
-      signIn: "/admin/login",
-    },
   }
-);
+
+  if (pathname.startsWith("/admin")) {
+    const token = await getToken({
+      req,
+      secret: process.env.NEXTAUTH_SECRET,
+      secureCookie: process.env.NODE_ENV === "production",
+    });
+
+    if (!token) {
+      const loginUrl = new URL("/admin/login", req.url);
+      loginUrl.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: ["/admin/:path*"],
