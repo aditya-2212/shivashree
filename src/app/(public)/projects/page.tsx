@@ -70,8 +70,8 @@ export default async function ProjectsPage() {
   return (
     <>
       <StructuredData data={faqSchema([
-        { question: "What ongoing apartment projects are available in Kumbakonam?", answer: "Shivashree Developers offers ongoing residential projects in Kumbakonam featuring premium 2 & 3 BHK apartments designed with modern amenities, quality construction, and prime locations." },
-        { question: "Are 2 & 3 BHK apartments available for sale in Kumbakonam projects?", answer: "Yes, the projects include well-designed 2 and 3 BHK apartments for sale in Kumbakonam, suitable for families, professionals, and real estate investors." },
+        { question: "What ongoing apartment projects are available in Kumbakonam?", answer: "Shivashree Developers offers ongoing residential projects in Kumbakonam featuring premium 2 and 3 BHK apartments with modern amenities and quality construction." },
+        { question: "Are 2 & 3 BHK apartments available for sale in Kumbakonam projects?", answer: "Yes, the projects include well-designed 2 and 3 BHK apartments for sale in Kumbakonam suitable for families and investors." },
         { question: "Why invest in ongoing projects in Kumbakonam?", answer: "Ongoing projects in Kumbakonam offer better pricing, flexible payment options, and strong appreciation potential, making them a smart investment choice." },
         { question: "What amenities are included in these apartment projects?", answer: "Projects typically include car parking, security, power backup, water supply, and proximity to schools, hospitals, and transport facilities." },
         { question: "Are these projects suitable for Chennai-based buyers?", answer: "Yes, Chennai buyers prefer investing in Kumbakonam due to affordable pricing, peaceful environment, and long-term growth potential." },
