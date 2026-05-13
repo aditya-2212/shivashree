@@ -88,24 +88,27 @@ export default async function HomePage() {
   ]);
 
   // The hero accepts a list of slides from the CMS. If the team hasn't added
-  // any yet, we fall back to the first published property's hero image so we
-  // never render a flat-coloured hero.
-  const fallbackHero = properties.find((p) => p.heroImage);
+  // any yet, we fall back to the first two published properties' hero images
+  // so we never render a flat-coloured hero.
+  const propertiesWithImages = properties.filter((p) => p.heroImage);
   const heroData =
     heroSlides.length > 0
       ? heroSlides
-      : fallbackHero?.heroImage
-        ? [
-            {
-              id: -1,
-              imageUrl: fallbackHero.heroImage,
-              overlayHeading: "Apartments in Kumbakonam & Chennai\nBuilt by people who live here.",
-              subheading:
-                "Shivashree Developers — TNRERA-registered 2 & 3 BHK homes.",
-              ctaLabel: "See current projects",
-              ctaUrl: "/projects",
-            },
-          ]
+      : propertiesWithImages.length > 0
+        ? propertiesWithImages.slice(0, 2).map((p, i) => ({
+            id: -(i + 1),
+            imageUrl: p.heroImage!,
+            overlayHeading:
+              i === 0
+                ? "Sivasree's Syamala – Arumbakkam\nThe Ultimate Address for Luxury"
+                : "Sivasree's Galaxy at Kumbakonam\nWhere Comfort Meets Culture",
+            subheading:
+              i === 0
+                ? "Designed for Those Who Desire the Finest."
+                : "Where tradition meets luxury, and every sunrise feels spiritual.",
+            ctaLabel: "Enquire Now",
+            ctaUrl: "/contact",
+          }))
         : [];
 
   return (
