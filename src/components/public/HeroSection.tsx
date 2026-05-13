@@ -112,8 +112,8 @@ export default function HeroSection({ slides, whatsappNumber }: Props) {
       {/* Brand-tinted gradient so the white headline always reads on any image */}
       <div className="absolute inset-0 hero-overlay" />
 
-      {/* Content */}
-      <div className="relative z-30 h-full min-h-[80vh] md:min-h-[88vh] flex items-center pt-36 pb-16">
+      {/* Content — pointer-events-none so clicks pass through to the nav zones below */}
+      <div className="relative z-30 pointer-events-none h-full min-h-[80vh] md:min-h-[88vh] flex items-center pt-36 pb-16">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full">
           <div className="max-w-2xl">
             <div
@@ -135,7 +135,7 @@ export default function HeroSection({ slides, whatsappNumber }: Props) {
                   {slide.subheading}
                 </p>
               )}
-              <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex flex-col sm:flex-row gap-3 pointer-events-auto">
                 <Link
                   href={slide.ctaUrl}
                   className="inline-flex items-center justify-center bg-white text-brand-purple-700 hover:bg-brand-purple-50 font-semibold px-7 py-3.5 rounded-xl transition text-base shadow-md"
