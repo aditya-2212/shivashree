@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -20,9 +21,25 @@ interface Props {
 
 export const revalidate = 3600;
 
+const getProperty = (slug: string) =>
+  unstable_cache(
+    () =>
+      prisma.property.findUnique({
+        where: { slug, isPublished: true },
+        include: {
+          galleryImages: { orderBy: { sortOrder: "asc" } },
+          floorPlans: { orderBy: { sortOrder: "asc" } },
+          amenities: true,
+          faqs: { orderBy: { sortOrder: "asc" } },
+        },
+      }),
+    [`property-${slug}`],
+    { revalidate: 3600, tags: [`property-${slug}`, "properties"] }
+  )();
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const property = await prisma.property.findUnique({ where: { slug } });
+  const property = await getProperty(slug);
   if (!property) return {};
 
   const bhkTypes = parseJsonField<string[]>(property.bhkTypes, []);
@@ -75,15 +92,7 @@ const specLabels: Record<string, string> = {
 export default async function ProjectDetailPage({ params }: Props) {
   const { slug } = await params;
 
-  const property = await prisma.property.findUnique({
-    where: { slug, isPublished: true },
-    include: {
-      galleryImages: { orderBy: { sortOrder: "asc" } },
-      floorPlans: { orderBy: { sortOrder: "asc" } },
-      amenities: true,
-      faqs: { orderBy: { sortOrder: "asc" } },
-    },
-  });
+  const property = await getProperty(slug);
 
   if (!property) notFound();
 
