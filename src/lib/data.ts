@@ -25,16 +25,3 @@ export const getPublishedProperties = unstable_cache(
   ["published-properties"],
   { revalidate: 3600, tags: ["properties"] }
 );
-
-/**
- * Cached slugs only — used by generateStaticParams on project detail page.
- */
-export const getPublishedSlugs = unstable_cache(
-  async () =>
-    prisma.property.findMany({
-      where: { isPublished: true },
-      select: { slug: true },
-    }),
-  ["published-slugs"],
-  { revalidate: 3600, tags: ["properties"] }
-);
