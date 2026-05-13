@@ -105,6 +105,7 @@ const propertySchema = z.object({
     windows: z.string().optional(),
   }),
   mapEmbedUrl: z.string().optional(),
+  slug: z.string().optional(),
   seoTitle: z.string().optional(),
   seoDescription: z.string().optional(),
 });
@@ -147,6 +148,7 @@ interface PropertyData {
   amenities?: { id?: number; icon: string; label: string }[];
   faqs?: { id?: number; question: string; answer: string; sortOrder?: number }[];
   mapEmbedUrl?: string | null;
+  slug?: string;
   seoTitle?: string | null;
   seoDescription?: string | null;
 }
@@ -487,6 +489,7 @@ export default function PropertyForm({ mode, initialData }: Props) {
         windows: initialData?.keySpecifications?.windows ?? "",
       },
       mapEmbedUrl: initialData?.mapEmbedUrl ?? "",
+      slug: initialData?.slug ?? "",
       seoTitle: initialData?.seoTitle ?? "",
       seoDescription: initialData?.seoDescription ?? "",
     },
@@ -615,6 +618,19 @@ export default function PropertyForm({ mode, initialData }: Props) {
               placeholder="e.g. Shivashree's Mahalakshmi"
             />
             <FieldError message={errors.title?.message} />
+          </div>
+
+          <div className="sm:col-span-2">
+            <Label>URL Slug</Label>
+            <input
+              {...register("slug")}
+              className={inputClass}
+              placeholder="e.g. mahalakshmi-2-3-bhk-apartments-for-sale-in-kumbakonam"
+            />
+            <p className="text-stone-400 text-xs mt-1">
+              The URL path for this project (e.g. /projects/<strong>your-slug</strong>). Leave blank to auto-generate. Only lowercase letters, numbers, and hyphens.
+            </p>
+            <FieldError message={errors.slug?.message} />
           </div>
 
           <div>
@@ -1150,10 +1166,10 @@ export default function PropertyForm({ mode, initialData }: Props) {
             <Label>Page Title</Label>
             <span
               className={`text-xs ${
-                seoTitle.length > 60 ? "text-red-500" : "text-stone-400"
+                seoTitle.length > 70 ? "text-red-500" : "text-stone-400"
               }`}
             >
-              {seoTitle.length}/60
+              {seoTitle.length}/70
             </span>
           </div>
           <input
@@ -1162,7 +1178,7 @@ export default function PropertyForm({ mode, initialData }: Props) {
             placeholder="e.g. Shivashree Mahalakshmi — 2 & 3 BHK Flats in Kumbakonam"
           />
           <p className="text-stone-400 text-xs mt-1">
-            Keep under 60 characters. Will auto-generate from project name if
+            Keep under 70 characters. Will auto-generate from project name if
             left empty.
           </p>
         </div>
@@ -1172,10 +1188,10 @@ export default function PropertyForm({ mode, initialData }: Props) {
             <Label>Meta Description</Label>
             <span
               className={`text-xs ${
-                seoDesc.length > 160 ? "text-red-500" : "text-stone-400"
+                seoDesc.length > 200 ? "text-red-500" : "text-stone-400"
               }`}
             >
-              {seoDesc.length}/160
+              {seoDesc.length}/200
             </span>
           </div>
           <textarea
@@ -1185,7 +1201,7 @@ export default function PropertyForm({ mode, initialData }: Props) {
             placeholder="A brief description of this property for search engines (1-2 sentences)."
           />
           <p className="text-stone-400 text-xs mt-1">
-            Aim for 120–160 characters.
+            Aim for 150–200 characters.
           </p>
         </div>
       </FormSection>

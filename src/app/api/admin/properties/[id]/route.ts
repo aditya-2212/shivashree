@@ -57,6 +57,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
       floorPlans,
       amenities,
       faqs,
+      slug,
     } = body;
 
     // Delete and recreate related records (simpler than diffing)
@@ -84,6 +85,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
         keySpecifications: JSON.stringify(keySpecifications ?? {}),
         locationAdvantages: JSON.stringify(locationAdvantages ?? []),
         mapEmbedUrl: mapEmbedUrl || null,
+        ...(slug ? { slug } : {}),
         seoTitle: seoTitle || null,
         seoDescription: seoDescription || null,
         isPublished: isPublished ?? false,

@@ -129,13 +129,13 @@ export default async function HomePage() {
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
             <div className="max-w-xl">
               <p className="text-brand-purple-600 font-semibold text-sm uppercase tracking-widest mb-2">
-                {settings?.homeProjectsEyebrow ?? D.projectsEyebrow}
+                {settings?.homeProjectsEyebrow || D.projectsEyebrow}
               </p>
               <h2 className="text-3xl md:text-4xl font-bold text-stone-900 leading-tight">
-                {settings?.homeProjectsHeading ?? D.projectsHeading}
+                {settings?.homeProjectsHeading || D.projectsHeading}
               </h2>
               <p className="text-stone-600 mt-3 text-base leading-relaxed">
-                {settings?.homeProjectsSubheading ?? D.projectsSubheading}
+                {settings?.homeProjectsSubheading || D.projectsSubheading}
               </p>
             </div>
             <Link
@@ -282,10 +282,10 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-2xl mb-12">
             <p className="text-brand-blue-600 font-semibold text-sm uppercase tracking-widest mb-2">
-              {settings?.homeWhyEyebrow ?? D.whyEyebrow}
+              {settings?.homeWhyEyebrow || D.whyEyebrow}
             </p>
             <h2 className="text-3xl md:text-4xl font-bold text-stone-900 leading-tight">
-              {settings?.homeWhyHeading ?? D.whyHeading}
+              {settings?.homeWhyHeading || D.whyHeading}
             </h2>
           </div>
 
@@ -293,20 +293,20 @@ export default async function HomePage() {
             {[
               {
                 icon: ShieldCheck,
-                title: settings?.homeCard1Title ?? D.card1Title,
-                body: settings?.homeCard1Body ?? D.card1Body,
+                title: settings?.homeCard1Title || D.card1Title,
+                body: settings?.homeCard1Body || D.card1Body,
                 image: settings?.homeCard1Image,
               },
               {
                 icon: Hammer,
-                title: settings?.homeCard2Title ?? D.card2Title,
-                body: settings?.homeCard2Body ?? D.card2Body,
+                title: settings?.homeCard2Title || D.card2Title,
+                body: settings?.homeCard2Body || D.card2Body,
                 image: settings?.homeCard2Image,
               },
               {
                 icon: Phone,
-                title: settings?.homeCard3Title ?? D.card3Title,
-                body: settings?.homeCard3Body ?? D.card3Body,
+                title: settings?.homeCard3Title || D.card3Title,
+                body: settings?.homeCard3Body || D.card3Body,
                 image: settings?.homeCard3Image,
               },
             ].map(({ icon: Icon, title, body, image }) => (
@@ -344,13 +344,13 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-6">
               <p className="text-brand-blue-200 font-semibold text-sm uppercase tracking-widest mb-3">
-                {settings?.homeCtaEyebrow ?? D.ctaEyebrow}
+                {settings?.homeCtaEyebrow || D.ctaEyebrow}
               </p>
               <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-4">
-                {settings?.homeCtaHeading ?? D.ctaHeading}
+                {settings?.homeCtaHeading || D.ctaHeading}
               </h2>
               <p className="text-white/80 text-lg leading-relaxed mb-6">
-                {settings?.homeCtaBody ?? D.ctaBody}
+                {settings?.homeCtaBody || D.ctaBody}
               </p>
               {settings?.corporateOfficePhone && (
                 <p className="text-white/60 text-sm">
