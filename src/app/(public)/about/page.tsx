@@ -60,22 +60,22 @@ export default async function AboutPage() {
   const commitments = [
     {
       n: "01",
-      title: s?.aboutC1Title ?? D.c1Title,
-      body: s?.aboutC1Body ?? D.c1Body,
+      title: s?.aboutC1Title || D.c1Title,
+      body: s?.aboutC1Body || D.c1Body,
     },
     {
       n: "02",
-      title: s?.aboutC2Title ?? D.c2Title,
-      body: s?.aboutC2Body ?? D.c2Body,
+      title: s?.aboutC2Title || D.c2Title,
+      body: s?.aboutC2Body || D.c2Body,
     },
     {
       n: "03",
-      title: s?.aboutC3Title ?? D.c3Title,
-      body: s?.aboutC3Body ?? D.c3Body,
+      title: s?.aboutC3Title || D.c3Title,
+      body: s?.aboutC3Body || D.c3Body,
     },
   ];
 
-  const storyHtml = s?.aboutStoryBodyHtml ?? D.storyBodyHtml;
+  const storyHtml = s?.aboutStoryBodyHtml || D.storyBodyHtml;
 
   return (
     <>
@@ -83,13 +83,13 @@ export default async function AboutPage() {
       <section className="pt-36 pb-20 bg-brand-purple-900 text-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="text-brand-blue-200 font-semibold text-sm uppercase tracking-widest mb-4">
-            {s?.aboutHeroEyebrow ?? D.heroEyebrow}
+            {s?.aboutHeroEyebrow || D.heroEyebrow}
           </p>
           <h1 className="text-4xl md:text-5xl font-bold leading-tight max-w-3xl tracking-tight whitespace-pre-line">
-            {s?.aboutHeroTitle ?? D.heroTitle}
+            {s?.aboutHeroTitle || D.heroTitle}
           </h1>
           <p className="text-white/80 text-lg max-w-2xl leading-relaxed mt-6">
-            {s?.aboutHeroLead ?? D.heroLead}
+            {s?.aboutHeroLead || D.heroLead}
           </p>
         </div>
       </section>
@@ -98,7 +98,7 @@ export default async function AboutPage() {
       <section className="py-20 bg-white">
         <div className="max-w-3xl mx-auto px-6 lg:px-8">
           <h2 className="text-2xl md:text-3xl font-bold text-stone-900 mb-6 tracking-tight">
-            {s?.aboutStoryTitle ?? D.storyTitle}
+            {s?.aboutStoryTitle || D.storyTitle}
           </h2>
           <div
             className="space-y-5 text-stone-700 text-base leading-relaxed prose prose-stone max-w-none"
@@ -134,7 +134,7 @@ export default async function AboutPage() {
       <section className="py-20 bg-stone-50 border-y border-stone-200">
         <div className="max-w-5xl mx-auto px-6 lg:px-8">
           <h2 className="text-2xl md:text-3xl font-bold text-stone-900 mb-10 tracking-tight">
-            {s?.aboutCommitmentsTitle ?? D.commitmentsTitle}
+            {s?.aboutCommitmentsTitle || D.commitmentsTitle}
           </h2>
           <ol className="space-y-8">
             {commitments.map((item) => (
@@ -160,10 +160,10 @@ export default async function AboutPage() {
         <section className="py-20 bg-white">
           <div className="max-w-5xl mx-auto px-6 lg:px-8">
             <h2 className="text-2xl md:text-3xl font-bold text-stone-900 mb-2 tracking-tight">
-              {s?.aboutWhereTitle ?? D.whereTitle}
+              {s?.aboutWhereTitle || D.whereTitle}
             </h2>
             <p className="text-stone-600 mb-10 max-w-2xl">
-              {s?.aboutWhereIntro ?? D.whereIntro}
+              {s?.aboutWhereIntro || D.whereIntro}
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -203,10 +203,10 @@ export default async function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl font-bold text-white mb-4 tracking-tight">
-                {s?.aboutCtaTitle ?? D.ctaTitle}
+                {s?.aboutCtaTitle || D.ctaTitle}
               </h2>
               <p className="text-white/80 leading-relaxed mb-8">
-                {s?.aboutCtaBody ?? D.ctaBody}
+                {s?.aboutCtaBody || D.ctaBody}
               </p>
               <Link
                 href="/projects"

@@ -37,8 +37,8 @@ export default async function ContactPage() {
   const settings = await prisma.siteSettings.findUnique({ where: { id: 1 } });
   const s = settings;
 
-  const hoursWeekdays = s?.contactHoursWeekdays ?? D.hoursWeekdays;
-  const hoursSunday = s?.contactHoursSunday ?? D.hoursSunday;
+  const hoursWeekdays = s?.contactHoursWeekdays || D.hoursWeekdays;
+  const hoursSunday = s?.contactHoursSunday || D.hoursSunday;
 
   const parseHoursLine = (line: string) => {
     const idx = line.lastIndexOf("·");
@@ -54,13 +54,13 @@ export default async function ContactPage() {
       <section className="pt-36 pb-14 bg-brand-purple-900 text-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="text-brand-blue-200 font-semibold text-sm uppercase tracking-widest mb-3">
-            {s?.contactHeroEyebrow ?? D.heroEyebrow}
+            {s?.contactHeroEyebrow || D.heroEyebrow}
           </p>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
-            {s?.contactHeroTitle ?? D.heroTitle}
+            {s?.contactHeroTitle || D.heroTitle}
           </h1>
           <p className="text-white/80 text-lg max-w-2xl">
-            {s?.contactHeroIntro ?? D.heroIntro}
+            {s?.contactHeroIntro || D.heroIntro}
           </p>
         </div>
       </section>
@@ -74,7 +74,7 @@ export default async function ContactPage() {
               <div className="bg-white rounded-2xl border border-stone-200 p-6">
                 <div className="flex items-center gap-2 text-xs font-semibold text-brand-purple-700 uppercase tracking-wider mb-3">
                   <span className="w-2 h-2 rounded-full bg-brand-purple-600" />
-                  {s?.contactCorporateLabel ?? D.corporateLabel}
+                  {s?.contactCorporateLabel || D.corporateLabel}
                 </div>
                 <address className="not-italic space-y-3 text-sm">
                   {settings?.corporateOfficeAddress && (
@@ -127,7 +127,7 @@ export default async function ContactPage() {
               <div className="bg-white rounded-2xl border border-stone-200 p-6">
                 <div className="flex items-center gap-2 text-xs font-semibold text-brand-blue-700 uppercase tracking-wider mb-3">
                   <span className="w-2 h-2 rounded-full bg-brand-blue-500" />
-                  {s?.contactRegisteredLabel ?? D.registeredLabel}
+                  {s?.contactRegisteredLabel || D.registeredLabel}
                 </div>
                 <address className="not-italic space-y-3 text-sm">
                   {settings?.registeredOfficeAddress && (
@@ -156,7 +156,7 @@ export default async function ContactPage() {
               <div className="bg-white rounded-2xl border border-stone-200 p-6">
                 <div className="flex items-center gap-2 text-xs font-semibold text-stone-500 uppercase tracking-wider mb-3">
                   <Clock className="w-3.5 h-3.5" />
-                  {s?.contactHoursTitle ?? D.hoursTitle}
+                  {s?.contactHoursTitle || D.hoursTitle}
                 </div>
                 <div className="space-y-2 text-sm text-stone-700">
                   <div className="flex justify-between">
@@ -168,7 +168,7 @@ export default async function ContactPage() {
                     <span className="font-medium">{sunday.value}</span>
                   </div>
                   <p className="text-xs text-stone-500 pt-2 leading-relaxed">
-                    {s?.contactHoursNote ?? D.hoursNote}
+                    {s?.contactHoursNote || D.hoursNote}
                   </p>
                 </div>
               </div>
@@ -178,10 +178,10 @@ export default async function ContactPage() {
             <div className="lg:col-span-2">
               <div className="bg-stone-50 rounded-2xl border border-stone-200 p-6 md:p-8">
                 <h2 className="text-2xl font-bold text-stone-900 mb-2 tracking-tight">
-                  {s?.contactFormTitle ?? D.formTitle}
+                  {s?.contactFormTitle || D.formTitle}
                 </h2>
                 <p className="text-stone-600 text-sm mb-6 max-w-lg">
-                  {s?.contactFormIntro ?? D.formIntro}
+                  {s?.contactFormIntro || D.formIntro}
                 </p>
                 <EnquiryForm source="contact-page" />
               </div>
