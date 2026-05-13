@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import Navbar from "@/components/public/Navbar";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300; // rebuild cached page every 5 minutes
 import Footer from "@/components/public/Footer";
 import WhatsAppButton from "@/components/public/WhatsAppButton";
 import { Toaster } from "react-hot-toast";

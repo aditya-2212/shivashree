@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -86,8 +87,8 @@ export default function HeroSection({ slides, whatsappNumber }: Props) {
 
   return (
     <section className="relative w-full min-h-[80vh] md:min-h-[88vh] overflow-hidden bg-brand-purple-900">
-      {/* Background images (cross-fade). We render every slide stacked so the
-          fade has nothing to load mid-transition. */}
+      {/* Background images — rendered as next/image for LCP optimisation.
+          Only the first slide uses priority; others are preloaded lazily. */}
       {slides.map((s, i) => (
         <div
           key={s.id}
@@ -96,12 +97,17 @@ export default function HeroSection({ slides, whatsappNumber }: Props) {
             i === current ? "opacity-100" : "opacity-0"
           )}
           aria-hidden={i !== current}
-          style={{
-            backgroundImage: `url(${s.imageUrl})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
+        >
+          <Image
+            src={s.imageUrl}
+            alt=""
+            fill
+            sizes="100vw"
+            className="object-cover object-center"
+            priority={i === 0}
+            loading={i === 0 ? "eager" : "lazy"}
+          />
+        </div>
       ))}
 
       {/* Brand-tinted gradient so the white headline always reads on any image */}

@@ -3,6 +3,7 @@ import HeroSection from "@/components/public/HeroSection";
 import EnquiryForm from "@/components/public/EnquiryForm";
 import StructuredData, { organizationSchema } from "@/components/StructuredData";
 import Link from "next/link";
+import Image from "next/image";
 import {
   MapPin,
   ArrowRight,
@@ -41,6 +42,8 @@ const D = {
   ctaBody:
     "Your dream home isn\u2019t just built \u2014 it\u2019s brought to life. Tell us your name and number and we\u2019ll call you back to find the right home for you.",
 };
+
+const statusBadge = {
   PROPOSED: {
     label: "Coming Soon",
     chip: "bg-brand-blue-50 text-brand-blue-700 border-brand-blue-100",
@@ -164,10 +167,11 @@ export default async function HomePage() {
                     */}
                     <div className="relative bg-brand-purple-50/60 flex items-center justify-center min-h-[180px]">
                       {property.heroImage ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
+                        <Image
                           src={property.heroImage}
                           alt={property.heroImageAlt ?? property.title}
+                          width={600}
+                          height={400}
                           className="w-full h-auto object-contain"
                           loading="lazy"
                         />

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import EnquiryForm from "@/components/public/EnquiryForm";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 const D = {
   metaTitle: "Contact — Shivashree Developers",
