@@ -208,8 +208,7 @@ export default function Footer({ settings }: FooterProps) {
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-stone-400 text-xs">
-            © {new Date().getFullYear()} Shivashree Developers.{" "}
-            {settings?.footerText ?? "All rights reserved."}
+            © {new Date().getFullYear()} Shivashree Developers. All rights reserved.
           </p>
           <p className="text-stone-500 text-xs">
             Kumbakonam · Chennai
