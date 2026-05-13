@@ -272,7 +272,7 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
     onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onClear: () => void;
     slotId: string;
-    inputRef: React.RefObject<HTMLInputElement>;
+    inputRef: React.RefObject<HTMLInputElement | null>;
   }) => (
     <div>
       <label className="block text-sm font-medium text-stone-700 mb-1.5">{label}</label>
