@@ -5,7 +5,7 @@ import { parseJsonField, formatPrice } from "@/lib/utils";
 import EnquiryForm from "@/components/public/EnquiryForm";
 import PropertyFAQAccordion from "@/components/public/PropertyFAQAccordion";
 import AmenityIcon from "@/components/public/AmenityIcon";
-import StructuredData, { propertySchema } from "@/components/StructuredData";
+import StructuredData, { propertySchema, faqSchema } from "@/components/StructuredData";
 import {
   MapPin,
   CheckCircle,
@@ -118,6 +118,13 @@ export default async function ProjectDetailPage({ params }: Props) {
           bhkTypes,
         })}
       />
+      {property.faqs.length > 0 && (
+        <StructuredData
+          data={faqSchema(
+            property.faqs.map((f) => ({ question: f.question, answer: f.answer }))
+          )}
+        />
+      )}
 
       {/* Breadcrumb */}
       <nav className="pt-24 pb-2 bg-white border-b border-stone-100">

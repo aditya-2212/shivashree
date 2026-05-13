@@ -3,11 +3,12 @@ import Link from "next/link";
 import { MapPin, ArrowRight } from "lucide-react";
 import { formatPrice, parseJsonField } from "@/lib/utils";
 import type { Metadata } from "next";
+import StructuredData, { faqSchema } from "@/components/StructuredData";
 
 export const metadata: Metadata = {
-  title: "Projects — Shivashree Developers in Kumbakonam & Chennai",
+  title: "Ongoing Residential Projects in Kumbakonam | 2 & 3 BHK Apartments for Sale",
   description:
-    "Every Shivashree Developers project, grouped by status — what's selling now, what's coming next, and what's been delivered. TNRERA registered.",
+    "Explore ongoing residential projects in Kumbakonam by Shivashree Developers. Premium 2 & 3 BHK apartments for sale with modern amenities, prime locations, and quality construction. Ideal for homebuyers and Chennai investors.",
 };
 
 const sections = [
@@ -68,6 +69,14 @@ export default async function ProjectsPage() {
 
   return (
     <>
+      <StructuredData data={faqSchema([
+        { question: "What ongoing apartment projects are available in Kumbakonam?", answer: "Shivashree Developers offers ongoing residential projects in Kumbakonam featuring premium 2 & 3 BHK apartments designed with modern amenities, quality construction, and prime locations." },
+        { question: "Are 2 & 3 BHK apartments available for sale in Kumbakonam projects?", answer: "Yes, the projects include well-designed 2 and 3 BHK apartments for sale in Kumbakonam, suitable for families, professionals, and real estate investors." },
+        { question: "Why invest in ongoing projects in Kumbakonam?", answer: "Ongoing projects in Kumbakonam offer better pricing, flexible payment options, and strong appreciation potential, making them a smart investment choice." },
+        { question: "What amenities are included in these apartment projects?", answer: "Projects typically include car parking, security, power backup, water supply, and proximity to schools, hospitals, and transport facilities." },
+        { question: "Are these projects suitable for Chennai-based buyers?", answer: "Yes, Chennai buyers prefer investing in Kumbakonam due to affordable pricing, peaceful environment, and long-term growth potential." },
+        { question: "How to book an apartment in Shivashree Developers projects?", answer: "You can book an apartment by contacting Shivashree Developers through their website or visiting the project site for consultation and booking assistance." },
+      ])} />
       {/* Page header */}
       <section className="pt-36 pb-16 bg-brand-purple-900 text-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">

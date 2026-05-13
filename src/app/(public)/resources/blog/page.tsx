@@ -6,9 +6,9 @@ import { formatDate } from "@/lib/utils";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Notes & guides — Shivashree Developers",
+  title: "Real Estate Blog | Apartments in Kumbakonam & Chennai Insights",
   description:
-    "Buying tips, neighbourhood snapshots, and updates from the Shivashree Developers team in Kumbakonam and Chennai.",
+    "Explore expert insights on buying 2 & 3 BHK apartments in Kumbakonam and Chennai. Get real estate tips, investment guides, market trends, and home buying advice from Shivashree Developers.",
 };
 
 export default async function BlogPage() {

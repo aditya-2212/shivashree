@@ -129,3 +129,15 @@ export function articleSchema(post: {
     dateModified: post.updatedAt.toISOString(),
   };
 }
+
+export function faqSchema(items: { question: string; answer: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((q) => ({
+      "@type": "Question",
+      name: q.question,
+      acceptedAnswer: { "@type": "Answer", text: q.answer },
+    })),
+  };
+}

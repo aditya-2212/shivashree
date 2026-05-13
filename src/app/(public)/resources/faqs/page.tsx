@@ -3,13 +3,14 @@ import FAQTabs from "@/components/public/FAQTabs";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import StructuredData, { faqSchema } from "@/components/StructuredData";
 
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "FAQs — Shivashree Developers",
+  title: "Real Estate FAQs | Buying Apartments in Kumbakonam & Chennai",
   description:
-    "Booking, home loans, TNRERA, possession dates and post-possession service — answers to the questions buyers actually ask us.",
+    "Find answers to common questions about buying 2 & 3 BHK apartments in Kumbakonam and Chennai. Learn about pricing, legal checks, investment benefits, and property buying process with Shivashree Developers.",
 };
 
 export default async function FAQsPage() {
@@ -19,6 +20,14 @@ export default async function FAQsPage() {
 
   return (
     <>
+      <StructuredData data={faqSchema([
+        { question: "What is the current real estate market trend in Kumbakonam?", answer: "The Kumbakonam real estate market is steadily growing with increasing demand from local buyers, NRIs, and investors looking for apartments and investment opportunities." },
+        { question: "What factors affect apartment prices in Kumbakonam?", answer: "Apartment prices depend on location, infrastructure development, demand and supply, economic conditions, and government regulations." },
+        { question: "Is buying a 2 & 3 BHK apartment in Kumbakonam a good investment?", answer: "Yes, investing in 2 and 3 BHK apartments in Kumbakonam offers affordability, cultural value, and strong future growth potential." },
+        { question: "What additional costs should I consider when buying a flat?", answer: "Additional costs include stamp duty, registration fees, legal charges, maintenance charges, and property taxes depending on the project." },
+        { question: "How can I verify the legal status of a property before buying?", answer: "You should verify property documents through legal experts, including title verification, approvals, and background checks." },
+        { question: "Can Chennai buyers invest in apartments in Kumbakonam?", answer: "Yes, Chennai buyers prefer investing in Kumbakonam due to affordable pricing and strong appreciation potential." },
+      ])} />
       <section className="pt-36 pb-16 bg-brand-purple-900 text-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="text-brand-blue-200 font-semibold text-sm uppercase tracking-widest mb-3">

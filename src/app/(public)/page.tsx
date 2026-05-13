@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import HeroSection from "@/components/public/HeroSection";
 import EnquiryForm from "@/components/public/EnquiryForm";
-import StructuredData, { organizationSchema } from "@/components/StructuredData";
+import StructuredData, { organizationSchema, faqSchema } from "@/components/StructuredData";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -16,9 +16,9 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title:
-    "Shivashree Developers | Residential apartments in Kumbakonam & Chennai",
+    "Luxury 2 & 3 BHK Apartments for sale in Kumbakonam & Chennai | Shivashree Developers",
   description:
-    "Shivashree Developers builds RERA-registered 2 & 3 BHK apartments in Kumbakonam and Chennai. See projects that are now selling, coming soon, and ready to move in.",
+    "Explore premium 2 & 3 BHK apartments in Kumbakonam and Chennai by Shivashree Developers. Modern amenities, prime locations, quality construction and affordable pricing. Book your dream home today.",
 };
 
 const D = {
@@ -109,6 +109,14 @@ export default async function HomePage() {
   return (
     <>
       <StructuredData data={organizationSchema(settings ?? undefined)} />
+      <StructuredData data={faqSchema([
+        { question: "What are the best 2 & 3 BHK apartments for sale in Kumbakonam?", answer: "Shivashree Developers offers premium 2 & 3 BHK apartments for sale in Kumbakonam with modern amenities, prime locations, and quality construction, ideal for both families and investors." },
+        { question: "Are there affordable 2 BHK flats for sale in Kumbakonam?", answer: "Yes, affordable 2 BHK flats for sale in Kumbakonam are available with essential amenities and good connectivity. These homes are perfect for first-time buyers and small families." },
+        { question: "Why should Chennai buyers invest in apartments in Kumbakonam?", answer: "Chennai buyers prefer investing in Kumbakonam apartments due to lower property prices, peaceful living environment, and high future appreciation potential compared to metro cities." },
+        { question: "What amenities are included in 2 & 3 BHK apartments in Kumbakonam?", answer: "Apartments typically include car parking, 24/7 security, power backup, water supply, and easy access to schools, hospitals, and transport facilities." },
+        { question: "Are 3 BHK apartments in Kumbakonam a good investment?", answer: "Yes, 3 BHK apartments in Kumbakonam offer larger space, better resale value, and growing demand, making them a strong long-term investment option." },
+        { question: "How is the location advantage of buying flats in Kumbakonam?", answer: "Kumbakonam offers excellent connectivity to Chennai and other cities, along with a calm lifestyle, cultural importance, and developing infrastructure, making it a preferred residential location." },
+      ])} />
 
       {/* Hero with property image background, sourced from CMS */}
       <HeroSection slides={heroData} whatsappNumber={settings?.whatsappNumber} />

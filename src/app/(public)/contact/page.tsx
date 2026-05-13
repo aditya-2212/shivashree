@@ -6,9 +6,9 @@ import EnquiryForm from "@/components/public/EnquiryForm";
 export const revalidate = 300;
 
 const D = {
-  metaTitle: "Contact — Shivashree Developers",
+  metaTitle: "Contact Shivashree Developers | Apartments in Kumbakonam & Chennai",
   metaDescription:
-    "Reach Shivashree Developers in Chennai (West Mambalam) or Kumbakonam (Bakthapuri Street). Phone, email, office hours and an enquiry form on one page.",
+    "Get in touch with Shivashree Developers for luxury 2 & 3 BHK apartments in Kumbakonam and Chennai. Enquire about projects, pricing, site visits, and bookings today.",
   heroEyebrow: "Contact",
   heroTitle: "Two offices, one team, real phones.",
   heroIntro:

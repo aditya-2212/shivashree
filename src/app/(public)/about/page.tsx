@@ -7,9 +7,9 @@ import EnquiryForm from "@/components/public/EnquiryForm";
 export const revalidate = 300;
 
 const D = {
-  metaTitle: "About — Shivashree Developers",
+  metaTitle: "About Shivashree Developers | Trusted Builders in Kumbakonam & Chennai",
   metaDescription:
-    "Shivashree Developers builds RERA-registered apartments in Kumbakonam and Chennai. We're a small team — a single builder, a single point of contact, no franchised offices.",
+    "Learn about Shivashree Developers, a trusted real estate company in Kumbakonam delivering premium 2 & 3 BHK apartments with quality construction, transparency, and customer satisfaction.",
   heroEyebrow: "About Shivashree Developers",
   heroTitle: "A Kumbakonam builder.\nNow also in Chennai.",
   heroLead:
