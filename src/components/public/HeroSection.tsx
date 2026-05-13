@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 interface Slide {
   id: number;
   imageUrl: string;
+  eyebrow?: string | null;
   overlayHeading: string;
   subheading: string | null;
   ctaLabel: string;
@@ -119,7 +120,7 @@ export default function HeroSection({ slides, whatsappNumber }: Props) {
               )}
             >
               <p className="text-white/85 font-semibold text-sm uppercase tracking-widest mb-4">
-                Shivashree Developers · Kumbakonam &amp; Chennai
+                {slide.eyebrow ?? "Shivashree Developers · Kumbakonam & Chennai"}
               </p>
               <h1 className="text-4xl md:text-6xl font-bold text-white leading-[1.05] mb-6 whitespace-pre-line tracking-tight">
                 {slide.overlayHeading}

@@ -6,11 +6,43 @@ import EnquiryForm from "@/components/public/EnquiryForm";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "About — Shivashree Developers",
-  description:
+const D = {
+  metaTitle: "About — Shivashree Developers",
+  metaDescription:
     "Shivashree Developers has built apartments in Kumbakonam since 2000 and now in Chennai. We're a small team — a single builder, a single point of contact, no franchised offices.",
+  heroEyebrow: "About Shivashree Developers",
+  heroTitle: "A Kumbakonam builder.\nNow also in Chennai.",
+  heroLead:
+    "We started in 2000 with a small G+3 in Kumbakonam. Twenty-five years later we're still building apartments — just two cities now, the same family running it, and the same engineer signing off on every slab.",
+  storyTitle: "Why we still build only here.",
+  storyBodyHtml: `<p>Kumbakonam is home. We grew up walking the lanes off Bakthapuri Street and Dabeer Street, and our first project — a small, eight-unit building near the Adi Kumbeswarar temple — was sold to families our parents knew personally. That accountability still defines how we work.</p><p>We expanded to Chennai in the 2010s because too many of our Kumbakonam buyers were sending their adult children there for jobs and asking us to build the same way in the city. We took one site at a time, hired a Chennai-based site engineer who reports to the same office, and refused to franchise.</p><p>We don't bid on government tenders, we don't do joint ventures with land aggregators, and we don't pretend to be a national brand. The math is simple — build fewer projects, finish them on time, hand them over without a punch list of complaints.</p>`,
+  commitmentsTitle: "What you can hold us to.",
+  c1Title: "TNRERA registration before any sale.",
+  c1Body:
+    "We register with the Tamil Nadu Real Estate Regulatory Authority before we accept the first booking. The number is on the project page, the brochure, and the agreement — not a closely guarded secret.",
+  c2Title: "Possession date in writing, with a penalty clause.",
+  c2Body:
+    "The committed handover date goes into the agreement. If we slip beyond the buffer, we pay you a per-month rental compensation. We've stuck to the date on every completed project so far.",
+  c3Title: "One-year defect liability — handled by us, not contracted out.",
+  c3Body:
+    "If something needs fixing within twelve months of possession — leakage, wiring, fittings — our own site team comes back. You don't get bounced to a sub-contractor's call centre.",
+  whereTitle: "Where to find us in person.",
+  whereIntro:
+    "We'd much rather you walked in than filled in a form. Both offices have a model floor plan you can see on the table.",
+  ctaTitle: "Tell us what you're looking for.",
+  ctaBody:
+    "Whether you're a first-time buyer, an NRI investor, or a parent buying for an adult child — drop us a line and the advisor who handles your city will call you back.",
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const s = await prisma.siteSettings.findUnique({ where: { id: 1 } });
+  return {
+    title: s?.aboutHeroTitle
+      ? `About — Shivashree Developers`
+      : D.metaTitle,
+    description: D.metaDescription,
+  };
+}
 
 export default async function AboutPage() {
   const [settings, properties] = await Promise.all([
@@ -21,8 +53,29 @@ export default async function AboutPage() {
     }),
   ]);
 
+  const s = settings;
   const cities = Array.from(new Set(properties.map((p) => p.city)));
   const liveProjects = properties.filter((p) => p.status !== "COMPLETED").length;
+
+  const commitments = [
+    {
+      n: "01",
+      title: s?.aboutC1Title ?? D.c1Title,
+      body: s?.aboutC1Body ?? D.c1Body,
+    },
+    {
+      n: "02",
+      title: s?.aboutC2Title ?? D.c2Title,
+      body: s?.aboutC2Body ?? D.c2Body,
+    },
+    {
+      n: "03",
+      title: s?.aboutC3Title ?? D.c3Title,
+      body: s?.aboutC3Body ?? D.c3Body,
+    },
+  ];
+
+  const storyHtml = s?.aboutStoryBodyHtml ?? D.storyBodyHtml;
 
   return (
     <>
@@ -30,64 +83,34 @@ export default async function AboutPage() {
       <section className="pt-36 pb-20 bg-brand-purple-900 text-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="text-brand-blue-200 font-semibold text-sm uppercase tracking-widest mb-4">
-            About Shivashree Developers
+            {s?.aboutHeroEyebrow ?? D.heroEyebrow}
           </p>
-          <h1 className="text-4xl md:text-5xl font-bold leading-tight max-w-3xl tracking-tight">
-            A Kumbakonam builder.
-            <br />
-            Now also in Chennai.
+          <h1 className="text-4xl md:text-5xl font-bold leading-tight max-w-3xl tracking-tight whitespace-pre-line">
+            {s?.aboutHeroTitle ?? D.heroTitle}
           </h1>
           <p className="text-white/80 text-lg max-w-2xl leading-relaxed mt-6">
-            We started in 2000 with a small G+3 in Kumbakonam. Twenty-five
-            years later we&rsquo;re still building apartments — just two cities
-            now, the same family running it, and the same engineer signing off
-            on every slab.
+            {s?.aboutHeroLead ?? D.heroLead}
           </p>
         </div>
       </section>
 
-      {/*
-        The story — written as continuous prose, not card grids. This is the
-        section where a buyer wants to know the company is real, run by
-        people, and accountable. Card grids would defeat that.
-      */}
+      {/* Story */}
       <section className="py-20 bg-white">
         <div className="max-w-3xl mx-auto px-6 lg:px-8">
           <h2 className="text-2xl md:text-3xl font-bold text-stone-900 mb-6 tracking-tight">
-            Why we still build only here.
+            {s?.aboutStoryTitle ?? D.storyTitle}
           </h2>
-          <div className="space-y-5 text-stone-700 text-base leading-relaxed">
-            <p>
-              Kumbakonam is home. We grew up walking the lanes off Bakthapuri
-              Street and Dabeer Street, and our first project — a small,
-              eight-unit building near the Adi Kumbeswarar temple — was sold
-              to families our parents knew personally. That accountability
-              still defines how we work.
-            </p>
-            <p>
-              We expanded to Chennai in the 2010s because too many of our
-              Kumbakonam buyers were sending their adult children there for
-              jobs and asking us to build the same way in the city. We took
-              one site at a time, hired a Chennai-based site engineer who
-              reports to the same office, and refused to franchise.
-            </p>
-            <p>
-              We don&rsquo;t bid on government tenders, we don&rsquo;t do
-              joint ventures with land aggregators, and we don&rsquo;t pretend
-              to be a national brand. The math is simple — build fewer
-              projects, finish them on time, hand them over without a punch
-              list of complaints.
-            </p>
-          </div>
+          <div
+            className="space-y-5 text-stone-700 text-base leading-relaxed prose prose-stone max-w-none"
+            dangerouslySetInnerHTML={{ __html: storyHtml }}
+          />
 
           <div className="mt-12 grid grid-cols-3 gap-4 border-y border-stone-200 py-8">
             <div>
               <p className="text-3xl md:text-4xl font-bold text-brand-purple-700 leading-none">
                 25
               </p>
-              <p className="text-stone-500 text-sm mt-2">
-                years building since 2000
-              </p>
+              <p className="text-stone-500 text-sm mt-2">years building since 2000</p>
             </div>
             <div>
               <p className="text-3xl md:text-4xl font-bold text-brand-purple-700 leading-none">
@@ -101,51 +124,29 @@ export default async function AboutPage() {
               <p className="text-3xl md:text-4xl font-bold text-brand-purple-700 leading-none">
                 {liveProjects || 2}
               </p>
-              <p className="text-stone-500 text-sm mt-2">
-                projects on site or launching
-              </p>
+              <p className="text-stone-500 text-sm mt-2">projects on site or launching</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/*
-        The few things we promise. Three concrete commitments — not a
-        polished six-tile values grid. Anyone in real estate knows what
-        "integrity" means in a brochure: nothing.
-      */}
+      {/* Commitments */}
       <section className="py-20 bg-stone-50 border-y border-stone-200">
         <div className="max-w-5xl mx-auto px-6 lg:px-8">
           <h2 className="text-2xl md:text-3xl font-bold text-stone-900 mb-10 tracking-tight">
-            What you can hold us to.
+            {s?.aboutCommitmentsTitle ?? D.commitmentsTitle}
           </h2>
-
           <ol className="space-y-8">
-            {[
-              {
-                n: "01",
-                title: "TNRERA registration before any sale.",
-                body: "We register with the Tamil Nadu Real Estate Regulatory Authority before we accept the first booking. The number is on the project page, the brochure, and the agreement — not a closely guarded secret.",
-              },
-              {
-                n: "02",
-                title: "Possession date in writing, with a penalty clause.",
-                body: "The committed handover date goes into the agreement. If we slip beyond the buffer, we pay you a per-month rental compensation. We've stuck to the date on every completed project so far.",
-              },
-              {
-                n: "03",
-                title: "One-year defect liability — handled by us, not contracted out.",
-                body: "If something needs fixing within twelve months of possession — leakage, wiring, fittings — our own site team comes back. You don't get bounced to a sub-contractor's call centre.",
-              },
-            ].map((item) => (
-              <li key={item.n} className="grid grid-cols-1 md:grid-cols-[80px_1fr] gap-4 md:gap-8">
+            {commitments.map((item) => (
+              <li
+                key={item.n}
+                className="grid grid-cols-1 md:grid-cols-[80px_1fr] gap-4 md:gap-8"
+              >
                 <div className="text-brand-purple-700 font-bold text-2xl md:text-3xl tabular-nums">
                   {item.n}
                 </div>
                 <div>
-                  <h3 className="font-bold text-stone-900 text-lg mb-2">
-                    {item.title}
-                  </h3>
+                  <h3 className="font-bold text-stone-900 text-lg mb-2">{item.title}</h3>
                   <p className="text-stone-600 leading-relaxed">{item.body}</p>
                 </div>
               </li>
@@ -154,16 +155,15 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* Where to find us — uses the same office addresses as the footer */}
+      {/* Where to find us */}
       {settings && (
         <section className="py-20 bg-white">
           <div className="max-w-5xl mx-auto px-6 lg:px-8">
             <h2 className="text-2xl md:text-3xl font-bold text-stone-900 mb-2 tracking-tight">
-              Where to find us in person.
+              {s?.aboutWhereTitle ?? D.whereTitle}
             </h2>
             <p className="text-stone-600 mb-10 max-w-2xl">
-              We&rsquo;d much rather you walked in than filled in a form. Both
-              offices have a model floor plan you can see on the table.
+              {s?.aboutWhereIntro ?? D.whereIntro}
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -190,9 +190,7 @@ export default async function AboutPage() {
                 <p className="text-stone-800 leading-relaxed text-sm mb-4">
                   {settings.registeredOfficeAddress}
                 </p>
-                <div className="text-sm text-stone-600">
-                  {settings.registeredOfficeTel}
-                </div>
+                <div className="text-sm text-stone-600">{settings.registeredOfficeTel}</div>
               </div>
             </div>
           </div>
@@ -205,12 +203,10 @@ export default async function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl font-bold text-white mb-4 tracking-tight">
-                Tell us what you&rsquo;re looking for.
+                {s?.aboutCtaTitle ?? D.ctaTitle}
               </h2>
               <p className="text-white/80 leading-relaxed mb-8">
-                Whether you&rsquo;re a first-time buyer, an NRI investor, or
-                a parent buying for an adult child — drop us a line and the
-                advisor who handles your city will call you back.
+                {s?.aboutCtaBody ?? D.ctaBody}
               </p>
               <Link
                 href="/projects"

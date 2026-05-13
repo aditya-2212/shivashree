@@ -200,6 +200,38 @@ model SiteSettings {
   // corporate office address. Editable from the admin Site Settings page.
   corporateMapEmbedUrl  String? @db.Text
   footerText            String @db.Text
+
+  // ─── Contact page copy ───────────────────────────────────────────────────────
+  contactHeroEyebrow       String?
+  contactHeroTitle         String? @db.Text
+  contactHeroIntro         String? @db.Text
+  contactCorporateLabel    String?
+  contactRegisteredLabel   String?
+  contactHoursTitle        String?
+  contactHoursWeekdays     String?
+  contactHoursSunday       String?
+  contactHoursNote         String? @db.Text
+  contactFormTitle         String?
+  contactFormIntro         String? @db.Text
+
+  // ─── About page copy ─────────────────────────────────────────────────────────
+  aboutHeroEyebrow         String?
+  aboutHeroTitle           String? @db.Text
+  aboutHeroLead            String? @db.Text
+  aboutStoryTitle          String?
+  aboutStoryBodyHtml       String? @db.Text
+  aboutCommitmentsTitle    String?
+  aboutC1Title             String? @db.Text
+  aboutC1Body              String? @db.Text
+  aboutC2Title             String? @db.Text
+  aboutC2Body              String? @db.Text
+  aboutC3Title             String? @db.Text
+  aboutC3Body              String? @db.Text
+  aboutWhereTitle          String?
+  aboutWhereIntro          String? @db.Text
+  aboutCtaTitle            String?
+  aboutCtaBody             String? @db.Text
+
   updatedAt             DateTime @updatedAt
 
   @@map("site_settings")
@@ -210,6 +242,7 @@ model SiteSettings {
 model HeroSlide {
   id             Int      @id @default(autoincrement())
   imageUrl       String
+  eyebrow        String?
   overlayHeading String
   subheading     String?
   ctaLabel       String   @default("View Projects")

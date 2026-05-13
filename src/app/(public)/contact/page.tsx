@@ -5,28 +5,62 @@ import EnquiryForm from "@/components/public/EnquiryForm";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Contact — Shivashree Developers",
-  description:
+const D = {
+  metaTitle: "Contact — Shivashree Developers",
+  metaDescription:
     "Reach Shivashree Developers in Chennai (West Mambalam) or Kumbakonam (Bakthapuri Street). Phone, email, office hours and an enquiry form on one page.",
+  heroEyebrow: "Contact",
+  heroTitle: "Two offices, one team, real phones.",
+  heroIntro:
+    "Walk in, call, or fill in the form. Whichever way you reach us, the same person handles the conversation from start to finish.",
+  corporateLabel: "Corporate office — Chennai",
+  registeredLabel: "Registered office — Kumbakonam",
+  hoursTitle: "When we're in office",
+  hoursWeekdays: "Monday – Saturday · 9:00am – 6:00pm",
+  hoursSunday: "Sunday · 10:00am – 2:00pm",
+  hoursNote:
+    "Site visits on Sunday are by prior appointment only — call ahead so a project advisor is at the site to walk you through.",
+  formTitle: "Send us an enquiry",
+  formIntro:
+    "Two fields are required — your name and your number. The rest help us route the call to the right project advisor.",
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const s = await prisma.siteSettings.findUnique({ where: { id: 1 } });
+  return {
+    title: s?.contactHeroTitle ? `${s.contactHeroTitle} | Shivashree Developers` : D.metaTitle,
+    description: D.metaDescription,
+  };
+}
 
 export default async function ContactPage() {
   const settings = await prisma.siteSettings.findUnique({ where: { id: 1 } });
+  const s = settings;
+
+  const hoursWeekdays = s?.contactHoursWeekdays ?? D.hoursWeekdays;
+  const hoursSunday = s?.contactHoursSunday ?? D.hoursSunday;
+
+  const parseHoursLine = (line: string) => {
+    const idx = line.lastIndexOf("·");
+    if (idx === -1) return { label: line, value: "" };
+    return { label: line.slice(0, idx).trim(), value: line.slice(idx + 1).trim() };
+  };
+
+  const weekdays = parseHoursLine(hoursWeekdays);
+  const sunday = parseHoursLine(hoursSunday);
 
   return (
     <>
       <section className="pt-36 pb-14 bg-brand-purple-900 text-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="text-brand-blue-200 font-semibold text-sm uppercase tracking-widest mb-3">
-            Contact
+            {s?.contactHeroEyebrow ?? D.heroEyebrow}
           </p>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
-            Two offices, one team, real phones.
+            {s?.contactHeroTitle ?? D.heroTitle}
           </h1>
           <p className="text-white/80 text-lg max-w-2xl">
-            Walk in, call, or fill in the form. Whichever way you reach us,
-            the same person handles the conversation from start to finish.
+            {s?.contactHeroIntro ?? D.heroIntro}
           </p>
         </div>
       </section>
@@ -40,7 +74,7 @@ export default async function ContactPage() {
               <div className="bg-white rounded-2xl border border-stone-200 p-6">
                 <div className="flex items-center gap-2 text-xs font-semibold text-brand-purple-700 uppercase tracking-wider mb-3">
                   <span className="w-2 h-2 rounded-full bg-brand-purple-600" />
-                  Corporate office — Chennai
+                  {s?.contactCorporateLabel ?? D.corporateLabel}
                 </div>
                 <address className="not-italic space-y-3 text-sm">
                   {settings?.corporateOfficeAddress && (
@@ -93,7 +127,7 @@ export default async function ContactPage() {
               <div className="bg-white rounded-2xl border border-stone-200 p-6">
                 <div className="flex items-center gap-2 text-xs font-semibold text-brand-blue-700 uppercase tracking-wider mb-3">
                   <span className="w-2 h-2 rounded-full bg-brand-blue-500" />
-                  Registered office — Kumbakonam
+                  {s?.contactRegisteredLabel ?? D.registeredLabel}
                 </div>
                 <address className="not-italic space-y-3 text-sm">
                   {settings?.registeredOfficeAddress && (
@@ -122,21 +156,19 @@ export default async function ContactPage() {
               <div className="bg-white rounded-2xl border border-stone-200 p-6">
                 <div className="flex items-center gap-2 text-xs font-semibold text-stone-500 uppercase tracking-wider mb-3">
                   <Clock className="w-3.5 h-3.5" />
-                  When we&rsquo;re in office
+                  {s?.contactHoursTitle ?? D.hoursTitle}
                 </div>
                 <div className="space-y-2 text-sm text-stone-700">
                   <div className="flex justify-between">
-                    <span>Monday – Saturday</span>
-                    <span className="font-medium">9:00am – 6:00pm</span>
+                    <span>{weekdays.label}</span>
+                    <span className="font-medium">{weekdays.value}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Sunday</span>
-                    <span className="font-medium">10:00am – 2:00pm</span>
+                    <span>{sunday.label}</span>
+                    <span className="font-medium">{sunday.value}</span>
                   </div>
                   <p className="text-xs text-stone-500 pt-2 leading-relaxed">
-                    Site visits on Sunday are by prior appointment only — call
-                    ahead so a project advisor is at the site to walk you
-                    through.
+                    {s?.contactHoursNote ?? D.hoursNote}
                   </p>
                 </div>
               </div>
@@ -146,11 +178,10 @@ export default async function ContactPage() {
             <div className="lg:col-span-2">
               <div className="bg-stone-50 rounded-2xl border border-stone-200 p-6 md:p-8">
                 <h2 className="text-2xl font-bold text-stone-900 mb-2 tracking-tight">
-                  Send us an enquiry
+                  {s?.contactFormTitle ?? D.formTitle}
                 </h2>
                 <p className="text-stone-600 text-sm mb-6 max-w-lg">
-                  Two fields are required — your name and your number. The
-                  rest help us route the call to the right project advisor.
+                  {s?.contactFormIntro ?? D.formIntro}
                 </p>
                 <EnquiryForm source="contact-page" />
               </div>

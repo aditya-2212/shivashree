@@ -15,10 +15,8 @@ export default async function SettingsPage() {
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-stone-900">Site settings</h1>
         <p className="text-stone-500 text-sm mt-1">
-          The single source of truth for the phone numbers, addresses, social
-          links and the corporate-office Google Maps embed shown on the public
-          website. Change something here and it updates everywhere — footer,
-          contact page, WhatsApp button.
+          Contact info, social links, footer text, and the full page copy for the
+          Contact and About pages. Changes go live on the website immediately after saving.
         </p>
       </div>
       <SiteSettingsForm initialData={settings} />

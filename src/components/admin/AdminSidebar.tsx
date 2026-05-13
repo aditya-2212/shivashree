@@ -13,6 +13,7 @@ import {
   Settings,
   LogOut,
   ExternalLink,
+  ImagePlay,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -24,6 +25,7 @@ import { cn } from "@/lib/utils";
 */
 const navItems = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/hero-slides", label: "Homepage hero", icon: ImagePlay },
   { href: "/admin/properties", label: "Projects", icon: Building2 },
   { href: "/admin/blog", label: "Notes & guides", icon: FileText },
   { href: "/admin/faqs", label: "FAQs", icon: HelpCircle },
