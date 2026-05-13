@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import EnquiryForm from "@/components/public/EnquiryForm";
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "About Shivashree Developers | Trusted Builders in Kumbakonam & Chennai",

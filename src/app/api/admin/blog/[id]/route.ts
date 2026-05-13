@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { estimateReadTime } from "@/lib/utils";
+import { revalidatePath } from "next/cache";
 
 interface Params {
   params: Promise<{ id: string }>;
@@ -32,6 +33,9 @@ export async function PUT(req: NextRequest, { params }: Params) {
         publishedAt: isPublished ? (publishedAt ? new Date(publishedAt) : new Date()) : null,
       },
     });
+
+    revalidatePath("/resources/blog");
+    if (post.slug) revalidatePath(`/resources/blog/${post.slug}`);
 
     return NextResponse.json(post);
   } catch (error) {

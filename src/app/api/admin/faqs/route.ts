@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -17,6 +18,7 @@ export async function POST(req: NextRequest) {
         sortOrder: body.sortOrder ?? 0,
       },
     });
+    revalidatePath("/resources/faqs");
     return NextResponse.json(faq, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Failed to create FAQ" }, { status: 500 });

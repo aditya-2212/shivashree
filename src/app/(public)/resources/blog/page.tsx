@@ -5,6 +5,8 @@ import { Calendar, Clock, User, ArrowRight } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import type { Metadata } from "next";
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: "Real Estate Blog | Apartments in Kumbakonam & Chennai Insights",
   description:

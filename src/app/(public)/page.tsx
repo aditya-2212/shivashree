@@ -14,6 +14,8 @@ import {
 import { formatPrice, parseJsonField } from "@/lib/utils";
 import type { Metadata } from "next";
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title:
     "Luxury 2 & 3 BHK Apartments for sale in Kumbakonam & Chennai | Shivashree Developers",

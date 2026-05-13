@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { revalidateTag, revalidatePath } from "next/cache";
 
 interface Params {
   params: Promise<{ id: string }>;
@@ -19,6 +20,11 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       where: { id: parseInt(id) },
       data: { isPublished },
     });
+
+    revalidateTag("properties");
+    revalidatePath("/projects");
+    revalidatePath(`/projects/${property.slug}`);
+
     return NextResponse.json(property);
   } catch {
     return NextResponse.json({ error: "Failed to update" }, { status: 500 });

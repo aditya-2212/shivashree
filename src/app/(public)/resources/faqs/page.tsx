@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import StructuredData, { faqSchema } from "@/components/StructuredData";
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Real Estate FAQs | Buying Apartments in Kumbakonam & Chennai",

@@ -13,12 +13,18 @@ import {
   ChevronRight,
 } from "lucide-react";
 import type { Metadata } from "next";
+import { getPublishedSlugs } from "@/lib/data";
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
-export const revalidate = 300;
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const slugs = await getPublishedSlugs();
+  return slugs.map((p) => ({ slug: p.slug }));
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;

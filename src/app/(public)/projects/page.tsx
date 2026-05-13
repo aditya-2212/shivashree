@@ -5,6 +5,8 @@ import { formatPrice, parseJsonField } from "@/lib/utils";
 import type { Metadata } from "next";
 import StructuredData, { faqSchema } from "@/components/StructuredData";
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: "Ongoing Residential Projects in Kumbakonam | 2 & 3 BHK Apartments for Sale",
   description:

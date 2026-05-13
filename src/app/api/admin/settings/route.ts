@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { revalidateTag, revalidatePath } from "next/cache";
 
 export async function GET() {
   const settings = await prisma.siteSettings.findUnique({ where: { id: 1 } });
@@ -19,6 +20,13 @@ export async function PUT(req: NextRequest) {
       update: body,
       create: { id: 1, ...body },
     });
+
+    revalidateTag("settings");
+    revalidatePath("/");
+    revalidatePath("/about");
+    revalidatePath("/contact");
+    revalidatePath("/projects");
+
     return NextResponse.json(settings);
   } catch (error) {
     console.error("Settings update error:", error);

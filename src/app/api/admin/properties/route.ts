@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/utils";
+import { revalidateTag, revalidatePath } from "next/cache";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -118,6 +119,10 @@ export async function POST(req: NextRequest) {
         },
       },
     });
+
+    revalidateTag("properties");
+    revalidatePath("/projects");
+    revalidatePath(`/projects/${property.slug}`);
 
     return NextResponse.json(property, { status: 201 });
   } catch (error) {

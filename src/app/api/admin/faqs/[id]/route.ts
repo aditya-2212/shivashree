@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 interface Params {
   params: Promise<{ id: string }>;
@@ -19,6 +20,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
       where: { id: parseInt(id) },
       data: { question, answer, sortOrder },
     });
+    revalidatePath("/resources/faqs");
     return NextResponse.json(faq);
   } catch {
     return NextResponse.json({ error: "Failed to update FAQ" }, { status: 500 });
@@ -32,6 +34,7 @@ export async function DELETE(_: NextRequest, { params }: Params) {
   const { id } = await params;
   try {
     await prisma.fAQEntry.delete({ where: { id: parseInt(id) } });
+    revalidatePath("/resources/faqs");
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: "Failed to delete FAQ" }, { status: 500 });

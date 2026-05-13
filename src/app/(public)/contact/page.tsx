@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import EnquiryForm from "@/components/public/EnquiryForm";
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 const D = {
   metaTitle: "Contact Shivashree Developers | Apartments in Kumbakonam & Chennai",
