@@ -114,7 +114,7 @@ export default function HeroSection({ slides, whatsappNumber }: Props) {
       <div className="absolute inset-0 hero-overlay" />
 
       {/* Content */}
-      <div className="relative z-10 h-full min-h-[80vh] md:min-h-[88vh] flex items-center pt-24 pb-16">
+      <div className="relative z-10 h-full min-h-[80vh] md:min-h-[88vh] flex items-center pt-36 pb-16">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full">
           <div className="max-w-2xl">
             <div
