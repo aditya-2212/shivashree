@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getSettings } from "@/lib/data";
 import HeroSection from "@/components/public/HeroSection";
 import EnquiryForm from "@/components/public/EnquiryForm";
 import StructuredData, { organizationSchema, faqSchema } from "@/components/StructuredData";
