@@ -59,7 +59,8 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
   const transparent = isHome && !scrolled;
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
+    const onScroll = () =>
+      setScrolled(window.scrollY > window.innerHeight * 0.7);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -105,7 +106,7 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         transparent
-          ? "bg-gradient-to-b from-black/30 via-black/10 to-transparent"
+          ? "bg-gradient-to-b from-black/50 via-black/20 to-transparent"
           : "bg-white/95 backdrop-blur-md shadow-[0_1px_0_rgba(0,0,0,0.04)] border-b border-stone-200/80"
       )}
     >
