@@ -14,7 +14,7 @@ const schema = z.object({
   subheading: z.string().optional(),
   ctaLabel: z.string().min(1, "CTA label is required"),
   ctaUrl: z.string().min(1, "CTA URL is required"),
-  sortOrder: z.coerce.number().int().min(0),
+  sortOrder: z.number().int().min(0),
   isActive: z.boolean(),
 });
 
@@ -262,7 +262,7 @@ export default function HeroSlideForm({ mode, initialData }: Props) {
               Sort order
             </label>
             <input
-              {...register("sortOrder")}
+              {...register("sortOrder", { valueAsNumber: true })}
               type="number"
               min={0}
               className={inputClass}
