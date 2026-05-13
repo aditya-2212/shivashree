@@ -41,7 +41,7 @@ export default function Footer({ settings }: FooterProps) {
             </div>
             <p className="text-stone-300 text-sm leading-relaxed mb-5">
               A Kumbakonam-rooted developer building RERA-registered residential
-              apartments in Kumbakonam and Chennai since 2000.
+              apartments in Kumbakonam and Chennai.
             </p>
             <div className="flex gap-3">
               {settings?.facebookUrl && (

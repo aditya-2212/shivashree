@@ -20,7 +20,27 @@ export const metadata: Metadata = {
     "Shivashree Developers builds RERA-registered 2 & 3 BHK apartments in Kumbakonam and Chennai. See projects that are now selling, coming soon, and ready to move in.",
 };
 
-const statusBadge = {
+const D = {
+  projectsEyebrow: "Discover Your Dream With Us",
+  projectsHeading: "Step Into Excellence with Shivashree Developers — Where Dreams Find a Home",
+  projectsSubheading:
+    "For over a decade, we have been creating exceptional apartments in Kumbakonam, blending quality, dedication, reliability, and excellence. Known for transforming plots into stunning homes, we\u2019ve earned a solid reputation as a trusted property developer.",
+  whyEyebrow: "Why Us?",
+  whyHeading: "Crafting Spaces with Care and Precision",
+  card1Title: "A Legacy of Trust, A Decade of Expertise",
+  card1Body:
+    "For over a decade, Shivashree Developers has been a trusted name in real estate, delivering exceptional service with integrity. We offer tailored solutions, ensuring a seamless experience for first-time buyers and seasoned investors alike.",
+  card2Title: "Building Trust, Delivering Excellence",
+  card2Body:
+    "Trust and excellence define everything we do. We take pride in delivering high-quality homes that embody comfort, value, and reliability. Whether buying or investing, count on us to make your real estate journey seamless and rewarding.",
+  card3Title: "Creating Spaces with Diligence and Precision",
+  card3Body:
+    "Every space we build is planned carefully and designed thoughtfully to meet high standards. From the foundation to the finishing touches, we focus on creating homes that are comfortable, long-lasting, and full of value.",
+  ctaEyebrow: "Enquire Now",
+  ctaHeading: "At the heart of our work is a commitment to customer satisfaction.",
+  ctaBody:
+    "Your dream home isn\u2019t just built \u2014 it\u2019s brought to life. Tell us your name and number and we\u2019ll call you back to find the right home for you.",
+};
   PROPOSED: {
     label: "Coming Soon",
     chip: "bg-brand-blue-50 text-brand-blue-700 border-brand-blue-100",
@@ -76,7 +96,7 @@ export default async function HomePage() {
               imageUrl: fallbackHero.heroImage,
               overlayHeading: "Apartments in Kumbakonam & Chennai\nBuilt by people who live here.",
               subheading:
-                "Shivashree Developers — TNRERA-registered 2 & 3 BHK homes since 2000.",
+                "Shivashree Developers — TNRERA-registered 2 & 3 BHK homes.",
               ctaLabel: "See current projects",
               ctaUrl: "/projects",
             },
@@ -98,16 +118,13 @@ export default async function HomePage() {
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
             <div className="max-w-xl">
               <p className="text-brand-purple-600 font-semibold text-sm uppercase tracking-widest mb-2">
-                Discover Your Dream With Us
+                {settings?.homeProjectsEyebrow ?? D.projectsEyebrow}
               </p>
               <h2 className="text-3xl md:text-4xl font-bold text-stone-900 leading-tight">
-                Step Into Excellence with Shivashree Developers — Where Dreams Find a Home
+                {settings?.homeProjectsHeading ?? D.projectsHeading}
               </h2>
               <p className="text-stone-600 mt-3 text-base leading-relaxed">
-                For over a decade, we have been creating exceptional apartments in
-                Kumbakonam, blending quality, dedication, reliability, and excellence.
-                Known for transforming plots into stunning homes, we&rsquo;ve earned a
-                solid reputation as a trusted property developer.
+                {settings?.homeProjectsSubheading ?? D.projectsSubheading}
               </p>
             </div>
             <Link
@@ -253,52 +270,55 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-2xl mb-12">
             <p className="text-brand-blue-600 font-semibold text-sm uppercase tracking-widest mb-2">
-              Why Us?
+              {settings?.homeWhyEyebrow ?? D.whyEyebrow}
             </p>
             <h2 className="text-3xl md:text-4xl font-bold text-stone-900 leading-tight">
-              Crafting Spaces with Care and Precision
+              {settings?.homeWhyHeading ?? D.whyHeading}
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <ShieldCheck className="w-8 h-8 text-brand-purple-600 mb-4" />
-              <h3 className="font-bold text-stone-900 text-lg mb-2">
-                A Legacy of Trust, A Decade of Expertise
-              </h3>
-              <p className="text-stone-600 text-sm leading-relaxed">
-                For over a decade, Shivashree Developers has been a trusted name in
-                real estate, delivering exceptional service with integrity. We offer
-                tailored solutions, ensuring a seamless experience for first-time
-                buyers and seasoned investors alike.
-              </p>
-            </div>
-
-            <div>
-              <Hammer className="w-8 h-8 text-brand-purple-600 mb-4" />
-              <h3 className="font-bold text-stone-900 text-lg mb-2">
-                Building Trust, Delivering Excellence
-              </h3>
-              <p className="text-stone-600 text-sm leading-relaxed">
-                Trust and excellence define everything we do. We take pride in
-                delivering high-quality homes that embody comfort, value, and
-                reliability. Whether buying or investing, count on us to make your
-                real estate journey seamless and rewarding.
-              </p>
-            </div>
-
-            <div>
-              <Phone className="w-8 h-8 text-brand-purple-600 mb-4" />
-              <h3 className="font-bold text-stone-900 text-lg mb-2">
-                Creating Spaces with Diligence and Precision
-              </h3>
-              <p className="text-stone-600 text-sm leading-relaxed">
-                Every space we build is planned carefully and designed thoughtfully
-                to meet high standards. From the foundation to the finishing
-                touches, we focus on creating homes that are comfortable,
-                long-lasting, and full of value.
-              </p>
-            </div>
+            {[
+              {
+                icon: ShieldCheck,
+                title: settings?.homeCard1Title ?? D.card1Title,
+                body: settings?.homeCard1Body ?? D.card1Body,
+                image: settings?.homeCard1Image,
+              },
+              {
+                icon: Hammer,
+                title: settings?.homeCard2Title ?? D.card2Title,
+                body: settings?.homeCard2Body ?? D.card2Body,
+                image: settings?.homeCard2Image,
+              },
+              {
+                icon: Phone,
+                title: settings?.homeCard3Title ?? D.card3Title,
+                body: settings?.homeCard3Body ?? D.card3Body,
+                image: settings?.homeCard3Image,
+              },
+            ].map(({ icon: Icon, title, body, image }) => (
+              <div key={title} className="flex flex-col rounded-2xl overflow-hidden border border-stone-200 bg-white shadow-sm">
+                {image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={image}
+                    alt={title}
+                    className="w-full h-48 object-cover"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="w-full h-48 bg-brand-purple-50 flex items-center justify-center">
+                    <Icon className="w-12 h-12 text-brand-purple-200" />
+                  </div>
+                )}
+                <div className="p-6 flex flex-col flex-1">
+                  <Icon className="w-7 h-7 text-brand-purple-600 mb-3 shrink-0" />
+                  <h3 className="font-bold text-stone-900 text-lg mb-2">{title}</h3>
+                  <p className="text-stone-600 text-sm leading-relaxed">{body}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -312,15 +332,13 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-6">
               <p className="text-brand-blue-200 font-semibold text-sm uppercase tracking-widest mb-3">
-                Enquire Now
+                {settings?.homeCtaEyebrow ?? D.ctaEyebrow}
               </p>
               <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-4">
-                At the heart of our work is a commitment to customer satisfaction.
+                {settings?.homeCtaHeading ?? D.ctaHeading}
               </h2>
               <p className="text-white/80 text-lg leading-relaxed mb-6">
-                Your dream home isn&rsquo;t just built — it&rsquo;s brought to life.
-                Tell us your name and number and we&rsquo;ll call you back to find
-                the right home for you.
+                {settings?.homeCtaBody ?? D.ctaBody}
               </p>
               {settings?.corporateOfficePhone && (
                 <p className="text-white/60 text-sm">

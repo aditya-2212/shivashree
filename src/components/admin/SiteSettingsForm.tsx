@@ -3,9 +3,9 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import toast from "react-hot-toast";
-import { Save, Loader2 } from "lucide-react";
+import { Save, Loader2, Upload, X } from "lucide-react";
 import RichTextEditor from "./RichTextEditor";
 
 const schema = z.object({
@@ -48,6 +48,21 @@ const schema = z.object({
   aboutWhereIntro: z.string().optional(),
   aboutCtaTitle: z.string().optional(),
   aboutCtaBody: z.string().optional(),
+  // Homepage
+  homeProjectsEyebrow: z.string().optional(),
+  homeProjectsHeading: z.string().optional(),
+  homeProjectsSubheading: z.string().optional(),
+  homeWhyEyebrow: z.string().optional(),
+  homeWhyHeading: z.string().optional(),
+  homeCard1Title: z.string().optional(),
+  homeCard1Body: z.string().optional(),
+  homeCard2Title: z.string().optional(),
+  homeCard2Body: z.string().optional(),
+  homeCard3Title: z.string().optional(),
+  homeCard3Body: z.string().optional(),
+  homeCtaEyebrow: z.string().optional(),
+  homeCtaHeading: z.string().optional(),
+  homeCtaBody: z.string().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -91,13 +106,62 @@ interface SiteSettingsData {
   aboutWhereIntro: string | null;
   aboutCtaTitle: string | null;
   aboutCtaBody: string | null;
+  homeProjectsEyebrow: string | null;
+  homeProjectsHeading: string | null;
+  homeProjectsSubheading: string | null;
+  homeWhyEyebrow: string | null;
+  homeWhyHeading: string | null;
+  homeCard1Title: string | null;
+  homeCard1Body: string | null;
+  homeCard1Image: string | null;
+  homeCard2Title: string | null;
+  homeCard2Body: string | null;
+  homeCard2Image: string | null;
+  homeCard3Title: string | null;
+  homeCard3Body: string | null;
+  homeCard3Image: string | null;
+  homeCtaEyebrow: string | null;
+  homeCtaHeading: string | null;
+  homeCtaBody: string | null;
 }
 
 export default function SiteSettingsForm({ initialData }: { initialData: SiteSettingsData | null }) {
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState<string | null>(null);
   const [aboutStoryBodyHtml, setAboutStoryBodyHtml] = useState(
     initialData?.aboutStoryBodyHtml ?? ""
   );
+  const [card1Image, setCard1Image] = useState<string | null>(initialData?.homeCard1Image ?? null);
+  const [card2Image, setCard2Image] = useState<string | null>(initialData?.homeCard2Image ?? null);
+  const [card3Image, setCard3Image] = useState<string | null>(initialData?.homeCard3Image ?? null);
+  const card1Ref = useRef<HTMLInputElement>(null);
+  const card2Ref = useRef<HTMLInputElement>(null);
+  const card3Ref = useRef<HTMLInputElement>(null);
+
+  const handleCardImageUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    slot: "1" | "2" | "3"
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(slot);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      if (slot === "1") setCard1Image(data.url);
+      else if (slot === "2") setCard2Image(data.url);
+      else setCard3Image(data.url);
+      toast.success("Image uploaded!");
+    } catch {
+      toast.error("Image upload failed");
+    } finally {
+      setUploading(null);
+      e.target.value = "";
+    }
+  };
 
   const {
     register,
@@ -143,13 +207,33 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
       aboutWhereIntro: initialData?.aboutWhereIntro ?? "",
       aboutCtaTitle: initialData?.aboutCtaTitle ?? "",
       aboutCtaBody: initialData?.aboutCtaBody ?? "",
+      homeProjectsEyebrow: initialData?.homeProjectsEyebrow ?? "",
+      homeProjectsHeading: initialData?.homeProjectsHeading ?? "",
+      homeProjectsSubheading: initialData?.homeProjectsSubheading ?? "",
+      homeWhyEyebrow: initialData?.homeWhyEyebrow ?? "",
+      homeWhyHeading: initialData?.homeWhyHeading ?? "",
+      homeCard1Title: initialData?.homeCard1Title ?? "",
+      homeCard1Body: initialData?.homeCard1Body ?? "",
+      homeCard2Title: initialData?.homeCard2Title ?? "",
+      homeCard2Body: initialData?.homeCard2Body ?? "",
+      homeCard3Title: initialData?.homeCard3Title ?? "",
+      homeCard3Body: initialData?.homeCard3Body ?? "",
+      homeCtaEyebrow: initialData?.homeCtaEyebrow ?? "",
+      homeCtaHeading: initialData?.homeCtaHeading ?? "",
+      homeCtaBody: initialData?.homeCtaBody ?? "",
     },
   });
 
   const onSubmit = async (data: FormData) => {
     setSaving(true);
     try {
-      const cleaned = { ...data, aboutStoryBodyHtml };
+      const cleaned = {
+        ...data,
+        aboutStoryBodyHtml,
+        homeCard1Image: card1Image,
+        homeCard2Image: card2Image,
+        homeCard3Image: card3Image,
+      };
       if (cleaned.corporateMapEmbedUrl) {
         const match = cleaned.corporateMapEmbedUrl.match(/src=["']([^"']+)["']/);
         if (match) cleaned.corporateMapEmbedUrl = match[1];
@@ -172,6 +256,57 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
   const inputClass =
     "w-full px-3.5 py-2.5 border border-stone-300 rounded-lg text-stone-900 text-sm placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-brand-purple-500 focus:border-transparent transition";
   const textareaClass = inputClass + " resize-none";
+
+  const ImageSlot = ({
+    label,
+    hint,
+    value,
+    onUpload,
+    onClear,
+    slotId,
+    inputRef,
+  }: {
+    label: string;
+    hint?: string;
+    value: string | null;
+    onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onClear: () => void;
+    slotId: string;
+    inputRef: React.RefObject<HTMLInputElement>;
+  }) => (
+    <div>
+      <label className="block text-sm font-medium text-stone-700 mb-1.5">{label}</label>
+      {hint && <p className="text-stone-400 text-xs mb-2">{hint}</p>}
+      <input ref={inputRef} type="file" accept="image/*" onChange={onUpload} className="hidden" />
+      {value ? (
+        <div className="relative w-full max-w-xs rounded-xl overflow-hidden border border-stone-200">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={value} alt={label} className="w-full h-36 object-cover" />
+          <button
+            type="button"
+            onClick={onClear}
+            className="absolute top-2 right-2 bg-red-600 text-white rounded-full w-7 h-7 flex items-center justify-center shadow hover:bg-red-700 transition"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          disabled={uploading === slotId}
+          className="flex items-center gap-2 px-4 py-2.5 border-2 border-dashed border-stone-300 rounded-xl text-stone-500 hover:border-brand-purple-400 hover:text-brand-purple-600 transition text-sm disabled:opacity-60"
+        >
+          {uploading === slotId ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Upload className="w-4 h-4" />
+          )}
+          Upload image
+        </button>
+      )}
+    </div>
+  );
 
   const Section = ({
     title,
@@ -507,6 +642,172 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
             rows={3}
             className={textareaClass}
             placeholder="Whether you're a first-time buyer, an NRI investor…"
+          />
+        </Field>
+      </Section>
+
+      {/* ── Homepage — projects section ──────────────────────────────────── */}
+      <Section
+        title="Homepage — projects section"
+        description="The eyebrow, heading and intro above the project cards on the homepage. Leave blank to use defaults."
+      >
+        <Field label="Eyebrow (small caps label)" hint='e.g. "Discover Your Dream With Us"'>
+          <input
+            {...register("homeProjectsEyebrow")}
+            className={inputClass}
+            placeholder="Discover Your Dream With Us"
+          />
+        </Field>
+        <Field label="Heading">
+          <input
+            {...register("homeProjectsHeading")}
+            className={inputClass}
+            placeholder="Step Into Excellence with Shivashree Developers — Where Dreams Find a Home"
+          />
+        </Field>
+        <Field label="Subheading / intro paragraph">
+          <textarea
+            {...register("homeProjectsSubheading")}
+            rows={3}
+            className={textareaClass}
+            placeholder="For over a decade, we have been creating exceptional apartments…"
+          />
+        </Field>
+      </Section>
+
+      {/* ── Homepage — Why Us section ────────────────────────────────────── */}
+      <Section
+        title='Homepage — "Why Us?" section'
+        description='The three feature cards with images. Each card has a title, body and an uploadable photo.'
+      >
+        <Field label="Section eyebrow">
+          <input
+            {...register("homeWhyEyebrow")}
+            className={inputClass}
+            placeholder="Why Us?"
+          />
+        </Field>
+        <Field label="Section heading">
+          <input
+            {...register("homeWhyHeading")}
+            className={inputClass}
+            placeholder="Crafting Spaces with Care and Precision"
+          />
+        </Field>
+
+        {/* Card 1 */}
+        <div className="border border-stone-200 rounded-xl p-4 space-y-4 bg-stone-50">
+          <p className="text-xs font-bold text-brand-purple-700 uppercase tracking-wide">Card 1</p>
+          <Field label="Title">
+            <input
+              {...register("homeCard1Title")}
+              className={inputClass}
+              placeholder="A Legacy of Trust, A Decade of Expertise"
+            />
+          </Field>
+          <Field label="Body text">
+            <textarea
+              {...register("homeCard1Body")}
+              rows={3}
+              className={textareaClass}
+              placeholder="For over a decade, Shivashree Developers has been a trusted name…"
+            />
+          </Field>
+          <ImageSlot
+            label="Card image"
+            hint="Recommended: landscape photo, at least 800×500 px."
+            value={card1Image}
+            onUpload={(e) => handleCardImageUpload(e, "1")}
+            onClear={() => setCard1Image(null)}
+            slotId="1"
+            inputRef={card1Ref}
+          />
+        </div>
+
+        {/* Card 2 */}
+        <div className="border border-stone-200 rounded-xl p-4 space-y-4 bg-stone-50">
+          <p className="text-xs font-bold text-brand-purple-700 uppercase tracking-wide">Card 2</p>
+          <Field label="Title">
+            <input
+              {...register("homeCard2Title")}
+              className={inputClass}
+              placeholder="Building Trust, Delivering Excellence"
+            />
+          </Field>
+          <Field label="Body text">
+            <textarea
+              {...register("homeCard2Body")}
+              rows={3}
+              className={textareaClass}
+              placeholder="Trust and excellence define everything we do…"
+            />
+          </Field>
+          <ImageSlot
+            label="Card image"
+            hint="Recommended: landscape photo, at least 800×500 px."
+            value={card2Image}
+            onUpload={(e) => handleCardImageUpload(e, "2")}
+            onClear={() => setCard2Image(null)}
+            slotId="2"
+            inputRef={card2Ref}
+          />
+        </div>
+
+        {/* Card 3 */}
+        <div className="border border-stone-200 rounded-xl p-4 space-y-4 bg-stone-50">
+          <p className="text-xs font-bold text-brand-purple-700 uppercase tracking-wide">Card 3</p>
+          <Field label="Title">
+            <input
+              {...register("homeCard3Title")}
+              className={inputClass}
+              placeholder="Creating Spaces with Diligence and Precision"
+            />
+          </Field>
+          <Field label="Body text">
+            <textarea
+              {...register("homeCard3Body")}
+              rows={3}
+              className={textareaClass}
+              placeholder="Every space we build is planned carefully…"
+            />
+          </Field>
+          <ImageSlot
+            label="Card image"
+            hint="Recommended: landscape photo, at least 800×500 px."
+            value={card3Image}
+            onUpload={(e) => handleCardImageUpload(e, "3")}
+            onClear={() => setCard3Image(null)}
+            slotId="3"
+            inputRef={card3Ref}
+          />
+        </div>
+      </Section>
+
+      {/* ── Homepage — CTA section ───────────────────────────────────────── */}
+      <Section
+        title="Homepage — CTA / enquiry section"
+        description="The dark purple section with the enquiry form at the bottom of the homepage."
+      >
+        <Field label="Eyebrow">
+          <input
+            {...register("homeCtaEyebrow")}
+            className={inputClass}
+            placeholder="Enquire Now"
+          />
+        </Field>
+        <Field label="Heading">
+          <input
+            {...register("homeCtaHeading")}
+            className={inputClass}
+            placeholder="At the heart of our work is a commitment to customer satisfaction."
+          />
+        </Field>
+        <Field label="Body text">
+          <textarea
+            {...register("homeCtaBody")}
+            rows={3}
+            className={textareaClass}
+            placeholder="Your dream home isn't just built — it's brought to life…"
           />
         </Field>
       </Section>

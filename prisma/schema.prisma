@@ -232,6 +232,25 @@ model SiteSettings {
   aboutCtaTitle            String?
   aboutCtaBody             String? @db.Text
 
+  // ─── Homepage copy ────────────────────────────────────────────────────────────
+  homeProjectsEyebrow      String?
+  homeProjectsHeading      String? @db.Text
+  homeProjectsSubheading   String? @db.Text
+  homeWhyEyebrow           String?
+  homeWhyHeading           String? @db.Text
+  homeCard1Title           String?
+  homeCard1Body            String? @db.Text
+  homeCard1Image           String?
+  homeCard2Title           String?
+  homeCard2Body            String? @db.Text
+  homeCard2Image           String?
+  homeCard3Title           String?
+  homeCard3Body            String? @db.Text
+  homeCard3Image           String?
+  homeCtaEyebrow           String?
+  homeCtaHeading           String? @db.Text
+  homeCtaBody              String? @db.Text
+
   updatedAt             DateTime @updatedAt
 
   @@map("site_settings")

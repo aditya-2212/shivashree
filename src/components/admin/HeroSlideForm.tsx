@@ -218,7 +218,7 @@ export default function HeroSlideForm({ mode, initialData }: Props) {
             <input
               {...register("subheading")}
               className={inputClass}
-              placeholder="e.g. TNRERA-registered 2 & 3 BHK homes since 2000."
+              placeholder="e.g. TNRERA-registered 2 & 3 BHK homes."
             />
           </div>
         </div>

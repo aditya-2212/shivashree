@@ -9,11 +9,11 @@ export const dynamic = "force-dynamic";
 const D = {
   metaTitle: "About — Shivashree Developers",
   metaDescription:
-    "Shivashree Developers has built apartments in Kumbakonam since 2000 and now in Chennai. We're a small team — a single builder, a single point of contact, no franchised offices.",
+    "Shivashree Developers builds RERA-registered apartments in Kumbakonam and Chennai. We're a small team — a single builder, a single point of contact, no franchised offices.",
   heroEyebrow: "About Shivashree Developers",
   heroTitle: "A Kumbakonam builder.\nNow also in Chennai.",
   heroLead:
-    "We started in 2000 with a small G+3 in Kumbakonam. Twenty-five years later we're still building apartments — just two cities now, the same family running it, and the same engineer signing off on every slab.",
+    "We started with a small G+3 in Kumbakonam. Years later we're still building apartments — just two cities now, the same family running it, and the same engineer signing off on every slab.",
   storyTitle: "Why we still build only here.",
   storyBodyHtml: `<p>Kumbakonam is home. We grew up walking the lanes off Bakthapuri Street and Dabeer Street, and our first project — a small, eight-unit building near the Adi Kumbeswarar temple — was sold to families our parents knew personally. That accountability still defines how we work.</p><p>We expanded to Chennai in the 2010s because too many of our Kumbakonam buyers were sending their adult children there for jobs and asking us to build the same way in the city. We took one site at a time, hired a Chennai-based site engineer who reports to the same office, and refused to franchise.</p><p>We don't bid on government tenders, we don't do joint ventures with land aggregators, and we don't pretend to be a national brand. The math is simple — build fewer projects, finish them on time, hand them over without a punch list of complaints.</p>`,
   commitmentsTitle: "What you can hold us to.",
@@ -110,7 +110,7 @@ export default async function AboutPage() {
               <p className="text-3xl md:text-4xl font-bold text-brand-purple-700 leading-none">
                 25
               </p>
-              <p className="text-stone-500 text-sm mt-2">years building since 2000</p>
+              <p className="text-stone-500 text-sm mt-2">years of experience</p>
             </div>
             <div>
               <p className="text-3xl md:text-4xl font-bold text-brand-purple-700 leading-none">
