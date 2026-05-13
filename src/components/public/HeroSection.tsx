@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Slide {
@@ -114,7 +113,7 @@ export default function HeroSection({ slides, whatsappNumber }: Props) {
       <div className="absolute inset-0 hero-overlay" />
 
       {/* Content */}
-      <div className="relative z-10 h-full min-h-[80vh] md:min-h-[88vh] flex items-center pt-36 pb-16">
+      <div className="relative z-30 h-full min-h-[80vh] md:min-h-[88vh] flex items-center pt-36 pb-16">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full">
           <div className="max-w-2xl">
             <div
@@ -161,25 +160,21 @@ export default function HeroSection({ slides, whatsappNumber }: Props) {
         </div>
       </div>
 
-      {/* Slide controls only when we have more than one slide */}
+      {/* Invisible click zones for left/right navigation — no visible arrows */}
       {slides.length > 1 && (
         <>
           <button
             onClick={() => goTo((current - 1 + slides.length) % slides.length)}
-            className="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 bg-white/15 hover:bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition"
+            className="absolute left-0 top-0 w-1/2 h-full z-20 cursor-w-resize"
             aria-label="Previous slide"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
+          />
           <button
             onClick={next}
-            className="absolute right-4 md:right-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 bg-white/15 hover:bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition"
+            className="absolute right-0 top-0 w-1/2 h-full z-20 cursor-e-resize"
             aria-label="Next slide"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
+          />
 
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-2">
             {slides.map((_, i) => (
               <button
                 key={i}
