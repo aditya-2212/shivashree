@@ -24,9 +24,12 @@ export const metadata: Metadata = {
     "3BHK Chennai",
     "RERA apartments Tamil Nadu",
   ],
-  metadataBase: new URL(
-    process.env.NEXTAUTH_URL ?? "https://shivashreedev.com"
-  ),
+  metadataBase: new URL("https://www.shivashreedevelopers.com"),
+  icons: {
+    icon: "/icon.png",
+    apple: "/icon.png",
+    shortcut: "/icon.png",
+  },
   openGraph: {
     type: "website",
     siteName: "Shivashree Developers",
