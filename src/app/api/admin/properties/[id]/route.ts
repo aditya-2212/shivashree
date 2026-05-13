@@ -128,7 +128,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
       },
     });
 
-    revalidateTag("properties");
+    revalidateTag("properties", "max");
     revalidatePath("/projects");
     revalidatePath(`/projects/${property.slug}`);
 

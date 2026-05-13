@@ -21,7 +21,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       data: { isPublished },
     });
 
-    revalidateTag("properties");
+    revalidateTag("properties", "max");
     revalidatePath("/projects");
     revalidatePath(`/projects/${property.slug}`);
 

@@ -21,7 +21,7 @@ export async function PUT(req: NextRequest) {
       create: { id: 1, ...body },
     });
 
-    revalidateTag("settings");
+    revalidateTag("settings", "max");
     revalidatePath("/");
     revalidatePath("/about");
     revalidatePath("/contact");

@@ -120,7 +120,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    revalidateTag("properties");
+    revalidateTag("properties", "max");
     revalidatePath("/projects");
     revalidatePath(`/projects/${property.slug}`);
 
