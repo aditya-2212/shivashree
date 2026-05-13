@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import toast from "react-hot-toast";
@@ -17,6 +17,61 @@ import {
   ImageIcon,
   Info,
   CheckSquare,
+  Shield,
+  Zap,
+  Car,
+  Droplets,
+  TreePine,
+  Cctv,
+  Trash2,
+  Wifi,
+  Dumbbell,
+  Waves,
+  Baby,
+  Users,
+  Flame,
+  Accessibility,
+  Building2,
+  Lock,
+  Sun,
+  Wind,
+  Flower2,
+  Bus,
+  Bike,
+  Layers,
+  Wrench,
+  Phone,
+  Bell,
+  Star,
+  Coffee,
+  Utensils,
+  BookOpen,
+  Music,
+  Tv,
+  Shirt,
+  Package,
+  Gamepad2,
+  ParkingSquare,
+  Footprints,
+  Mountain,
+  Bath,
+  ChefHat,
+  Sofa,
+  BedDouble,
+  HeartPulse,
+  Globe,
+  Landmark,
+  LampFloor,
+  PanelTop,
+  Sprout,
+  Fence,
+  Warehouse,
+  Camera,
+  PlugZap,
+  Thermometer,
+  GraduationCap,
+  ShoppingCart,
+  Church,
 } from "lucide-react";
 
 // ─── Schema ──────────────────────────────────────────────────────────────────
@@ -106,23 +161,204 @@ interface Props {
 const BHK_OPTIONS = ["1 BHK", "2 BHK", "3 BHK", "4 BHK", "Villa", "Plot"];
 
 const AMENITY_ICONS = [
-  { value: "shield-check", label: "Security" },
-  { value: "zap", label: "Power Backup" },
-  { value: "car", label: "Parking" },
-  { value: "droplets", label: "Water Supply" },
-  { value: "tree-pine", label: "Garden" },
-  { value: "cctv", label: "CCTV" },
-  { value: "trash-2", label: "Waste Mgmt" },
-  { value: "wifi", label: "WiFi" },
-  { value: "dumbbell", label: "Gym" },
-  { value: "waves", label: "Swimming Pool" },
-  { value: "baby", label: "Play Area" },
-  { value: "users", label: "Club House" },
-  { value: "flame", label: "Fire Safety" },
-  { value: "accessibility", label: "Lift" },
+  /* Security & Safety */
+  { value: "shield-check", label: "Security", group: "Security & Safety" },
+  { value: "lock", label: "Lock / Access Control", group: "Security & Safety" },
+  { value: "cctv", label: "CCTV", group: "Security & Safety" },
+  { value: "camera", label: "Camera", group: "Security & Safety" },
+  { value: "flame", label: "Fire Safety", group: "Security & Safety" },
+  { value: "bell", label: "Intercom / Alert", group: "Security & Safety" },
+  /* Power & Utilities */
+  { value: "zap", label: "Power Backup", group: "Utilities" },
+  { value: "plug-zap", label: "EV Charging", group: "Utilities" },
+  { value: "droplets", label: "Water Supply", group: "Utilities" },
+  { value: "thermometer", label: "AC / Climate Control", group: "Utilities" },
+  { value: "wind", label: "Ventilation", group: "Utilities" },
+  { value: "sun", label: "Solar Power", group: "Utilities" },
+  { value: "wifi", label: "WiFi / Broadband", group: "Utilities" },
+  /* Parking & Transport */
+  { value: "car", label: "Parking", group: "Parking & Transport" },
+  { value: "parking-square", label: "Covered Parking", group: "Parking & Transport" },
+  { value: "bus", label: "Bus Connectivity", group: "Parking & Transport" },
+  { value: "bike", label: "Bicycle Parking", group: "Parking & Transport" },
+  /* Outdoor & Nature */
+  { value: "tree-pine", label: "Garden / Landscaping", group: "Outdoor" },
+  { value: "flower2", label: "Flower Garden", group: "Outdoor" },
+  { value: "sprout", label: "Green Zone", group: "Outdoor" },
+  { value: "mountain", label: "View / Open Space", group: "Outdoor" },
+  { value: "footprints", label: "Walking Track", group: "Outdoor" },
+  { value: "fence", label: "Compound / Fencing", group: "Outdoor" },
+  /* Fitness & Recreation */
+  { value: "dumbbell", label: "Gym", group: "Fitness & Recreation" },
+  { value: "waves", label: "Swimming Pool", group: "Fitness & Recreation" },
+  { value: "baby", label: "Children's Play Area", group: "Fitness & Recreation" },
+  { value: "gamepad2", label: "Indoor Games", group: "Fitness & Recreation" },
+  { value: "heart-pulse", label: "Wellness / Spa", group: "Fitness & Recreation" },
+  /* Community & Social */
+  { value: "users", label: "Club House", group: "Community" },
+  { value: "sofa", label: "Community Hall / Lounge", group: "Community" },
+  { value: "coffee", label: "Café / Canteen", group: "Community" },
+  { value: "shopping-cart", label: "Mini Market", group: "Community" },
+  /* Building & Structure */
+  { value: "accessibility", label: "Lift / Elevator", group: "Building" },
+  { value: "building2", label: "Multi-storey", group: "Building" },
+  { value: "layers", label: "Stilt Floor", group: "Building" },
+  { value: "warehouse", label: "Store Room", group: "Building" },
+  { value: "landmark", label: "Landmark Location", group: "Building" },
+  /* Interiors */
+  { value: "bed-double", label: "Spacious Bedrooms", group: "Interiors" },
+  { value: "bath", label: "Premium Bathrooms", group: "Interiors" },
+  { value: "chef-hat", label: "Modular Kitchen", group: "Interiors" },
+  { value: "utensils", label: "Dining Area", group: "Interiors" },
+  { value: "lamp-floor", label: "Vastu Compliant", group: "Interiors" },
+  { value: "panel-top", label: "False Ceiling", group: "Interiors" },
+  /* Services & Maintenance */
+  { value: "trash-2", label: "Waste Management", group: "Services" },
+  { value: "wrench", label: "Maintenance Staff", group: "Services" },
+  { value: "package", label: "Package / Parcel Room", group: "Services" },
+  { value: "shirt", label: "Laundry Service", group: "Services" },
+  { value: "phone", label: "Concierge / Help Desk", group: "Services" },
+  /* Education & Lifestyle */
+  { value: "book-open", label: "Library / Reading Room", group: "Lifestyle" },
+  { value: "graduation-cap", label: "Near Schools", group: "Lifestyle" },
+  { value: "church", label: "Near Temple / Place of Worship", group: "Lifestyle" },
+  { value: "globe", label: "Smart Home Tech", group: "Lifestyle" },
+  { value: "map-pin", label: "Prime Location", group: "Lifestyle" },
+  { value: "star", label: "Premium / Luxury", group: "Lifestyle" },
+  { value: "music", label: "Amphitheatre", group: "Lifestyle" },
+  { value: "tv", label: "Home Theatre", group: "Lifestyle" },
 ];
 
-// ─── Section Wrapper ──────────────────────────────────────────────────────────
+// ─── Icon lookup map (mirrors AmenityIcon.tsx) ───────────────────────────────
+
+const ICON_COMPONENT_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  "shield-check": Shield, lock: Lock, cctv: Cctv, camera: Camera, flame: Flame, bell: Bell,
+  zap: Zap, "plug-zap": PlugZap, droplets: Droplets, thermometer: Thermometer,
+  wind: Wind, sun: Sun, wifi: Wifi,
+  car: Car, "parking-square": ParkingSquare, bus: Bus, bike: Bike,
+  "tree-pine": TreePine, flower2: Flower2, sprout: Sprout, mountain: Mountain,
+  footprints: Footprints, fence: Fence,
+  dumbbell: Dumbbell, waves: Waves, baby: Baby, gamepad2: Gamepad2, "heart-pulse": HeartPulse,
+  users: Users, sofa: Sofa, coffee: Coffee, "shopping-cart": ShoppingCart,
+  accessibility: Accessibility, building2: Building2, layers: Layers,
+  warehouse: Warehouse, landmark: Landmark,
+  "bed-double": BedDouble, bath: Bath, "chef-hat": ChefHat, utensils: Utensils,
+  "lamp-floor": LampFloor, "panel-top": PanelTop,
+  "trash-2": Trash2, wrench: Wrench, package: Package, shirt: Shirt, phone: Phone,
+  "book-open": BookOpen, "graduation-cap": GraduationCap, church: Church,
+  globe: Globe, "map-pin": MapPin, star: Star, music: Music, tv: Tv,
+};
+
+// ─── Visual icon picker component ─────────────────────────────────────────────
+
+function AmenityIconPicker({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const ref = useRef<HTMLDivElement>(null);
+
+  const filtered = search.trim()
+    ? AMENITY_ICONS.filter(
+        (ic) =>
+          ic.label.toLowerCase().includes(search.toLowerCase()) ||
+          ic.group.toLowerCase().includes(search.toLowerCase()) ||
+          ic.value.toLowerCase().includes(search.toLowerCase())
+      )
+    : AMENITY_ICONS;
+
+  const groups = Array.from(new Set(filtered.map((ic) => ic.group)));
+  const selected = AMENITY_ICONS.find((ic) => ic.value === value);
+  const SelectedIcon = value ? (ICON_COMPONENT_MAP[value] ?? Building2) : null;
+
+  // Close on outside click
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    if (open) document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex items-center gap-2 px-3 py-2.5 border border-stone-300 rounded-lg text-sm text-stone-700 hover:border-brand-purple-400 focus:outline-none focus:ring-2 focus:ring-brand-purple-500 transition min-w-[140px] bg-white"
+      >
+        {SelectedIcon ? (
+          <>
+            <SelectedIcon className="w-4 h-4 text-brand-purple-600 shrink-0" />
+            <span className="truncate max-w-[80px]">{selected?.label ?? value}</span>
+          </>
+        ) : (
+          <span className="text-stone-400">Select icon</span>
+        )}
+        <svg className="w-3 h-3 ml-auto text-stone-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+      </button>
+
+      {open && (
+        <div className="absolute top-full left-0 mt-1 z-50 bg-white border border-stone-200 rounded-xl shadow-2xl w-[340px] max-h-[400px] flex flex-col">
+          <div className="p-3 border-b border-stone-100">
+            <input
+              autoFocus
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search icons…"
+              className="w-full px-3 py-1.5 text-sm border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-purple-500"
+            />
+          </div>
+          <div className="overflow-y-auto flex-1 p-2">
+            {groups.length === 0 && (
+              <p className="text-stone-400 text-sm text-center py-6">No icons found</p>
+            )}
+            {groups.map((group) => (
+              <div key={group} className="mb-3">
+                <p className="text-[10px] font-semibold text-stone-400 uppercase tracking-wider px-1 mb-1">
+                  {group}
+                </p>
+                <div className="grid grid-cols-6 gap-1">
+                  {filtered
+                    .filter((ic) => ic.group === group)
+                    .map((ic) => {
+                      const Ic = ICON_COMPONENT_MAP[ic.value] ?? Building2;
+                      return (
+                        <button
+                          key={ic.value}
+                          type="button"
+                          title={ic.label}
+                          onClick={() => {
+                            onChange(ic.value);
+                            setOpen(false);
+                            setSearch("");
+                          }}
+                          className={`flex flex-col items-center justify-center p-1.5 rounded-lg transition text-[10px] gap-0.5 ${
+                            value === ic.value
+                              ? "bg-brand-purple-100 text-brand-purple-700 ring-1 ring-brand-purple-400"
+                              : "hover:bg-stone-100 text-stone-600"
+                          }`}
+                        >
+                          <Ic className="w-4 h-4" />
+                          <span className="truncate w-full text-center leading-tight">{ic.label.split(" ")[0]}</span>
+                        </button>
+                      );
+                    })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function FormSection({
   title,
@@ -713,18 +949,14 @@ export default function PropertyForm({ mode, initialData }: Props) {
           <Label>Amenities</Label>
           <div className="space-y-2">
             {amenityFields.map((field, i) => (
-              <div key={field.id} className="flex gap-2">
-                <select
-                  {...register(`amenities.${i}.icon`)}
-                  className="px-3 py-2.5 border border-stone-300 rounded-lg text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-brand-purple-500 w-40"
-                >
-                  <option value="">Select icon</option>
-                  {AMENITY_ICONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
+              <div key={field.id} className="flex gap-2 items-center">
+                <Controller
+                  control={control}
+                  name={`amenities.${i}.icon`}
+                  render={({ field: f }) => (
+                    <AmenityIconPicker value={f.value} onChange={f.onChange} />
+                  )}
+                />
                 <input
                   {...register(`amenities.${i}.label`)}
                   className={inputClass + " flex-1"}

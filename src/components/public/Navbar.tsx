@@ -110,7 +110,7 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
       )}
     >
       <nav className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-24">
           {/* Brand mark — uses the supplied logo at its natural aspect ratio */}
           <Link href="/" className="flex items-center gap-3 shrink-0" aria-label="Shivashree Developers — home">
             <span
@@ -122,10 +122,10 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
               <Image
                 src="/logo.png"
                 alt="Shivashree Developers"
-                width={160}
-                height={120}
+                width={200}
+                height={150}
                 priority
-                className="h-12 w-auto"
+                className="h-16 w-auto"
               />
             </span>
           </Link>

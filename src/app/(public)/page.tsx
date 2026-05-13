@@ -98,14 +98,16 @@ export default async function HomePage() {
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
             <div className="max-w-xl">
               <p className="text-brand-purple-600 font-semibold text-sm uppercase tracking-widest mb-2">
-                What we&rsquo;re building
+                Discover Your Dream With Us
               </p>
               <h2 className="text-3xl md:text-4xl font-bold text-stone-900 leading-tight">
-                Pick a project that fits where you want to live.
+                Step Into Excellence with Shivashree Developers — Where Dreams Find a Home
               </h2>
               <p className="text-stone-600 mt-3 text-base leading-relaxed">
-                Three live developments across Kumbakonam and Chennai —
-                each with its own RERA number, floor plan, and possession date.
+                For over a decade, we have been creating exceptional apartments in
+                Kumbakonam, blending quality, dedication, reliability, and excellence.
+                Known for transforming plots into stunning homes, we&rsquo;ve earned a
+                solid reputation as a trusted property developer.
               </p>
             </div>
             <Link
@@ -251,10 +253,10 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-2xl mb-12">
             <p className="text-brand-blue-600 font-semibold text-sm uppercase tracking-widest mb-2">
-              How we work
+              Why Us?
             </p>
             <h2 className="text-3xl md:text-4xl font-bold text-stone-900 leading-tight">
-              Three things we won&rsquo;t budge on.
+              Crafting Spaces with Care and Precision
             </h2>
           </div>
 
@@ -262,37 +264,39 @@ export default async function HomePage() {
             <div>
               <ShieldCheck className="w-8 h-8 text-brand-purple-600 mb-4" />
               <h3 className="font-bold text-stone-900 text-lg mb-2">
-                TNRERA registered before any sale
+                A Legacy of Trust, A Decade of Expertise
               </h3>
               <p className="text-stone-600 text-sm leading-relaxed">
-                Every project carries its TNRERA number publicly — printed on
-                the project page, the brochure, and the sale agreement. We
-                won&rsquo;t accept a booking without it.
+                For over a decade, Shivashree Developers has been a trusted name in
+                real estate, delivering exceptional service with integrity. We offer
+                tailored solutions, ensuring a seamless experience for first-time
+                buyers and seasoned investors alike.
               </p>
             </div>
 
             <div>
               <Hammer className="w-8 h-8 text-brand-purple-600 mb-4" />
               <h3 className="font-bold text-stone-900 text-lg mb-2">
-                Built to be lived in for 30 years
+                Building Trust, Delivering Excellence
               </h3>
               <p className="text-stone-600 text-sm leading-relaxed">
-                RCC framed structure, UPVC windows with mosquito mesh, granite
-                kitchen platforms, and country teak main doors are baseline —
-                not upgrades. The full specification list is on every project
-                page.
+                Trust and excellence define everything we do. We take pride in
+                delivering high-quality homes that embody comfort, value, and
+                reliability. Whether buying or investing, count on us to make your
+                real estate journey seamless and rewarding.
               </p>
             </div>
 
             <div>
               <Phone className="w-8 h-8 text-brand-purple-600 mb-4" />
               <h3 className="font-bold text-stone-900 text-lg mb-2">
-                One person handles your file
+                Creating Spaces with Diligence and Precision
               </h3>
               <p className="text-stone-600 text-sm leading-relaxed">
-                You won&rsquo;t be passed between four salespeople. The
-                advisor who walks you through the floor plan stays with you
-                until possession day — and is reachable on WhatsApp.
+                Every space we build is planned carefully and designed thoughtfully
+                to meet high standards. From the foundation to the finishing
+                touches, we focus on creating homes that are comfortable,
+                long-lasting, and full of value.
               </p>
             </div>
           </div>
@@ -308,16 +312,15 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-6">
               <p className="text-brand-blue-200 font-semibold text-sm uppercase tracking-widest mb-3">
-                Talk to us
+                Enquire Now
               </p>
               <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-4">
-                Two questions, a callback within the day.
+                At the heart of our work is a commitment to customer satisfaction.
               </h2>
               <p className="text-white/80 text-lg leading-relaxed mb-6">
-                Tell us your name and number. We&rsquo;ll call you back to
-                understand what you&rsquo;re looking for, and either send you
-                the right project brochure or — if nothing fits — say so
-                honestly.
+                Your dream home isn&rsquo;t just built — it&rsquo;s brought to life.
+                Tell us your name and number and we&rsquo;ll call you back to find
+                the right home for you.
               </p>
               {settings?.corporateOfficePhone && (
                 <p className="text-white/60 text-sm">
