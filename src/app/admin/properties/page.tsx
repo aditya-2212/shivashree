@@ -11,6 +11,7 @@ const statusConfig = {
   PROPOSED: { label: "Proposed", color: "bg-brand-blue-100 text-brand-blue-700" },
   ONGOING: { label: "Ongoing", color: "bg-brand-purple-100 text-brand-purple-700" },
   COMPLETED: { label: "Completed", color: "bg-emerald-100 text-emerald-700" },
+  SOLD_OUT: { label: "Sold Out", color: "bg-stone-100 text-stone-600" },
 };
 
 export default async function PropertiesPage() {
