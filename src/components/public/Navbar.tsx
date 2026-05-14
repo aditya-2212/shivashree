@@ -58,6 +58,11 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Re-evaluate scroll state on every route change (layout persists across nav).
+  useEffect(() => {
+    setScrolled(window.scrollY > window.innerHeight * 0.7);
+  }, [pathname]);
+
   const openProjects = () => {
     if (projectsTimer.current) clearTimeout(projectsTimer.current);
     setProjectsOpen(true);
