@@ -55,7 +55,7 @@ export default function HeroSlideForm({ mode, initialData }: Props) {
       eyebrow: initialData?.eyebrow ?? "",
       subheading: initialData?.subheading ?? "",
       ctaLabel: initialData?.ctaLabel ?? "View Projects",
-      ctaUrl: initialData?.ctaUrl ?? "/projects",
+      ctaUrl: initialData?.ctaUrl ?? "/contact",
       sortOrder: initialData?.sortOrder ?? 0,
       isActive: initialData?.isActive ?? true,
     },
@@ -243,7 +243,10 @@ export default function HeroSlideForm({ mode, initialData }: Props) {
             <label className="block text-sm font-medium text-stone-700 mb-1.5">
               Button URL <span className="text-red-500">*</span>
             </label>
-            <input {...register("ctaUrl")} className={inputClass} placeholder="/projects" />
+            <input {...register("ctaUrl")} className={inputClass} placeholder="/contact" />
+            <p className="text-stone-400 text-xs mt-1">
+              Use <code className="text-stone-600">/contact</code> for enquiry CTAs. Internal paths must match a real page.
+            </p>
             {errors.ctaUrl && (
               <p className="text-red-600 text-xs mt-1">{errors.ctaUrl.message}</p>
             )}

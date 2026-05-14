@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
         overlayHeading,
         subheading: subheading || null,
         ctaLabel: ctaLabel || "View Projects",
-        ctaUrl: ctaUrl || "/projects",
+        ctaUrl: (typeof ctaUrl === "string" && ctaUrl.trim()) || "/contact",
         sortOrder: sortOrder ?? 0,
         isActive: isActive ?? true,
       },

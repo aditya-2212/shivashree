@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import { getSettings } from "@/lib/data";
 import HeroSection from "@/components/public/HeroSection";
 import EnquiryForm from "@/components/public/EnquiryForm";
 import StructuredData, { organizationSchema, faqSchema } from "@/components/StructuredData";
@@ -14,6 +13,7 @@ import {
 } from "lucide-react";
 import { formatPrice, parseJsonField } from "@/lib/utils";
 import type { Metadata } from "next";
+import { homePageDefaults as D } from "@/lib/site-defaults";
 
 export const revalidate = 30;
 
@@ -22,28 +22,6 @@ export const metadata: Metadata = {
     "Luxury 2 & 3 BHK Apartments for sale in Kumbakonam & Chennai | Shivashree Developers",
   description:
     "Explore premium 2 & 3 BHK apartments in Kumbakonam and Chennai by Shivashree Developers. Modern amenities, prime locations, quality construction and affordable pricing. Book your dream home today.",
-};
-
-const D = {
-  projectsEyebrow: "Discover Your Dream With Us",
-  projectsHeading: "Step Into Excellence with Shivashree Developers — Where Dreams Find a Home",
-  projectsSubheading:
-    "For over a decade, we have been creating exceptional apartments in Kumbakonam, blending quality, dedication, reliability, and excellence. Known for transforming plots into stunning homes, we\u2019ve earned a solid reputation as a trusted property developer.",
-  whyEyebrow: "Why Us?",
-  whyHeading: "Crafting Spaces with Care and Precision",
-  card1Title: "A Legacy of Trust, A Decade of Expertise",
-  card1Body:
-    "For over a decade, Shivashree Developers has been a trusted name in real estate, delivering exceptional service with integrity. We offer tailored solutions, ensuring a seamless experience for first-time buyers and seasoned investors alike.",
-  card2Title: "Building Trust, Delivering Excellence",
-  card2Body:
-    "Trust and excellence define everything we do. We take pride in delivering high-quality homes that embody comfort, value, and reliability. Whether buying or investing, count on us to make your real estate journey seamless and rewarding.",
-  card3Title: "Creating Spaces with Diligence and Precision",
-  card3Body:
-    "Every space we build is planned carefully and designed thoughtfully to meet high standards. From the foundation to the finishing touches, we focus on creating homes that are comfortable, long-lasting, and full of value.",
-  ctaEyebrow: "Enquire Now",
-  ctaHeading: "At the heart of our work is a commitment to customer satisfaction.",
-  ctaBody:
-    "Your dream home isn\u2019t just built \u2014 it\u2019s brought to life. Tell us your name and number and we\u2019ll call you back to find the right home for you.",
 };
 
 const statusBadge = {
@@ -129,7 +107,7 @@ export default async function HomePage() {
       ])} />
 
       {/* Hero with property image background, sourced from CMS */}
-      <HeroSection slides={heroData} whatsappNumber={settings?.whatsappNumber} />
+      <HeroSection slides={heroData} />
 
       {/* Three project tiles laid out by status — the homepage is mostly here
           to send visitors straight to a relevant project, so we don't bury

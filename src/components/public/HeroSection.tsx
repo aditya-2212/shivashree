@@ -17,7 +17,6 @@ interface Slide {
 
 interface Props {
   slides: Slide[];
-  whatsappNumber?: string;
 }
 
 /*
@@ -33,7 +32,7 @@ interface Props {
   otherwise we get awkward letterboxing on a marketing surface. That is the
   reasonable interpretation we're going with.
 */
-export default function HeroSection({ slides, whatsappNumber }: Props) {
+export default function HeroSection({ slides }: Props) {
   const [current, setCurrent] = useState(0);
   const [transitioning, setTransitioning] = useState(false);
 
@@ -142,18 +141,6 @@ export default function HeroSection({ slides, whatsappNumber }: Props) {
                 >
                   {slide.ctaLabel}
                 </Link>
-                <a
-                  href={
-                    whatsappNumber
-                      ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-                          "Hi Shivashree, I'd like to schedule a site visit."
-                        )}`
-                      : "/contact"
-                  }
-                  className="inline-flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/30 text-white font-semibold px-7 py-3.5 rounded-xl transition text-base"
-                >
-                  Book a site visit
-                </a>
               </div>
             </div>
           </div>

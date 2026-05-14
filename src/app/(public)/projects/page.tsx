@@ -33,7 +33,7 @@ const sections = [
   {
     key: "COMPLETED" as const,
     label: "Delivered",
-    sub: "Possession-ready apartments. Site visits available year-round.",
+    sub: "Possession-ready apartments. Walkthroughs and handovers by appointment year-round.",
     anchorId: "completed",
     dot: "bg-emerald-500",
     chip: "bg-emerald-50 text-emerald-700 border-emerald-100",

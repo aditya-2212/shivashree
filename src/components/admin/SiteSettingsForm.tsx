@@ -7,6 +7,12 @@ import { useState, useRef } from "react";
 import toast from "react-hot-toast";
 import { Save, Loader2, Upload, X } from "lucide-react";
 import RichTextEditor from "./RichTextEditor";
+import {
+  contactPageDefaults,
+  homePageDefaults,
+  aboutPageDefaults,
+  truncateDefaultHint,
+} from "@/lib/site-defaults";
 
 const schema = z.object({
   corporateOfficeAddress: z.string().min(1, "Required"),
@@ -330,17 +336,28 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
     label,
     hint,
     error,
+    emptyDefault,
     children,
   }: {
     label: string;
     hint?: string;
     error?: string;
+    /** When the CMS field is blank, the public site uses this text — shown as a hint. */
+    emptyDefault?: string;
     children: React.ReactNode;
   }) => (
     <div>
       <label className="block text-sm font-medium text-stone-700 mb-1.5">{label}</label>
       {hint && <p className="text-stone-400 text-xs mb-2">{hint}</p>}
       {children}
+      {emptyDefault && (
+        <p
+          className="text-[11px] text-stone-500 mt-1.5 leading-snug"
+          title={emptyDefault}
+        >
+          If left empty: {truncateDefaultHint(emptyDefault)}
+        </p>
+      )}
       {error && <p className="text-red-600 text-xs mt-1">{error}</p>}
     </div>
   );
@@ -421,21 +438,21 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
         title="Contact page — hero"
         description="Controls the purple header section at the top of /contact. Leave blank to use the built-in default text."
       >
-        <Field label="Eyebrow" hint='Small label above the title, e.g. "Contact"'>
+        <Field label="Eyebrow" hint='Small label above the title, e.g. "Contact"' emptyDefault={contactPageDefaults.heroEyebrow}>
           <input
             {...register("contactHeroEyebrow")}
             className={inputClass}
             placeholder="Contact"
           />
         </Field>
-        <Field label="Page title">
+        <Field label="Page title" hint="Use a new line (Enter) to create a line break in the title." emptyDefault={contactPageDefaults.heroTitle}>
           <input
             {...register("contactHeroTitle")}
             className={inputClass}
             placeholder="Two offices, one team, real phones."
           />
         </Field>
-        <Field label="Intro paragraph">
+        <Field label="Intro paragraph" emptyDefault={contactPageDefaults.heroIntro}>
           <textarea
             {...register("contactHeroIntro")}
             rows={3}
@@ -450,14 +467,14 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
         description="Labels and copy for the office cards, hours box, and enquiry form."
       >
         <div className="grid grid-cols-2 gap-4">
-          <Field label="Corporate office card label">
+          <Field label="Corporate office card label" emptyDefault={contactPageDefaults.corporateLabel}>
             <input
               {...register("contactCorporateLabel")}
               className={inputClass}
               placeholder="Corporate office — Chennai"
             />
           </Field>
-          <Field label="Registered office card label">
+          <Field label="Registered office card label" emptyDefault={contactPageDefaults.registeredLabel}>
             <input
               {...register("contactRegisteredLabel")}
               className={inputClass}
@@ -465,7 +482,7 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
             />
           </Field>
         </div>
-        <Field label="Office hours box title">
+        <Field label="Office hours box title" emptyDefault={contactPageDefaults.hoursTitle}>
           <input
             {...register("contactHoursTitle")}
             className={inputClass}
@@ -476,6 +493,7 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
           <Field
             label="Weekdays line"
             hint='e.g. "Monday – Saturday · 9:00am – 6:00pm"'
+            emptyDefault={contactPageDefaults.hoursWeekdays}
           >
             <input
               {...register("contactHoursWeekdays")}
@@ -486,6 +504,7 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
           <Field
             label="Sunday line"
             hint='e.g. "Sunday · 10:00am – 2:00pm"'
+            emptyDefault={contactPageDefaults.hoursSunday}
           >
             <input
               {...register("contactHoursSunday")}
@@ -494,16 +513,16 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
             />
           </Field>
         </div>
-        <Field label="Hours note (small text below)">
+        <Field label="Hours note (small text below)" emptyDefault={contactPageDefaults.hoursNote}>
           <textarea
             {...register("contactHoursNote")}
             rows={2}
             className={textareaClass}
-            placeholder="Site visits on Sunday are by prior appointment only…"
+            placeholder="Sunday hours are limited — call ahead so an advisor is available when you arrive."
           />
         </Field>
         <div className="grid grid-cols-2 gap-4">
-          <Field label="Enquiry form title">
+          <Field label="Enquiry form title" emptyDefault={contactPageDefaults.formTitle}>
             <input
               {...register("contactFormTitle")}
               className={inputClass}
@@ -511,7 +530,7 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
             />
           </Field>
         </div>
-        <Field label="Enquiry form intro">
+        <Field label="Enquiry form intro" emptyDefault={contactPageDefaults.formIntro}>
           <textarea
             {...register("contactFormIntro")}
             rows={2}
@@ -526,14 +545,18 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
         title="About page — hero"
         description="Controls the purple header section at the top of /about. Leave blank to use the built-in default text."
       >
-        <Field label="Eyebrow">
+        <Field label="Eyebrow" emptyDefault={aboutPageDefaults.heroEyebrow}>
           <input
             {...register("aboutHeroEyebrow")}
             className={inputClass}
             placeholder="About Shivashree Developers"
           />
         </Field>
-        <Field label="Page title" hint="Use a new line (Enter) to create a line break in the heading.">
+        <Field
+          label="Page title"
+          hint="Use a new line (Enter) to create a line break in the heading."
+          emptyDefault={aboutPageDefaults.heroTitle}
+        >
           <textarea
             {...register("aboutHeroTitle")}
             rows={2}
@@ -541,7 +564,7 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
             placeholder={"A Kumbakonam builder.\nNow also in Chennai."}
           />
         </Field>
-        <Field label="Lead paragraph">
+        <Field label="Lead paragraph" emptyDefault={aboutPageDefaults.heroLead}>
           <textarea
             {...register("aboutHeroLead")}
             rows={3}
@@ -555,7 +578,7 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
         title="About page — story section"
         description='The prose body under "Why we still build only here." Supports rich text (bold, italic, links, etc.).'
       >
-        <Field label="Section title">
+        <Field label="Section title" emptyDefault={aboutPageDefaults.storyTitle}>
           <input
             {...register("aboutStoryTitle")}
             className={inputClass}
@@ -571,6 +594,12 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
             onChange={setAboutStoryBodyHtml}
             placeholder="Tell the company story here…"
           />
+          <p
+            className="text-[11px] text-stone-500 mt-1.5 leading-snug"
+            title="Optional rich text; the story block on /about is hidden until title or body is set."
+          >
+            Optional — the story block appears on /about only when title or body has content.
+          </p>
         </div>
       </Section>
 
@@ -578,7 +607,7 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
         title="About page — commitments"
         description='The three numbered items under "What you can hold us to."'
       >
-        <Field label="Section title">
+        <Field label="Section title" emptyDefault={aboutPageDefaults.commitmentsTitle}>
           <input
             {...register("aboutCommitmentsTitle")}
             className={inputClass}
@@ -587,17 +616,17 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
         </Field>
         {(
           [
-            { t: "aboutC1Title" as const, b: "aboutC1Body" as const, n: "01" },
-            { t: "aboutC2Title" as const, b: "aboutC2Body" as const, n: "02" },
-            { t: "aboutC3Title" as const, b: "aboutC3Body" as const, n: "03" },
+            { t: "aboutC1Title" as const, b: "aboutC1Body" as const, n: "01", dt: aboutPageDefaults.c1Title, db: aboutPageDefaults.c1Body },
+            { t: "aboutC2Title" as const, b: "aboutC2Body" as const, n: "02", dt: aboutPageDefaults.c2Title, db: aboutPageDefaults.c2Body },
+            { t: "aboutC3Title" as const, b: "aboutC3Body" as const, n: "03", dt: aboutPageDefaults.c3Title, db: aboutPageDefaults.c3Body },
           ]
-        ).map(({ t, b, n }) => (
+        ).map(({ t, b, n, dt, db }) => (
           <div key={n} className="border border-stone-200 rounded-lg p-4 space-y-3">
             <p className="text-xs font-bold text-brand-purple-700">{n}</p>
-            <Field label="Commitment title">
+            <Field label="Commitment title" emptyDefault={dt}>
               <input {...register(t)} className={inputClass} />
             </Field>
-            <Field label="Commitment body">
+            <Field label="Commitment body" emptyDefault={db}>
               <textarea {...register(b)} rows={3} className={textareaClass} />
             </Field>
           </div>
@@ -608,14 +637,14 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
         title="About page — where to find us"
         description='The office address section. Addresses come from the Corporate/Registered Office fields above.'
       >
-        <Field label="Section title">
+        <Field label="Section title" emptyDefault={aboutPageDefaults.whereTitle}>
           <input
             {...register("aboutWhereTitle")}
             className={inputClass}
             placeholder="Where to find us in person."
           />
         </Field>
-        <Field label="Section intro">
+        <Field label="Section intro" emptyDefault={aboutPageDefaults.whereIntro}>
           <textarea
             {...register("aboutWhereIntro")}
             rows={2}
@@ -629,14 +658,14 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
         title="About page — CTA section"
         description="The dark purple CTA block at the bottom of the About page."
       >
-        <Field label="CTA heading">
+        <Field label="CTA heading" emptyDefault={aboutPageDefaults.ctaTitle}>
           <input
             {...register("aboutCtaTitle")}
             className={inputClass}
             placeholder="Tell us what you're looking for."
           />
         </Field>
-        <Field label="CTA body text">
+        <Field label="CTA body text" emptyDefault={aboutPageDefaults.ctaBody}>
           <textarea
             {...register("aboutCtaBody")}
             rows={3}
@@ -651,21 +680,21 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
         title="Homepage — projects section"
         description="The eyebrow, heading and intro above the project cards on the homepage. Leave blank to use defaults."
       >
-        <Field label="Eyebrow (small caps label)" hint='e.g. "Discover Your Dream With Us"'>
+        <Field label="Eyebrow (small caps label)" hint='e.g. "Discover Your Dream With Us"' emptyDefault={homePageDefaults.projectsEyebrow}>
           <input
             {...register("homeProjectsEyebrow")}
             className={inputClass}
             placeholder="Discover Your Dream With Us"
           />
         </Field>
-        <Field label="Heading">
+        <Field label="Heading" emptyDefault={homePageDefaults.projectsHeading}>
           <input
             {...register("homeProjectsHeading")}
             className={inputClass}
             placeholder="Step Into Excellence with Shivashree Developers — Where Dreams Find a Home"
           />
         </Field>
-        <Field label="Subheading / intro paragraph">
+        <Field label="Subheading / intro paragraph" emptyDefault={homePageDefaults.projectsSubheading}>
           <textarea
             {...register("homeProjectsSubheading")}
             rows={3}
@@ -680,14 +709,14 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
         title='Homepage — "Why Us?" section'
         description='The three feature cards with images. Each card has a title, body and an uploadable photo.'
       >
-        <Field label="Section eyebrow">
+        <Field label="Section eyebrow" emptyDefault={homePageDefaults.whyEyebrow}>
           <input
             {...register("homeWhyEyebrow")}
             className={inputClass}
             placeholder="Why Us?"
           />
         </Field>
-        <Field label="Section heading">
+        <Field label="Section heading" emptyDefault={homePageDefaults.whyHeading}>
           <input
             {...register("homeWhyHeading")}
             className={inputClass}
@@ -698,14 +727,14 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
         {/* Card 1 */}
         <div className="border border-stone-200 rounded-xl p-4 space-y-4 bg-stone-50">
           <p className="text-xs font-bold text-brand-purple-700 uppercase tracking-wide">Card 1</p>
-          <Field label="Title">
+          <Field label="Title" emptyDefault={homePageDefaults.card1Title}>
             <input
               {...register("homeCard1Title")}
               className={inputClass}
               placeholder="A Legacy of Trust, A Decade of Expertise"
             />
           </Field>
-          <Field label="Body text">
+          <Field label="Body text" emptyDefault={homePageDefaults.card1Body}>
             <textarea
               {...register("homeCard1Body")}
               rows={3}
@@ -727,14 +756,14 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
         {/* Card 2 */}
         <div className="border border-stone-200 rounded-xl p-4 space-y-4 bg-stone-50">
           <p className="text-xs font-bold text-brand-purple-700 uppercase tracking-wide">Card 2</p>
-          <Field label="Title">
+          <Field label="Title" emptyDefault={homePageDefaults.card2Title}>
             <input
               {...register("homeCard2Title")}
               className={inputClass}
               placeholder="Building Trust, Delivering Excellence"
             />
           </Field>
-          <Field label="Body text">
+          <Field label="Body text" emptyDefault={homePageDefaults.card2Body}>
             <textarea
               {...register("homeCard2Body")}
               rows={3}
@@ -756,14 +785,14 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
         {/* Card 3 */}
         <div className="border border-stone-200 rounded-xl p-4 space-y-4 bg-stone-50">
           <p className="text-xs font-bold text-brand-purple-700 uppercase tracking-wide">Card 3</p>
-          <Field label="Title">
+          <Field label="Title" emptyDefault={homePageDefaults.card3Title}>
             <input
               {...register("homeCard3Title")}
               className={inputClass}
               placeholder="Creating Spaces with Diligence and Precision"
             />
           </Field>
-          <Field label="Body text">
+          <Field label="Body text" emptyDefault={homePageDefaults.card3Body}>
             <textarea
               {...register("homeCard3Body")}
               rows={3}
@@ -788,21 +817,21 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
         title="Homepage — CTA / enquiry section"
         description="The dark purple section with the enquiry form at the bottom of the homepage."
       >
-        <Field label="Eyebrow">
+        <Field label="Eyebrow" emptyDefault={homePageDefaults.ctaEyebrow}>
           <input
             {...register("homeCtaEyebrow")}
             className={inputClass}
             placeholder="Enquire Now"
           />
         </Field>
-        <Field label="Heading">
+        <Field label="Heading" emptyDefault={homePageDefaults.ctaHeading}>
           <input
             {...register("homeCtaHeading")}
             className={inputClass}
             placeholder="At the heart of our work is a commitment to customer satisfaction."
           />
         </Field>
-        <Field label="Body text">
+        <Field label="Body text" emptyDefault={homePageDefaults.ctaBody}>
           <textarea
             {...register("homeCtaBody")}
             rows={3}

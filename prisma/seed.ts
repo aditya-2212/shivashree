@@ -1,5 +1,7 @@
-import { PrismaClient, PropertyStatus } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+
+type SeedPropertyStatus = "PROPOSED" | "ONGOING" | "COMPLETED" | "SOLD_OUT";
 
 const prisma = new PrismaClient();
 
@@ -83,7 +85,7 @@ async function main() {
     city: string;
     locality: string;
     fullAddress: string;
-    status: PropertyStatus;
+    status: SeedPropertyStatus;
     priceStartingFrom: number | null;
     heroImage: string | null;
     heroImageAlt: string | null;
@@ -99,7 +101,7 @@ async function main() {
       city: "Chennai",
       locality: "Janakiram Colony, Arumbakkam",
       fullAddress: "Janakiram Colony, Arumbakkam, Chennai",
-      status: "COMPLETED" as PropertyStatus,
+      status: "COMPLETED" as SeedPropertyStatus,
       priceStartingFrom: null,
       heroImage: "/images/syamala-hero.jpg",
       heroImageAlt:
@@ -136,7 +138,7 @@ async function main() {
       city: "Kumbakonam",
       locality: "Swamimalai Main Road",
       fullAddress: "Swamimalai Main Road, Kumbakonam – 612 301",
-      status: "ONGOING" as PropertyStatus,
+      status: "ONGOING" as SeedPropertyStatus,
       priceStartingFrom: 45,
       heroImage: "/images/mahalakshmi-hero.jpg",
       heroImageAlt:
@@ -173,7 +175,7 @@ async function main() {
       city: "Kumbakonam",
       locality: "East Dabeer Street",
       fullAddress: "East Dabeer Street, Kumbakonam – 612 001",
-      status: "PROPOSED" as PropertyStatus,
+      status: "PROPOSED" as SeedPropertyStatus,
       priceStartingFrom: null,
       heroImage: "/images/aishwaryam-hero.jpg",
       heroImageAlt:
@@ -275,7 +277,7 @@ async function main() {
   console.log("🎉 Seed completed successfully!");
 }
 
-function getDefaultAmenities(status: PropertyStatus) {
+function getDefaultAmenities(status: SeedPropertyStatus) {
   const base = [
     { icon: "shield-check", label: "24hr Security" },
     { icon: "zap", label: "Power Backup" },
@@ -294,7 +296,7 @@ function getDefaultAmenities(status: PropertyStatus) {
   return base;
 }
 
-function getDefaultFAQs(title: string, status: PropertyStatus) {
+function getDefaultFAQs(title: string, status: SeedPropertyStatus) {
   const faqs = [
     {
       question: `What is the current status of ${title}?`,

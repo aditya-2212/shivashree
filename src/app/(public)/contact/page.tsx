@@ -2,28 +2,9 @@ import { prisma } from "@/lib/prisma";
 import type { Metadata } from "next";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import EnquiryForm from "@/components/public/EnquiryForm";
+import { contactPageDefaults as D } from "@/lib/site-defaults";
 
 export const revalidate = 3600;
-
-const D = {
-  metaTitle: "Contact Shivashree Developers | Apartments in Kumbakonam & Chennai",
-  metaDescription:
-    "Get in touch with Shivashree Developers for luxury 2 & 3 BHK apartments in Kumbakonam and Chennai. Enquire about projects, pricing, site visits, and bookings today.",
-  heroEyebrow: "Contact",
-  heroTitle: "Two offices, one team, real phones.",
-  heroIntro:
-    "Walk in, call, or fill in the form. Whichever way you reach us, the same person handles the conversation from start to finish.",
-  corporateLabel: "Corporate office — Chennai",
-  registeredLabel: "Registered office — Kumbakonam",
-  hoursTitle: "When we're in office",
-  hoursWeekdays: "Monday – Saturday · 9:00am – 6:00pm",
-  hoursSunday: "Sunday · 10:00am – 2:00pm",
-  hoursNote:
-    "Site visits on Sunday are by prior appointment only — call ahead so a project advisor is at the site to walk you through.",
-  formTitle: "Send us an enquiry",
-  formIntro:
-    "Two fields are required — your name and your number. The rest help us route the call to the right project advisor.",
-};
 
 export async function generateMetadata(): Promise<Metadata> {
   const s = await prisma.siteSettings.findUnique({ where: { id: 1 } });

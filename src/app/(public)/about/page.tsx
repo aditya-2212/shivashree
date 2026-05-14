@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import EnquiryForm from "@/components/public/EnquiryForm";
+import { aboutPageDefaults as AD } from "@/lib/site-defaults";
 
 export const revalidate = 3600;
 
@@ -20,8 +21,8 @@ const PROCESS_STEPS = [
   },
   {
     n: "02",
-    title: "Visit and Visualize",
-    body: "Take a personalized tour of our projects to experience the quality, design, and lifestyle firsthand. See your future home come to life and make an informed decision.",
+    title: "Explore layouts and finishes",
+    body: "Review floor plans, specifications, and finishes with our team so you can compare options and choose what fits your family before you book.",
   },
   {
     n: "03",
@@ -69,25 +70,77 @@ export default async function AboutPage() {
   const settings = await prisma.siteSettings.findUnique({ where: { id: 1 } });
   const s = settings;
 
+  const showStory = Boolean(s?.aboutStoryTitle?.trim() || s?.aboutStoryBodyHtml?.trim());
+  const showCommitments = Boolean(
+    s?.aboutCommitmentsTitle?.trim() ||
+      s?.aboutC1Title?.trim() ||
+      s?.aboutC2Title?.trim() ||
+      s?.aboutC3Title?.trim()
+  );
+
   return (
     <>
       {/* ── Hero ──────────────────────────────────────────────────────────────── */}
       <section className="pt-36 pb-20 bg-brand-purple-900 text-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="text-brand-blue-200 font-semibold text-sm uppercase tracking-widest mb-4">
-            About Shivashree Developers
+            {s?.aboutHeroEyebrow?.trim() || AD.heroEyebrow}
           </p>
-          <h1 className="text-4xl md:text-5xl font-bold leading-tight max-w-3xl tracking-tight mb-6">
-            About Shivashree Developers
+          <h1 className="text-4xl md:text-5xl font-bold leading-tight max-w-3xl tracking-tight mb-6 whitespace-pre-line">
+            {s?.aboutHeroTitle?.trim() || AD.heroTitle}
           </h1>
           <p className="text-white/80 text-lg max-w-2xl leading-relaxed">
-            At Shivashree Developers, we believe in building more than just properties — we build
-            dreams, trust, and lasting relationships. With a legacy of excellence and a commitment
-            to innovation, we have established ourselves as a trusted name in the real estate
-            industry.
+            {s?.aboutHeroLead?.trim() || AD.heroLead}
           </p>
         </div>
       </section>
+
+      {showStory && (
+        <section className="py-16 bg-white border-b border-stone-200">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8">
+            {s?.aboutStoryTitle?.trim() && (
+              <h2 className="text-2xl md:text-3xl font-bold text-stone-900 mb-6 tracking-tight">
+                {s.aboutStoryTitle}
+              </h2>
+            )}
+            {s?.aboutStoryBodyHtml?.trim() && (
+              <div
+                className="prose prose-stone max-w-3xl"
+                dangerouslySetInnerHTML={{ __html: s.aboutStoryBodyHtml }}
+              />
+            )}
+          </div>
+        </section>
+      )}
+
+      {showCommitments && (
+        <section className="py-16 bg-stone-50 border-b border-stone-200">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-stone-900 mb-10 tracking-tight">
+              {s?.aboutCommitmentsTitle?.trim() || AD.commitmentsTitle}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {(
+                [
+                  { t: s?.aboutC1Title, b: s?.aboutC1Body, n: "01", dt: AD.c1Title, db: AD.c1Body },
+                  { t: s?.aboutC2Title, b: s?.aboutC2Body, n: "02", dt: AD.c2Title, db: AD.c2Body },
+                  { t: s?.aboutC3Title, b: s?.aboutC3Body, n: "03", dt: AD.c3Title, db: AD.c3Body },
+                ] as const
+              ).map((row) => (
+                <div key={row.n} className="rounded-2xl border border-stone-200 bg-white p-6">
+                  <p className="text-brand-purple-700 font-bold text-sm mb-2">{row.n}</p>
+                  <h3 className="font-bold text-stone-900 text-lg mb-2">
+                    {row.t?.trim() || row.dt}
+                  </h3>
+                  <p className="text-stone-600 text-sm leading-relaxed">
+                    {row.b?.trim() || row.db}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── Vision & Mission ─────────────────────────────────────────────────── */}
       <section className="py-20 bg-white">
@@ -233,11 +286,10 @@ export default async function AboutPage() {
         <section className="py-20 bg-stone-50 border-t border-stone-200">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <h2 className="text-2xl md:text-3xl font-bold text-stone-900 mb-2 tracking-tight">
-              Where to find us in person.
+              {s?.aboutWhereTitle?.trim() || AD.whereTitle}
             </h2>
             <p className="text-stone-600 mb-10 max-w-2xl">
-              We&rsquo;d much rather you walked in than filled in a form. Both offices have a model
-              floor plan you can see on the table.
+              {s?.aboutWhereIntro?.trim() || AD.whereIntro}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {settings.corporateOfficeAddress && (
@@ -280,12 +332,10 @@ export default async function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl font-bold text-white mb-4 tracking-tight">
-                Create your dream home.
+                {s?.aboutCtaTitle?.trim() || AD.ctaTitle}
               </h2>
               <p className="text-white/80 leading-relaxed mb-8">
-                Tell us what you&rsquo;re looking for — whether you&rsquo;re a first-time buyer, an
-                NRI investor, or a parent buying for an adult child. The advisor who handles your
-                city will call you back.
+                {s?.aboutCtaBody?.trim() || AD.ctaBody}
               </p>
               <Link
                 href="/projects"

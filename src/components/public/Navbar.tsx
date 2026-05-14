@@ -255,6 +255,8 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
                     )}`
                   : "/contact"
               }
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-brand-purple-600 hover:bg-brand-purple-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition shadow-sm"
             >
               Talk to a sales advisor
@@ -332,6 +334,8 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
                       )}`
                     : "/contact"
                 }
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={() => setIsOpen(false)}
                 className="block w-full text-center bg-brand-purple-600 text-white font-semibold py-3 rounded-xl hover:bg-brand-purple-700 transition text-sm"
               >

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { sendContactEnquiryEmail } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,6 +14,31 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const src = source ?? "website";
+
+    if (src === "contact-page") {
+      try {
+        await sendContactEnquiryEmail({
+          name,
+          mobile,
+          email: email || null,
+          lookingIn: lookingIn || null,
+          projectEnquiry: projectEnquiry || null,
+          source: src,
+        });
+      } catch (err) {
+        console.error("Contact enquiry email error:", err);
+        return NextResponse.json(
+          {
+            error:
+              "We could not send your message by email. Please call us or try again later.",
+          },
+          { status: 503 }
+        );
+      }
+      return NextResponse.json({ success: true }, { status: 201 });
+    }
+
     const lead = await prisma.lead.create({
       data: {
         name,
@@ -21,7 +47,7 @@ export async function POST(req: NextRequest) {
         lookingIn: lookingIn || null,
         projectEnquiry: projectEnquiry || null,
         propertyId: propertyId ? parseInt(propertyId) : null,
-        source: source ?? "website",
+        source: src,
         status: "NEW",
       },
     });

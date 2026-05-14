@@ -6,6 +6,7 @@ import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import toast from "react-hot-toast";
+import { LpgCylinderIcon } from "@/components/public/AmenityIcon";
 import {
   Plus,
   X,
@@ -173,6 +174,7 @@ const AMENITY_ICONS = [
   /* Power & Utilities */
   { value: "zap", label: "Power Backup", group: "Utilities" },
   { value: "plug-zap", label: "EV Charging", group: "Utilities" },
+  { value: "lpg", label: "LPG / piped gas", group: "Utilities" },
   { value: "droplets", label: "Water Supply", group: "Utilities" },
   { value: "thermometer", label: "AC / Climate Control", group: "Utilities" },
   { value: "wind", label: "Ventilation", group: "Utilities" },
@@ -235,7 +237,7 @@ const AMENITY_ICONS = [
 
 const ICON_COMPONENT_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   "shield-check": Shield, lock: Lock, cctv: Cctv, camera: Camera, flame: Flame, bell: Bell,
-  zap: Zap, "plug-zap": PlugZap, droplets: Droplets, thermometer: Thermometer,
+  zap: Zap, "plug-zap": PlugZap, lpg: LpgCylinderIcon, droplets: Droplets, thermometer: Thermometer,
   wind: Wind, sun: Sun, wifi: Wifi,
   car: Car, "parking-square": ParkingSquare, bus: Bus, bike: Bike,
   "tree-pine": TreePine, flower2: Flower2, sprout: Sprout, mountain: Mountain,

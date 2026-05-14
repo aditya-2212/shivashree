@@ -454,7 +454,7 @@ export default async function ProjectDetailPage({ params }: Props) {
                 <p className="font-bold text-stone-900">{status.label}</p>
                 <p className="text-xs text-stone-600 mt-1.5 leading-relaxed">
                   {property.status === "COMPLETED"
-                    ? "Units are ready for handover. Site visits available 7 days a week with prior appointment."
+                    ? "Units are ready for handover. Walkthroughs available seven days a week with prior appointment."
                     : property.status === "ONGOING"
                       ? "Construction in progress. Floor plans and pricing are finalised — bookings open."
                       : property.status === "SOLD_OUT"
