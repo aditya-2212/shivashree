@@ -13,14 +13,17 @@ export default function StructuredData({ data }: Props) {
 
 // ─── Schema Builders ──────────────────────────────────────────────────────────
 
-export function organizationSchema(settings?: {
-  corporateOfficeAddress?: string;
-  corporateOfficePhone?: string;
-  corporateOfficeEmail?: string;
-  facebookUrl?: string | null;
-  instagramUrl?: string | null;
-  youtubeUrl?: string | null;
-}) {
+export function organizationSchema(
+  settings?: {
+    corporateOfficeAddress?: string;
+    corporateOfficePhone?: string;
+    corporateOfficeEmail?: string;
+    facebookUrl?: string | null;
+    instagramUrl?: string | null;
+    youtubeUrl?: string | null;
+  },
+  opts?: { name?: string; description?: string }
+) {
   const sameAs = [
     settings?.facebookUrl,
     settings?.instagramUrl,
@@ -30,7 +33,7 @@ export function organizationSchema(settings?: {
   return {
     "@context": "https://schema.org",
     "@type": "RealEstateAgent",
-    name: "Shivashree Developers",
+    name: opts?.name?.trim() || "Shivashree Developers",
     url: process.env.NEXTAUTH_URL ?? "https://shivashreedev.com",
     logo: `${process.env.NEXTAUTH_URL ?? "https://shivashreedev.com"}/images/logo.png`,
     address: {
@@ -46,6 +49,7 @@ export function organizationSchema(settings?: {
     sameAs: sameAs.length ? sameAs : undefined,
     areaServed: ["Kumbakonam", "Chennai", "Tamil Nadu"],
     description:
+      opts?.description?.trim() ||
       "Shivashree Developers is a regional real estate developer offering premium RERA-registered residential apartments in Kumbakonam and Chennai.",
   };
 }

@@ -15,8 +15,19 @@ interface Slide {
   ctaUrl: string;
 }
 
+export type HeroEmptyCopy = {
+  eyebrow: string;
+  heading: string;
+  ctaLabel: string;
+  ctaUrl: string;
+};
+
 interface Props {
   slides: Slide[];
+  /** When a slide has no eyebrow (e.g. property-image fallback). */
+  slideEyebrowFallback: string;
+  /** When there are no slides and no property hero images. */
+  emptyHeroCopy: HeroEmptyCopy;
 }
 
 /*
@@ -32,7 +43,7 @@ interface Props {
   otherwise we get awkward letterboxing on a marketing surface. That is the
   reasonable interpretation we're going with.
 */
-export default function HeroSection({ slides }: Props) {
+export default function HeroSection({ slides, slideEyebrowFallback, emptyHeroCopy }: Props) {
   const [current, setCurrent] = useState(0);
   const [transitioning, setTransitioning] = useState(false);
 
@@ -63,18 +74,16 @@ export default function HeroSection({ slides }: Props) {
       <section className="relative w-full min-h-[70vh] bg-brand-purple-900 flex items-center pt-24">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 text-white">
           <p className="text-brand-blue-200 font-semibold text-sm uppercase tracking-widest mb-4">
-            Shivashree Developers
+            {emptyHeroCopy.eyebrow}
           </p>
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight max-w-3xl">
-            Apartments in Kumbakonam &amp; Chennai —
-            <br />
-            built by people who live here.
+          <h1 className="text-4xl md:text-6xl font-bold leading-tight max-w-3xl whitespace-pre-line">
+            {emptyHeroCopy.heading}
           </h1>
           <Link
-            href="/projects"
+            href={emptyHeroCopy.ctaUrl}
             className="inline-flex mt-8 items-center gap-2 bg-white text-brand-purple-700 hover:bg-brand-purple-50 font-semibold px-7 py-3.5 rounded-xl transition"
           >
-            See current projects
+            {emptyHeroCopy.ctaLabel}
           </Link>
         </div>
       </section>
@@ -124,7 +133,7 @@ export default function HeroSection({ slides }: Props) {
               )}
             >
               <p className="text-white/85 font-semibold text-sm uppercase tracking-widest mb-4">
-                {slide.eyebrow ?? "Shivashree Developers · Kumbakonam & Chennai"}
+                {slide.eyebrow ?? slideEyebrowFallback}
               </p>
               <h1 className="text-4xl md:text-6xl font-bold text-white leading-[1.05] mb-6 whitespace-pre-line tracking-tight">
                 {slide.overlayHeading}

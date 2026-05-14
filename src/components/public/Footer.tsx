@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin, Phone, Mail } from "lucide-react";
+import type { PublicSiteCopy } from "@/lib/site-copy";
 
 interface FooterProps {
   settings: {
@@ -15,6 +16,7 @@ interface FooterProps {
     corporateMapEmbedUrl: string | null;
     footerText: string;
   } | null;
+  copy: PublicSiteCopy;
 }
 
 /*
@@ -23,7 +25,7 @@ interface FooterProps {
   verify which RERA we're registered under. Each block is laid out so a person
   on a mobile screen can scan it without zooming.
 */
-export default function Footer({ settings }: FooterProps) {
+export default function Footer({ settings, copy }: FooterProps) {
   return (
     <footer className="bg-brand-purple-900 text-stone-200">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
@@ -33,16 +35,13 @@ export default function Footer({ settings }: FooterProps) {
             <div className="inline-flex items-center justify-center bg-white rounded-xl p-3 mb-5 shadow-sm">
               <Image
                 src="/logo.png"
-                alt="Shivashree Developers"
+                alt={copy.structuredOrgName}
                 width={160}
                 height={120}
                 className="h-14 w-auto"
               />
             </div>
-            <p className="text-stone-300 text-sm leading-relaxed mb-5">
-              A Kumbakonam-rooted developer building RERA-registered residential
-              apartments in Kumbakonam and Chennai.
-            </p>
+            <p className="text-stone-300 text-sm leading-relaxed mb-5">{copy.footerBrandTagline}</p>
             <div className="flex gap-3">
               {settings?.facebookUrl && (
                 <a
@@ -83,16 +82,16 @@ export default function Footer({ settings }: FooterProps) {
           {/* Quick Links */}
           <div className="lg:col-span-2">
             <h3 className="text-white font-semibold text-sm mb-5 uppercase tracking-wider">
-              Sitemap
+              {copy.footerSitemapHeading}
             </h3>
             <ul className="space-y-3">
               {[
-                { href: "/", label: "Home" },
-                { href: "/projects", label: "Projects" },
-                { href: "/resources/blog", label: "Notes & guides" },
-                { href: "/resources/faqs", label: "FAQs" },
-                { href: "/contact", label: "Contact Us" },
-                { href: "/about", label: "About Us" },
+                { href: "/", label: copy.navLabelHome },
+                { href: "/projects", label: copy.navLabelProjects },
+                { href: "/resources/blog", label: copy.navResourcesBlogTitle },
+                { href: "/resources/faqs", label: copy.navResourcesFaqsTitle },
+                { href: "/contact", label: copy.navLabelContact },
+                { href: "/about", label: copy.navLabelAbout },
               ].map((link) => (
                 <li key={link.href}>
                   <Link
@@ -109,7 +108,7 @@ export default function Footer({ settings }: FooterProps) {
           {/* Corporate Office + map */}
           <div className="lg:col-span-4">
             <h3 className="text-white font-semibold text-sm mb-5 uppercase tracking-wider">
-              Corporate Office — Chennai
+              {copy.footerCorporateHeading}
             </h3>
             <address className="not-italic space-y-3 text-sm mb-4">
               {settings?.corporateOfficeAddress && (
@@ -154,7 +153,7 @@ export default function Footer({ settings }: FooterProps) {
               <div className="rounded-xl overflow-hidden border border-white/10">
                 <iframe
                   src={settings.corporateMapEmbedUrl}
-                  title="Shivashree Developers — corporate office on Google Maps"
+                  title={copy.footerMapIframeTitle}
                   className="w-full h-44 block"
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
@@ -167,7 +166,7 @@ export default function Footer({ settings }: FooterProps) {
           {/* Registered Office + RERA note */}
           <div className="lg:col-span-3">
             <h3 className="text-white font-semibold text-sm mb-5 uppercase tracking-wider">
-              Registered Office — Kumbakonam
+              {copy.footerRegisteredHeading}
             </h3>
             <address className="not-italic space-y-3 text-sm">
               {settings?.registeredOfficeAddress && (
@@ -192,13 +191,8 @@ export default function Footer({ settings }: FooterProps) {
             </address>
 
             <div className="mt-6 p-4 bg-white/5 border border-white/10 rounded-xl">
-              <p className="text-xs text-brand-blue-200 font-semibold mb-1">
-                TNRERA Registered
-              </p>
-              <p className="text-xs text-stone-300 leading-relaxed">
-                Each Shivashree project carries its own TNRERA number — printed
-                on the project page and on every brochure we hand you.
-              </p>
+              <p className="text-xs text-brand-blue-200 font-semibold mb-1">{copy.footerReraTitle}</p>
+              <p className="text-xs text-stone-300 leading-relaxed">{copy.footerReraBody}</p>
             </div>
           </div>
         </div>
@@ -210,9 +204,7 @@ export default function Footer({ settings }: FooterProps) {
           <p className="text-stone-400 text-xs">
             © {new Date().getFullYear()} {settings?.footerText?.trim() || "Shivashree Developers. All rights reserved."}
           </p>
-          <p className="text-stone-500 text-xs">
-            Kumbakonam · Chennai
-          </p>
+          <p className="text-stone-500 text-xs">{copy.footerBottomLocationLine}</p>
         </div>
       </div>
     </footer>

@@ -2,40 +2,45 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import { prisma } from "@/lib/prisma";
+import { buildPublicSiteCopy } from "@/lib/site-copy";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "Shivashree Developers | Residential Apartments in Kumbakonam & Chennai",
-    template: "%s | Shivashree Developers",
-  },
-  description:
-    "Premium RERA-registered residential apartments in Kumbakonam and Chennai by Shivashree Developers. Explore ongoing and completed projects.",
-  keywords: [
-    "apartments in Kumbakonam",
-    "flats in Chennai",
-    "real estate Kumbakonam",
-    "Shivashree Developers",
-    "2BHK Kumbakonam",
-    "3BHK Chennai",
-    "RERA apartments Tamil Nadu",
-  ],
-  metadataBase: new URL("https://www.shivashreedevelopers.com"),
-  icons: {
-    icon: "/icon.png",
-    apple: "/icon.png",
-    shortcut: "/icon.png",
-  },
-  openGraph: {
-    type: "website",
-    siteName: "Shivashree Developers",
-    locale: "en_IN",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const s = await prisma.siteSettings.findUnique({ where: { id: 1 } });
+  const c = buildPublicSiteCopy(s);
+  return {
+    title: {
+      default: c.homeMetaTitle,
+      template: `%s | ${c.structuredOrgName}`,
+    },
+    description: c.homeMetaDescription,
+    keywords: [
+      "apartments in Kumbakonam",
+      "flats in Chennai",
+      "real estate Kumbakonam",
+      c.structuredOrgName,
+      "2BHK Kumbakonam",
+      "3BHK Chennai",
+      "RERA apartments Tamil Nadu",
+    ],
+    metadataBase: new URL("https://www.shivashreedevelopers.com"),
+    icons: {
+      icon: "/icon.png",
+      apple: "/icon.png",
+      shortcut: "/icon.png",
+    },
+    openGraph: {
+      type: "website",
+      siteName: c.structuredOrgName,
+      locale: "en_IN",
+    },
+  };
+}
 
 export default function RootLayout({
   children,

@@ -3,20 +3,25 @@ import type { Metadata } from "next";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import EnquiryForm from "@/components/public/EnquiryForm";
 import { contactPageDefaults as D } from "@/lib/site-defaults";
+import { buildPublicSiteCopy } from "@/lib/site-copy";
 
 export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
   const s = await prisma.siteSettings.findUnique({ where: { id: 1 } });
+  const c = buildPublicSiteCopy(s);
   return {
-    title: s?.contactHeroTitle ? `${s.contactHeroTitle} | Shivashree Developers` : D.metaTitle,
-    description: D.metaDescription,
+    title: s?.contactHeroTitle?.trim()
+      ? `${s.contactHeroTitle.trim()} | ${c.structuredOrgName}`
+      : D.metaTitle.replaceAll("Shivashree Developers", c.structuredOrgName),
+    description: c.contactMetaDescription,
   };
 }
 
 export default async function ContactPage() {
   const settings = await prisma.siteSettings.findUnique({ where: { id: 1 } });
   const s = settings;
+  const c = buildPublicSiteCopy(settings);
 
   const hoursWeekdays = s?.contactHoursWeekdays || D.hoursWeekdays;
   const hoursSunday = s?.contactHoursSunday || D.hoursSunday;
@@ -94,7 +99,7 @@ export default async function ContactPage() {
                   <div className="rounded-xl overflow-hidden border border-stone-200 mt-4">
                     <iframe
                       src={settings.corporateMapEmbedUrl}
-                      title="Shivashree Developers — Chennai office on Google Maps"
+                      title={c.contactMapIframeTitle}
                       className="w-full h-44 block"
                       loading="lazy"
                       referrerPolicy="no-referrer-when-downgrade"

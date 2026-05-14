@@ -6,6 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { PublicSiteCopy } from "@/lib/site-copy";
 
 interface NavProperty {
   title: string;
@@ -16,6 +17,7 @@ interface NavProperty {
 interface Props {
   properties: NavProperty[];
   whatsappNumber?: string;
+  copy: PublicSiteCopy;
 }
 
 const statusOrder: Record<string, number> = {
@@ -25,13 +27,6 @@ const statusOrder: Record<string, number> = {
   SOLD_OUT: 3,
 };
 
-const statusLabel: Record<string, string> = {
-  PROPOSED: "Coming Soon",
-  ONGOING: "Now Selling",
-  COMPLETED: "Ready to Move",
-  SOLD_OUT: "Sold Out",
-};
-
 const statusDot: Record<string, string> = {
   ONGOING: "bg-brand-purple-600",
   PROPOSED: "bg-brand-blue-500",
@@ -39,7 +34,7 @@ const statusDot: Record<string, string> = {
   SOLD_OUT: "bg-stone-400",
 };
 
-export default function Navbar({ properties, whatsappNumber }: Props) {
+export default function Navbar({ properties, whatsappNumber, copy }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [projectsOpen, setProjectsOpen] = useState(false);
   const [resourcesOpen, setResourcesOpen] = useState(false);
@@ -47,6 +42,13 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
   const projectsTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const resourcesTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
+
+  const statusLabel: Record<string, string> = {
+    PROPOSED: copy.statusLabelProposed,
+    ONGOING: copy.statusLabelOngoing,
+    COMPLETED: copy.statusLabelCompleted,
+    SOLD_OUT: copy.statusLabelSoldOut,
+  };
 
   const isHome = pathname === "/";
   const transparent = isHome && !scrolled;
@@ -126,7 +128,7 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
       <nav className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-28">
           {/* Brand mark */}
-          <Link href="/" className="flex items-center gap-3 shrink-0" aria-label="Shivashree Developers — home">
+          <Link href="/" className="flex items-center gap-3 shrink-0" aria-label={`${copy.structuredOrgName} — home`}>
             <span
               className={cn(
                 "inline-flex items-center justify-center rounded-md p-1 transition",
@@ -135,7 +137,7 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
             >
               <Image
                 src="/logo.png"
-                alt="Shivashree Developers"
+                alt={copy.structuredOrgName}
                 width={240}
                 height={180}
                 priority
@@ -146,7 +148,7 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
 
           {/* Desktop nav */}
           <div className="hidden lg:flex items-center gap-7">
-            <Link href="/" className={linkClass()}>Home</Link>
+            <Link href="/" className={linkClass()}>{copy.navLabelHome}</Link>
 
             {/* Projects dropdown — opens on hover */}
             <div
@@ -161,7 +163,7 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
                 onFocus={openProjects}
                 onBlur={closeProjectsDelayed}
               >
-                Projects
+                {copy.navLabelProjects}
                 <ChevronDown
                   className={cn("w-4 h-4 transition-transform", projectsOpen && "rotate-180")}
                 />
@@ -174,7 +176,7 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
                     onClick={() => setProjectsOpen(false)}
                     className="block px-3 py-2.5 rounded-lg hover:bg-brand-purple-50 transition text-sm font-semibold text-brand-purple-700 mb-1 border-b border-stone-100 pb-3"
                   >
-                    See every project →
+                    {copy.navProjectsSeeAllLabel}
                   </Link>
 
                   {(["ONGOING", "PROPOSED", "COMPLETED", "SOLD_OUT"] as const).map(
@@ -217,7 +219,7 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
                 onFocus={openResources}
                 onBlur={closeResourcesDelayed}
               >
-                Resources
+                {copy.navLabelResources}
                 <ChevronDown
                   className={cn("w-4 h-4 transition-transform", resourcesOpen && "rotate-180")}
                 />
@@ -229,37 +231,35 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
                     onClick={() => setResourcesOpen(false)}
                     className="block px-3 py-2.5 rounded-lg hover:bg-brand-purple-50 transition"
                   >
-                    <p className="text-sm font-semibold text-stone-900">Notes & guides</p>
-                    <p className="text-xs text-stone-500">Buying tips, neighbourhood snapshots</p>
+                    <p className="text-sm font-semibold text-stone-900">{copy.navResourcesBlogTitle}</p>
+                    <p className="text-xs text-stone-500">{copy.navResourcesBlogSubtitle}</p>
                   </Link>
                   <Link
                     href="/resources/faqs"
                     onClick={() => setResourcesOpen(false)}
                     className="block px-3 py-2.5 rounded-lg hover:bg-brand-purple-50 transition"
                   >
-                    <p className="text-sm font-semibold text-stone-900">FAQs</p>
-                    <p className="text-xs text-stone-500">Booking, loans, RERA, possession</p>
+                    <p className="text-sm font-semibold text-stone-900">{copy.navResourcesFaqsTitle}</p>
+                    <p className="text-xs text-stone-500">{copy.navResourcesFaqsSubtitle}</p>
                   </Link>
                 </div>
               )}
             </div>
 
-            <Link href="/contact" className={linkClass()}>Contact Us</Link>
-            <Link href="/about" className={linkClass()}>About Us</Link>
+            <Link href="/contact" className={linkClass()}>{copy.navLabelContact}</Link>
+            <Link href="/about" className={linkClass()}>{copy.navLabelAbout}</Link>
 
             <a
               href={
                 whatsappNumber
-                  ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-                      "Hi Shivashree Developers, I'd like to know more about your apartments."
-                    )}`
+                  ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(copy.navWhatsappPrefillMessage)}`
                   : "/contact"
               }
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-brand-purple-600 hover:bg-brand-purple-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition shadow-sm"
             >
-              Talk to a sales advisor
+              {copy.navWhatsappCtaLabel}
             </a>
           </div>
 
@@ -272,7 +272,7 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
                 ? "text-white hover:bg-white/10"
                 : "text-stone-700 hover:bg-stone-100"
             )}
-            aria-label={isOpen ? "Close menu" : "Open menu"}
+            aria-label={isOpen ? copy.navMobileMenuCloseA11y : copy.navMobileMenuOpenA11y}
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -284,8 +284,8 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
         <div className="lg:hidden bg-white border-t border-stone-200 shadow-lg">
           <div className="px-6 py-4 space-y-1">
             {[
-              { href: "/", label: "Home" },
-              { href: "/projects", label: "All Projects" },
+              { href: "/", label: copy.navLabelHome },
+              { href: "/projects", label: copy.navMobileAllProjectsLabel },
             ].map((item) => (
               <Link
                 key={item.href}
@@ -310,10 +310,10 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
             ))}
 
             {[
-              { href: "/resources/blog", label: "Notes & guides" },
-              { href: "/resources/faqs", label: "FAQs" },
-              { href: "/contact", label: "Contact Us" },
-              { href: "/about", label: "About Us" },
+              { href: "/resources/blog", label: copy.navResourcesBlogTitle },
+              { href: "/resources/faqs", label: copy.navResourcesFaqsTitle },
+              { href: "/contact", label: copy.navLabelContact },
+              { href: "/about", label: copy.navLabelAbout },
             ].map((item) => (
               <Link
                 key={item.href}
@@ -329,9 +329,7 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
               <a
                 href={
                   whatsappNumber
-                    ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-                        "Hi Shivashree Developers, I'd like to know more about your apartments."
-                      )}`
+                    ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(copy.navWhatsappPrefillMessage)}`
                     : "/contact"
                 }
                 target="_blank"
@@ -339,7 +337,7 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
                 onClick={() => setIsOpen(false)}
                 className="block w-full text-center bg-brand-purple-600 text-white font-semibold py-3 rounded-xl hover:bg-brand-purple-700 transition text-sm"
               >
-                Talk to a sales advisor
+                {copy.navWhatsappCtaLabel}
               </a>
             </div>
           </div>
