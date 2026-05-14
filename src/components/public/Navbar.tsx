@@ -22,6 +22,7 @@ const statusOrder: Record<string, number> = {
   ONGOING: 0,
   PROPOSED: 1,
   COMPLETED: 2,
+  SOLD_OUT: 3,
 };
 
 const statusLabel: Record<string, string> = {
@@ -168,7 +169,7 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
                     See every project →
                   </Link>
 
-                  {(["ONGOING", "PROPOSED", "COMPLETED"] as const).map(
+                  {(["ONGOING", "PROPOSED", "COMPLETED", "SOLD_OUT"] as const).map(
                     (status) =>
                       grouped[status]?.length ? (
                         <div key={status} className="mt-2">
