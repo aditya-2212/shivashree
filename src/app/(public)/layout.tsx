@@ -4,9 +4,7 @@ import Navbar from "@/components/public/Navbar";
 export const revalidate = 3600;
 import Footer from "@/components/public/Footer";
 import WhatsAppButton from "@/components/public/WhatsAppButton";
-import { SiteUiProvider } from "@/components/public/SiteUiProvider";
 import { Toaster } from "react-hot-toast";
-import { buildPublicSiteCopy, enquiryCopyFrom } from "@/lib/site-copy";
 
 export default async function PublicLayout({
   children,
@@ -17,25 +15,17 @@ export default async function PublicLayout({
     getSettings(),
     getPublishedProperties(),
   ]);
-  const copy = buildPublicSiteCopy(settings);
 
   return (
     <>
       <Navbar
         properties={publishedProperties}
         whatsappNumber={settings?.whatsappNumber}
-        copy={copy}
       />
-      <SiteUiProvider enquiryCopy={enquiryCopyFrom(copy)}>
-        <main>{children}</main>
-      </SiteUiProvider>
-      <Footer settings={settings} copy={copy} />
+      <main>{children}</main>
+      <Footer settings={settings} />
       {settings?.whatsappNumber && (
-        <WhatsAppButton
-          number={settings.whatsappNumber}
-          prefillMessage={copy.floatWhatsappPrefillMessage}
-          ariaLabel={copy.floatWhatsappAriaLabel}
-        />
+        <WhatsAppButton number={settings.whatsappNumber} />
       )}
       <Toaster position="top-right" />
     </>

@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2, CheckCircle } from "lucide-react";
-import { useEnquiryCopy } from "@/components/public/SiteUiProvider";
 
 const schema = z.object({
   name: z.string().min(2, "Please enter your name"),
@@ -26,7 +25,6 @@ interface Props {
 
 export default function EnquiryForm({ source, projectId, projectName, variant = "light" }: Props) {
   const [submitted, setSubmitted] = useState(false);
-  const ec = useEnquiryCopy();
 
   const {
     register,
@@ -49,7 +47,7 @@ export default function EnquiryForm({ source, projectId, projectName, variant = 
       if (!res.ok) throw new Error();
       setSubmitted(true);
     } catch {
-      alert(ec.enquiryErrorAlert);
+      alert("Something went wrong. Please try again or call us directly.");
     }
   };
 
@@ -67,9 +65,12 @@ export default function EnquiryForm({ source, projectId, projectName, variant = 
           <CheckCircle className={`w-8 h-8 ${isDark ? "text-green-400" : "text-green-600"}`} />
         </div>
         <h3 className={`text-xl font-bold mb-2 ${isDark ? "text-white" : "text-stone-900"}`}>
-          {ec.enquiryThankTitle}
+          Got it — we&rsquo;ll call you back.
         </h3>
-        <p className={isDark ? "text-white/70" : "text-stone-600"}>{ec.enquiryThankBody}</p>
+        <p className={isDark ? "text-white/70" : "text-stone-600"}>
+          Usually within the day, sometimes within an hour. Our advisor will
+          ring you on the number you gave us.
+        </p>
       </div>
     );
   }
@@ -80,7 +81,7 @@ export default function EnquiryForm({ source, projectId, projectName, variant = 
         <input
           {...register("name")}
           className={inputClass}
-          placeholder={ec.enquiryPlaceholderName}
+          placeholder="Your full name *"
           autoComplete="name"
         />
         {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name.message}</p>}
@@ -90,7 +91,7 @@ export default function EnquiryForm({ source, projectId, projectName, variant = 
         <input
           {...register("mobile")}
           className={inputClass}
-          placeholder={ec.enquiryPlaceholderMobile}
+          placeholder="Mobile number *"
           autoComplete="tel"
           type="tel"
         />
@@ -101,7 +102,7 @@ export default function EnquiryForm({ source, projectId, projectName, variant = 
         <input
           {...register("email")}
           className={inputClass}
-          placeholder={ec.enquiryPlaceholderEmail}
+          placeholder="Email address (optional)"
           autoComplete="email"
           type="email"
         />
@@ -111,7 +112,7 @@ export default function EnquiryForm({ source, projectId, projectName, variant = 
         <input
           {...register("lookingIn")}
           className={inputClass}
-          placeholder={ec.enquiryPlaceholderLooking}
+          placeholder="Looking for property in… (optional)"
         />
       </div>
 
@@ -120,7 +121,7 @@ export default function EnquiryForm({ source, projectId, projectName, variant = 
           <input
             {...register("projectEnquiry")}
             className={inputClass}
-            placeholder={ec.enquiryPlaceholderProject}
+            placeholder="Project you're interested in (optional)"
           />
         </div>
       )}
@@ -133,15 +134,15 @@ export default function EnquiryForm({ source, projectId, projectName, variant = 
         {isSubmitting ? (
           <>
             <Loader2 className="w-4 h-4 animate-spin" />
-            {ec.enquirySubmitSending}
+            Sending…
           </>
         ) : (
-          ec.enquirySubmitLabel
+          "Request a callback"
         )}
       </button>
 
       <p className={`text-xs text-center ${isDark ? "text-white/40" : "text-stone-500"}`}>
-        {ec.enquiryPrivacyNote}
+        We don&rsquo;t share your number. We don&rsquo;t add you to a mailing list.
       </p>
     </form>
   );

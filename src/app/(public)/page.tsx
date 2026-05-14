@@ -15,18 +15,34 @@ import { formatPrice, parseJsonField } from "@/lib/utils";
 import type { Metadata } from "next";
 import { homePageDefaults as D } from "@/lib/site-defaults";
 import { normalizeHeroCtaUrl } from "@/lib/hero-cta-url";
-import { buildPublicSiteCopy } from "@/lib/site-copy";
 
 export const revalidate = 30;
 
-export async function generateMetadata(): Promise<Metadata> {
-  const s = await prisma.siteSettings.findUnique({ where: { id: 1 } });
-  const c = buildPublicSiteCopy(s);
-  return {
-    title: c.homeMetaTitle,
-    description: c.homeMetaDescription,
-  };
-}
+export const metadata: Metadata = {
+  title:
+    "Luxury 2 & 3 BHK Apartments for sale in Kumbakonam & Chennai | Shivashree Developers",
+  description:
+    "Explore premium 2 & 3 BHK apartments in Kumbakonam and Chennai by Shivashree Developers. Modern amenities, prime locations, quality construction and affordable pricing. Book your dream home today.",
+};
+
+const statusBadge = {
+  PROPOSED: {
+    label: "Coming Soon",
+    chip: "bg-brand-blue-50 text-brand-blue-700 border-brand-blue-100",
+  },
+  ONGOING: {
+    label: "Now Selling",
+    chip: "bg-brand-purple-50 text-brand-purple-700 border-brand-purple-100",
+  },
+  COMPLETED: {
+    label: "Ready to Move",
+    chip: "bg-emerald-50 text-emerald-700 border-emerald-100",
+  },
+  SOLD_OUT: {
+    label: "Sold Out",
+    chip: "bg-stone-100 text-stone-600 border-stone-200",
+  },
+} as const;
 
 export default async function HomePage() {
   const [heroSlides, properties, settings] = await Promise.all([
@@ -55,27 +71,6 @@ export default async function HomePage() {
     prisma.siteSettings.findUnique({ where: { id: 1 } }),
   ]);
 
-  const copy = buildPublicSiteCopy(settings);
-
-  const statusBadge = {
-    PROPOSED: {
-      label: copy.statusLabelProposed,
-      chip: "bg-brand-blue-50 text-brand-blue-700 border-brand-blue-100",
-    },
-    ONGOING: {
-      label: copy.statusLabelOngoing,
-      chip: "bg-brand-purple-50 text-brand-purple-700 border-brand-purple-100",
-    },
-    COMPLETED: {
-      label: copy.statusLabelCompleted,
-      chip: "bg-emerald-50 text-emerald-700 border-emerald-100",
-    },
-    SOLD_OUT: {
-      label: copy.statusLabelSoldOut,
-      chip: "bg-stone-100 text-stone-600 border-stone-200",
-    },
-  } as const;
-
   // The hero accepts a list of slides from the CMS. If the team hasn't added
   // any yet, we fall back to the first two published properties' hero images
   // so we never render a flat-coloured hero.
@@ -91,36 +86,32 @@ export default async function HomePage() {
             id: -(i + 1),
             imageUrl: p.heroImage!,
             overlayHeading:
-              i === 0 ? copy.homeHeroFallback1Heading : copy.homeHeroFallback2Heading,
-            subheading: i === 0 ? copy.homeHeroFallback1Sub : copy.homeHeroFallback2Sub,
-            ctaLabel: i === 0 ? copy.homeHeroFallback1CtaLabel : copy.homeHeroFallback2CtaLabel,
-            ctaUrl: normalizeHeroCtaUrl(
-              i === 0 ? copy.homeHeroFallback1CtaUrl : copy.homeHeroFallback2CtaUrl
-            ),
+              i === 0
+                ? "Sivasree's Syamala – Arumbakkam\nThe Ultimate Address for Luxury"
+                : "Sivasree's Galaxy at Kumbakonam\nWhere Comfort Meets Culture",
+            subheading:
+              i === 0
+                ? "Designed for Those Who Desire the Finest."
+                : "Where tradition meets luxury, and every sunrise feels spiritual.",
+            ctaLabel: "Enquire Now",
+            ctaUrl: "/contact",
           }))
         : [];
 
   return (
     <>
-      <StructuredData
-        data={organizationSchema(settings ?? undefined, {
-          name: copy.structuredOrgName,
-          description: copy.structuredOrgDescription,
-        })}
-      />
-      <StructuredData data={faqSchema(copy.homeFaqItems)} />
+      <StructuredData data={organizationSchema(settings ?? undefined)} />
+      <StructuredData data={faqSchema([
+        { question: "What are the best 2 & 3 BHK apartments for sale in Kumbakonam?", answer: "Shivashree Developers offers premium 2 & 3 BHK apartments for sale in Kumbakonam with modern amenities, prime locations, and quality construction, ideal for both families and investors." },
+        { question: "Are there affordable 2 BHK flats for sale in Kumbakonam?", answer: "Yes, affordable 2 BHK flats for sale in Kumbakonam are available with essential amenities and good connectivity. These homes are perfect for first-time buyers and small families." },
+        { question: "Why should Chennai buyers invest in apartments in Kumbakonam?", answer: "Chennai buyers prefer investing in Kumbakonam apartments due to lower property prices, peaceful living environment, and high future appreciation potential compared to metro cities." },
+        { question: "What amenities are included in 2 & 3 BHK apartments in Kumbakonam?", answer: "Apartments typically include car parking, 24/7 security, power backup, water supply, and easy access to schools, hospitals, and transport facilities." },
+        { question: "Are 3 BHK apartments in Kumbakonam a good investment?", answer: "Yes, 3 BHK apartments in Kumbakonam offer larger space, better resale value, and growing demand, making them a strong long-term investment option." },
+        { question: "How is the location advantage of buying flats in Kumbakonam?", answer: "Kumbakonam offers excellent connectivity to Chennai and other cities, along with a calm lifestyle, cultural importance, and developing infrastructure, making it a preferred residential location." },
+      ])} />
 
       {/* Hero with property image background, sourced from CMS */}
-      <HeroSection
-        slides={heroData}
-        slideEyebrowFallback={copy.homeHeroSlideEyebrowFallback}
-        emptyHeroCopy={{
-          eyebrow: copy.homeHeroEmptyEyebrow,
-          heading: copy.homeHeroEmptyHeading,
-          ctaLabel: copy.homeHeroEmptyCtaLabel,
-          ctaUrl: normalizeHeroCtaUrl(copy.homeHeroEmptyCtaUrl),
-        }}
-      />
+      <HeroSection slides={heroData} />
 
       {/* Three project tiles laid out by status — the homepage is mostly here
           to send visitors straight to a relevant project, so we don't bury
@@ -143,13 +134,16 @@ export default async function HomePage() {
               href="/projects"
               className="hidden md:inline-flex items-center gap-2 text-brand-purple-700 font-semibold hover:text-brand-purple-800 transition text-sm"
             >
-              {copy.homeProjectsSeeAllLabel}
+              See every project
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
           {properties.length === 0 ? (
-            <p className="text-stone-500">{copy.homeProjectsEmptyMessage}</p>
+            <p className="text-stone-500">
+              No published projects yet. The team is preparing the next
+              announcement.
+            </p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {properties.map((property) => {
@@ -182,7 +176,9 @@ export default async function HomePage() {
                           loading="lazy"
                         />
                       ) : (
-                        <p className="text-brand-purple-400 text-sm py-12">{copy.homeCardNoImageText}</p>
+                        <p className="text-brand-purple-400 text-sm py-12">
+                          Image being uploaded
+                        </p>
                       )}
                       <span
                         className={`absolute top-3 left-3 text-xs font-semibold px-2.5 py-1 rounded-full border ${badge.chip}`}
@@ -228,26 +224,26 @@ export default async function HomePage() {
                         <div>
                           {property.priceStartingFrom ? (
                             <>
-                              <p className="text-xs text-stone-400">{copy.homeCardStartingAtLabel}</p>
+                              <p className="text-xs text-stone-400">Starting at</p>
                               <p className="font-bold text-stone-900">
                                 {formatPrice(property.priceStartingFrom)}
                               </p>
                             </>
                           ) : (
                             <p className="text-xs text-stone-500 leading-tight">
-                              {copy.homeCardPricingOnRequest}
+                              Pricing on request
                             </p>
                           )}
                         </div>
                         <span className="text-brand-purple-700 text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
-                          {copy.homeCardProjectPageLabel}
+                          Project page
                           <ArrowRight className="w-4 h-4" />
                         </span>
                       </div>
 
                       {property.reraNumber && (
                         <p className="text-[11px] text-stone-400 mt-3">
-                          {copy.homeCardTnreraPrefix} {property.reraNumber}
+                          TNRERA: {property.reraNumber}
                         </p>
                       )}
                     </div>
@@ -262,7 +258,7 @@ export default async function HomePage() {
               href="/projects"
               className="inline-flex items-center gap-2 text-brand-purple-700 font-semibold text-sm"
             >
-              {copy.homeProjectsSeeAllLabel}
+              See every project
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -350,22 +346,26 @@ export default async function HomePage() {
               </p>
               {settings?.corporateOfficePhone && (
                 <p className="text-white/60 text-sm">
-                  {copy.homeCtaPreferCallPrefix}{" "}
+                  Prefer to call? Dial{" "}
                   <a
                     href={`tel:${settings.corporateOfficePhone}`}
                     className="text-white font-semibold underline underline-offset-4 hover:text-brand-blue-200"
                   >
                     {settings.corporateOfficePhone}
                   </a>{" "}
-                  {copy.homeCtaPreferCallSuffix}
+                  — Monday to Saturday, 9am–6pm.
                 </p>
               )}
             </div>
 
             <div className="lg:col-span-6">
               <div className="bg-white rounded-2xl p-6 md:p-8 shadow-xl">
-                <h3 className="text-lg font-bold text-stone-900 mb-1">{copy.homeCtaCallbackTitle}</h3>
-                <p className="text-stone-500 text-sm mb-5">{copy.homeCtaCallbackSubtitle}</p>
+                <h3 className="text-lg font-bold text-stone-900 mb-1">
+                  Request a callback
+                </h3>
+                <p className="text-stone-500 text-sm mb-5">
+                  No spam. No mailing list. Just a phone call.
+                </p>
                 <EnquiryForm source="homepage-cta" />
               </div>
             </div>

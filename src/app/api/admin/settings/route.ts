@@ -26,8 +26,6 @@ export async function PUT(req: NextRequest) {
     revalidatePath("/about");
     revalidatePath("/contact");
     revalidatePath("/projects");
-    revalidatePath("/resources/blog");
-    revalidatePath("/resources/faqs");
 
     return NextResponse.json(settings);
   } catch (error) {

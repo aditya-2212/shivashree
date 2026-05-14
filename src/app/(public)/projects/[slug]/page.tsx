@@ -14,7 +14,6 @@ import {
   ChevronRight,
 } from "lucide-react";
 import type { Metadata } from "next";
-import { buildPublicSiteCopy, buildPropertyEnquiryTitle } from "@/lib/site-copy";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -40,13 +39,9 @@ const getProperty = (slug: string) =>
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const [property, settings] = await Promise.all([
-    getProperty(slug),
-    prisma.siteSettings.findUnique({ where: { id: 1 } }),
-  ]);
+  const property = await getProperty(slug);
   if (!property) return {};
 
-  const copy = buildPublicSiteCopy(settings);
   const bhkTypes = parseJsonField<string[]>(property.bhkTypes, []);
   const defaultTitle = `${property.title} — ${bhkTypes.join(" & ")} ${property.status === "COMPLETED" || property.status === "SOLD_OUT" ? "Apartments" : "Flats"} in ${property.city}`;
 
@@ -54,61 +49,59 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: property.seoTitle ?? defaultTitle,
     description:
       property.seoDescription ??
-      `${property.title} by ${copy.structuredOrgName} — ${bhkTypes.join(", ")} in ${property.locality}, ${property.city}. ${property.reraNumber ? `RERA: ${property.reraNumber}` : ""} ${formatPrice(property.priceStartingFrom)}.`,
+      `${property.title} by Shivashree Developers — ${bhkTypes.join(", ")} in ${property.locality}, ${property.city}. ${property.reraNumber ? `RERA: ${property.reraNumber}` : ""} ${formatPrice(property.priceStartingFrom)}.`,
     openGraph: {
       images: property.heroImage ? [property.heroImage] : [],
     },
   };
 }
 
+const statusConfig = {
+  PROPOSED: {
+    label: "Coming Soon",
+    chip: "bg-brand-blue-50 text-brand-blue-700 border-brand-blue-100",
+    accentText: "text-brand-blue-700",
+    accentBg: "bg-brand-blue-50",
+    accentBorder: "border-brand-blue-100",
+  },
+  ONGOING: {
+    label: "Now Selling",
+    chip: "bg-brand-purple-50 text-brand-purple-700 border-brand-purple-100",
+    accentText: "text-brand-purple-700",
+    accentBg: "bg-brand-purple-50",
+    accentBorder: "border-brand-purple-100",
+  },
+  COMPLETED: {
+    label: "Ready to Move",
+    chip: "bg-emerald-50 text-emerald-700 border-emerald-100",
+    accentText: "text-emerald-700",
+    accentBg: "bg-emerald-50",
+    accentBorder: "border-emerald-100",
+  },
+  SOLD_OUT: {
+    label: "Sold Out",
+    chip: "bg-stone-100 text-stone-600 border-stone-200",
+    accentText: "text-stone-600",
+    accentBg: "bg-stone-50",
+    accentBorder: "border-stone-200",
+  },
+} as const;
+
+const specLabels: Record<string, string> = {
+  building: "Building & structure",
+  bathroom: "Bathroom",
+  kitchen: "Kitchen",
+  flooring: "Flooring",
+  doors: "Doors",
+  windows: "Windows",
+};
+
 export default async function ProjectDetailPage({ params }: Props) {
   const { slug } = await params;
 
-  const [property, settings] = await Promise.all([getProperty(slug), prisma.siteSettings.findUnique({ where: { id: 1 } })]);
+  const property = await getProperty(slug);
 
   if (!property) notFound();
-
-  const copy = buildPublicSiteCopy(settings);
-
-  const statusConfig = {
-    PROPOSED: {
-      label: copy.statusLabelProposed,
-      chip: "bg-brand-blue-50 text-brand-blue-700 border-brand-blue-100",
-      accentText: "text-brand-blue-700",
-      accentBg: "bg-brand-blue-50",
-      accentBorder: "border-brand-blue-100",
-    },
-    ONGOING: {
-      label: copy.statusLabelOngoing,
-      chip: "bg-brand-purple-50 text-brand-purple-700 border-brand-purple-100",
-      accentText: "text-brand-purple-700",
-      accentBg: "bg-brand-purple-50",
-      accentBorder: "border-brand-purple-100",
-    },
-    COMPLETED: {
-      label: copy.statusLabelCompleted,
-      chip: "bg-emerald-50 text-emerald-700 border-emerald-100",
-      accentText: "text-emerald-700",
-      accentBg: "bg-emerald-50",
-      accentBorder: "border-emerald-100",
-    },
-    SOLD_OUT: {
-      label: copy.statusLabelSoldOut,
-      chip: "bg-stone-100 text-stone-600 border-stone-200",
-      accentText: "text-stone-600",
-      accentBg: "bg-stone-50",
-      accentBorder: "border-stone-200",
-    },
-  } as const;
-
-  const specLabels: Record<string, string> = {
-    building: copy.propSpecLabelBuilding,
-    bathroom: copy.propSpecLabelBathroom,
-    kitchen: copy.propSpecLabelKitchen,
-    flooring: copy.propSpecLabelFlooring,
-    doors: copy.propSpecLabelDoors,
-    windows: copy.propSpecLabelWindows,
-  };
 
   const bhkTypes = parseJsonField<string[]>(property.bhkTypes, []);
   const highlights = parseJsonField<string[]>(property.highlights, []);
@@ -155,13 +148,13 @@ export default async function ProjectDetailPage({ params }: Props) {
           <ol className="flex items-center gap-2 text-sm text-stone-500">
             <li>
               <Link href="/" className="hover:text-stone-800 transition">
-                {copy.propDetailBreadcrumbHome}
+                Home
               </Link>
             </li>
             <ChevronRight className="w-4 h-4 text-stone-300" />
             <li>
               <Link href="/projects" className="hover:text-stone-800 transition">
-                {copy.propDetailBreadcrumbProjects}
+                Projects
               </Link>
             </li>
             <ChevronRight className="w-4 h-4 text-stone-300" />
@@ -199,7 +192,7 @@ export default async function ProjectDetailPage({ params }: Props) {
               <dl className="flex flex-wrap gap-x-8 gap-y-4 p-5 bg-stone-50 rounded-xl border border-stone-200 mb-8">
                 {property.priceStartingFrom !== null && property.priceStartingFrom !== undefined && (
                   <div>
-                    <dt className="text-xs text-stone-500 mb-0.5">{copy.propDetailDtStartingAt}</dt>
+                    <dt className="text-xs text-stone-500 mb-0.5">Starting at</dt>
                     <dd className="font-bold text-stone-900 text-base">
                       {formatPrice(property.priceStartingFrom)}
                     </dd>
@@ -207,7 +200,7 @@ export default async function ProjectDetailPage({ params }: Props) {
                 )}
                 {bhkTypes.length > 0 && (
                   <div>
-                    <dt className="text-xs text-stone-500 mb-0.5">{copy.propDetailDtConfigurations}</dt>
+                    <dt className="text-xs text-stone-500 mb-0.5">Configurations</dt>
                     <dd className="font-bold text-stone-900 text-base">
                       {bhkTypes.join(" · ")}
                     </dd>
@@ -215,14 +208,14 @@ export default async function ProjectDetailPage({ params }: Props) {
                 )}
                 {property.reraNumber && (
                   <div>
-                    <dt className="text-xs text-stone-500 mb-0.5">{copy.propDetailDtTnrera}</dt>
+                    <dt className="text-xs text-stone-500 mb-0.5">TNRERA No.</dt>
                     <dd className="font-bold text-stone-900 text-sm">
                       {property.reraNumber}
                     </dd>
                   </div>
                 )}
                 <div>
-                  <dt className="text-xs text-stone-500 mb-0.5">{copy.propDetailDtLocation}</dt>
+                  <dt className="text-xs text-stone-500 mb-0.5">Location</dt>
                   <dd className="font-bold text-stone-900 text-base">
                     {property.locality}, {property.city}
                   </dd>
@@ -248,7 +241,9 @@ export default async function ProjectDetailPage({ params }: Props) {
               {/* Highlights */}
               {highlights.length > 0 && (
                 <div className="mb-10">
-                  <h2 className="text-xl font-bold text-stone-900 mb-4">{copy.propDetailHighlightsHeading}</h2>
+                  <h2 className="text-xl font-bold text-stone-900 mb-4">
+                    Project highlights
+                  </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {highlights.map((h) => (
                       <div
@@ -272,7 +267,9 @@ export default async function ProjectDetailPage({ params }: Props) {
               */}
               {property.galleryImages.length > 0 && (
                 <div className="mb-10">
-                  <h2 className="text-xl font-bold text-stone-900 mb-4">{copy.propDetailGalleryHeading}</h2>
+                  <h2 className="text-xl font-bold text-stone-900 mb-4">
+                    Gallery
+                  </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {property.galleryImages.map((img) => (
                       <div
@@ -295,7 +292,9 @@ export default async function ProjectDetailPage({ params }: Props) {
               {/* Amenities */}
               {property.amenities.length > 0 && (
                 <div className="mb-10">
-                  <h2 className="text-xl font-bold text-stone-900 mb-4">{copy.propDetailAmenitiesHeading}</h2>
+                  <h2 className="text-xl font-bold text-stone-900 mb-4">
+                    Amenities included
+                  </h2>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                     {property.amenities.map((amenity) => (
                       <div
@@ -315,7 +314,9 @@ export default async function ProjectDetailPage({ params }: Props) {
               {/* Specifications */}
               {Object.keys(keySpecs).length > 0 && (
                 <div className="mb-10">
-                  <h2 className="text-xl font-bold text-stone-900 mb-4">{copy.propDetailSpecificationsHeading}</h2>
+                  <h2 className="text-xl font-bold text-stone-900 mb-4">
+                    Specifications
+                  </h2>
                   <dl className="bg-white border border-stone-200 rounded-xl overflow-hidden divide-y divide-stone-100">
                     {Object.entries(keySpecs).map(([key, value]) => {
                       if (!value) return null;
@@ -340,7 +341,9 @@ export default async function ProjectDetailPage({ params }: Props) {
               {/* Floor plans — natural image height per no-crop rule */}
               {property.floorPlans.length > 0 && (
                 <div className="mb-10">
-                  <h2 className="text-xl font-bold text-stone-900 mb-4">{copy.propDetailFloorPlansHeading}</h2>
+                  <h2 className="text-xl font-bold text-stone-900 mb-4">
+                    Floor plans
+                  </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {property.floorPlans.map((plan) => (
                       <figure
@@ -373,7 +376,9 @@ export default async function ProjectDetailPage({ params }: Props) {
               */}
               {(locationAdvantages.length > 0 || property.mapEmbedUrl) && (
                 <div className="mb-10">
-                  <h2 className="text-xl font-bold text-stone-900 mb-4">{copy.propDetailNeighbourhoodHeading}</h2>
+                  <h2 className="text-xl font-bold text-stone-900 mb-4">
+                    The neighbourhood
+                  </h2>
 
                   {locationAdvantages.length > 0 && (
                     <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-5">
@@ -407,7 +412,9 @@ export default async function ProjectDetailPage({ params }: Props) {
               {/* FAQs */}
               {property.faqs.length > 0 && (
                 <div className="mb-10">
-                  <h2 className="text-xl font-bold text-stone-900 mb-4">{copy.propDetailFaqsHeading}</h2>
+                  <h2 className="text-xl font-bold text-stone-900 mb-4">
+                    Questions buyers ask about this project
+                  </h2>
                   <PropertyFAQAccordion faqs={property.faqs} />
                 </div>
               )}
@@ -417,7 +424,7 @@ export default async function ProjectDetailPage({ params }: Props) {
                 className="inline-flex items-center gap-2 text-stone-500 hover:text-brand-purple-700 text-sm mb-12 transition"
               >
                 <ArrowLeft className="w-4 h-4" />
-                {copy.propDetailBackLinkLabel}
+                Back to all projects
               </Link>
             </div>
 
@@ -425,9 +432,12 @@ export default async function ProjectDetailPage({ params }: Props) {
             <div className="lg:sticky lg:top-24 space-y-4">
               <div className="bg-white border border-stone-200 rounded-2xl p-6 shadow-sm">
                 <h3 className="font-bold text-stone-900 text-lg mb-1.5">
-                  {buildPropertyEnquiryTitle(copy.propDetailEnquiryTitleTemplate, property.title)}
+                  Speak to the {property.title.split(" ").pop()} team
                 </h3>
-                <p className="text-stone-500 text-sm mb-5">{copy.propDetailEnquiryIntro}</p>
+                <p className="text-stone-500 text-sm mb-5">
+                  Leave your number and a project advisor will call you back
+                  the same working day.
+                </p>
                 <EnquiryForm
                   source={`project-${property.slug}`}
                   projectId={property.id}
@@ -439,17 +449,17 @@ export default async function ProjectDetailPage({ params }: Props) {
                 className={`p-4 border rounded-xl ${status.accentBorder} ${status.accentBg}`}
               >
                 <p className={`text-xs font-semibold uppercase tracking-wider mb-1 ${status.accentText}`}>
-                  {copy.propDetailStatusBoxLabel}
+                  Project status
                 </p>
                 <p className="font-bold text-stone-900">{status.label}</p>
                 <p className="text-xs text-stone-600 mt-1.5 leading-relaxed">
                   {property.status === "COMPLETED"
-                    ? copy.propDetailStatusBlurbCompleted
+                    ? "Units are ready for handover. Walkthroughs available seven days a week with prior appointment."
                     : property.status === "ONGOING"
-                      ? copy.propDetailStatusBlurbOngoing
+                      ? "Construction in progress. Floor plans and pricing are finalised — bookings open."
                       : property.status === "SOLD_OUT"
-                        ? copy.propDetailStatusBlurbSoldOut
-                        : copy.propDetailStatusBlurbProposed}
+                        ? "All units have been sold. Contact us for resale opportunities."
+                        : "Designs are being finalised. Register interest now to get pre-launch pricing."}
                 </p>
               </div>
             </div>

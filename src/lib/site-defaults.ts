@@ -1,16 +1,8 @@
 /**
- * Single source of truth for CMS fallbacks. Public pages and the admin
- * Site Settings form use the same strings when a field is empty in the DB.
+ * Single source of truth for CMS fallbacks. Public pages use these when
+ * siteSettings fields are null/empty; SiteSettingsForm shows the same
+ * strings as "If left empty…" hints.
  */
-
-/** Use saved value when non-empty after trim; otherwise the live-site default. */
-export function withSiteDefault(
-  value: string | null | undefined,
-  fallback: string
-): string {
-  const t = typeof value === "string" ? value.trim() : "";
-  return t || fallback;
-}
 
 export const contactPageDefaults = {
   metaTitle: "Contact Shivashree Developers | Apartments in Kumbakonam & Chennai",
@@ -78,3 +70,10 @@ export const aboutPageDefaults = {
   ctaBody:
     "Tell us what you're looking for — whether you're a first-time buyer, an NRI investor, or a parent buying for an adult child. The advisor who handles your city will call you back.",
 } as const;
+
+/** Truncate for admin UI hints (full text in title tooltip). */
+export function truncateDefaultHint(text: string, maxLen = 120): string {
+  const t = text.replace(/\s+/g, " ").trim();
+  if (t.length <= maxLen) return t;
+  return `${t.slice(0, maxLen)}…`;
+}

@@ -1,24 +1,20 @@
 "use client";
 
-import { useForm, type UseFormRegister, type FieldErrors, type FieldValues } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState, useRef } from "react";
 import toast from "react-hot-toast";
 import { Save, Loader2, Upload, X } from "lucide-react";
 import RichTextEditor from "./RichTextEditor";
-import GlobalSiteCopyFields from "./GlobalSiteCopyFields";
-import { globalSiteCopySchema } from "./site-settings-global-copy-schema";
-import { globalSiteCopyDefaultValues, parseGlobalJsonFromForm } from "./global-site-copy-default-values";
 import {
   contactPageDefaults,
   homePageDefaults,
   aboutPageDefaults,
-  withSiteDefault,
+  truncateDefaultHint,
 } from "@/lib/site-defaults";
-import type { SiteSettings } from "@prisma/client";
 
-const baseSchema = z.object({
+const schema = z.object({
   corporateOfficeAddress: z.string().min(1, "Required"),
   corporateOfficeEmail: z.string().email("Invalid email"),
   corporateOfficePhone: z.string().min(1, "Required"),
@@ -75,11 +71,65 @@ const baseSchema = z.object({
   homeCtaBody: z.string().optional(),
 });
 
-const schema = baseSchema.merge(globalSiteCopySchema);
-
 type FormData = z.infer<typeof schema>;
 
-type SiteSettingsData = SiteSettings;
+interface SiteSettingsData {
+  corporateOfficeAddress: string;
+  corporateOfficeEmail: string;
+  corporateOfficePhone: string;
+  registeredOfficeAddress: string;
+  registeredOfficeTel: string;
+  whatsappNumber: string;
+  facebookUrl: string | null;
+  instagramUrl: string | null;
+  youtubeUrl: string | null;
+  corporateMapEmbedUrl: string | null;
+  footerText: string;
+  contactHeroEyebrow: string | null;
+  contactHeroTitle: string | null;
+  contactHeroIntro: string | null;
+  contactCorporateLabel: string | null;
+  contactRegisteredLabel: string | null;
+  contactHoursTitle: string | null;
+  contactHoursWeekdays: string | null;
+  contactHoursSunday: string | null;
+  contactHoursNote: string | null;
+  contactFormTitle: string | null;
+  contactFormIntro: string | null;
+  aboutHeroEyebrow: string | null;
+  aboutHeroTitle: string | null;
+  aboutHeroLead: string | null;
+  aboutStoryTitle: string | null;
+  aboutStoryBodyHtml: string | null;
+  aboutCommitmentsTitle: string | null;
+  aboutC1Title: string | null;
+  aboutC1Body: string | null;
+  aboutC2Title: string | null;
+  aboutC2Body: string | null;
+  aboutC3Title: string | null;
+  aboutC3Body: string | null;
+  aboutWhereTitle: string | null;
+  aboutWhereIntro: string | null;
+  aboutCtaTitle: string | null;
+  aboutCtaBody: string | null;
+  homeProjectsEyebrow: string | null;
+  homeProjectsHeading: string | null;
+  homeProjectsSubheading: string | null;
+  homeWhyEyebrow: string | null;
+  homeWhyHeading: string | null;
+  homeCard1Title: string | null;
+  homeCard1Body: string | null;
+  homeCard1Image: string | null;
+  homeCard2Title: string | null;
+  homeCard2Body: string | null;
+  homeCard2Image: string | null;
+  homeCard3Title: string | null;
+  homeCard3Body: string | null;
+  homeCard3Image: string | null;
+  homeCtaEyebrow: string | null;
+  homeCtaHeading: string | null;
+  homeCtaBody: string | null;
+}
 
 export default function SiteSettingsForm({ initialData }: { initialData: SiteSettingsData | null }) {
   const [saving, setSaving] = useState(false);
@@ -136,122 +186,63 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
       instagramUrl: initialData?.instagramUrl ?? "",
       youtubeUrl: initialData?.youtubeUrl ?? "",
       corporateMapEmbedUrl: initialData?.corporateMapEmbedUrl ?? "",
-      footerText: withSiteDefault(
-        initialData?.footerText,
-        "Shivashree Developers. All rights reserved."
-      ),
-      contactHeroEyebrow: withSiteDefault(
-        initialData?.contactHeroEyebrow,
-        contactPageDefaults.heroEyebrow
-      ),
-      contactHeroTitle: withSiteDefault(
-        initialData?.contactHeroTitle,
-        contactPageDefaults.heroTitle
-      ),
-      contactHeroIntro: withSiteDefault(
-        initialData?.contactHeroIntro,
-        contactPageDefaults.heroIntro
-      ),
-      contactCorporateLabel: withSiteDefault(
-        initialData?.contactCorporateLabel,
-        contactPageDefaults.corporateLabel
-      ),
-      contactRegisteredLabel: withSiteDefault(
-        initialData?.contactRegisteredLabel,
-        contactPageDefaults.registeredLabel
-      ),
-      contactHoursTitle: withSiteDefault(
-        initialData?.contactHoursTitle,
-        contactPageDefaults.hoursTitle
-      ),
-      contactHoursWeekdays: withSiteDefault(
-        initialData?.contactHoursWeekdays,
-        contactPageDefaults.hoursWeekdays
-      ),
-      contactHoursSunday: withSiteDefault(
-        initialData?.contactHoursSunday,
-        contactPageDefaults.hoursSunday
-      ),
-      contactHoursNote: withSiteDefault(
-        initialData?.contactHoursNote,
-        contactPageDefaults.hoursNote
-      ),
-      contactFormTitle: withSiteDefault(
-        initialData?.contactFormTitle,
-        contactPageDefaults.formTitle
-      ),
-      contactFormIntro: withSiteDefault(
-        initialData?.contactFormIntro,
-        contactPageDefaults.formIntro
-      ),
-      aboutHeroEyebrow: withSiteDefault(
-        initialData?.aboutHeroEyebrow,
-        aboutPageDefaults.heroEyebrow
-      ),
-      aboutHeroTitle: withSiteDefault(initialData?.aboutHeroTitle, aboutPageDefaults.heroTitle),
-      aboutHeroLead: withSiteDefault(initialData?.aboutHeroLead, aboutPageDefaults.heroLead),
-      aboutStoryTitle: initialData?.aboutStoryTitle?.trim() ?? "",
-      aboutCommitmentsTitle: withSiteDefault(
-        initialData?.aboutCommitmentsTitle,
-        aboutPageDefaults.commitmentsTitle
-      ),
-      aboutC1Title: withSiteDefault(initialData?.aboutC1Title, aboutPageDefaults.c1Title),
-      aboutC1Body: withSiteDefault(initialData?.aboutC1Body, aboutPageDefaults.c1Body),
-      aboutC2Title: withSiteDefault(initialData?.aboutC2Title, aboutPageDefaults.c2Title),
-      aboutC2Body: withSiteDefault(initialData?.aboutC2Body, aboutPageDefaults.c2Body),
-      aboutC3Title: withSiteDefault(initialData?.aboutC3Title, aboutPageDefaults.c3Title),
-      aboutC3Body: withSiteDefault(initialData?.aboutC3Body, aboutPageDefaults.c3Body),
-      aboutWhereTitle: withSiteDefault(initialData?.aboutWhereTitle, aboutPageDefaults.whereTitle),
-      aboutWhereIntro: withSiteDefault(initialData?.aboutWhereIntro, aboutPageDefaults.whereIntro),
-      aboutCtaTitle: withSiteDefault(initialData?.aboutCtaTitle, aboutPageDefaults.ctaTitle),
-      aboutCtaBody: withSiteDefault(initialData?.aboutCtaBody, aboutPageDefaults.ctaBody),
-      homeProjectsEyebrow: withSiteDefault(
-        initialData?.homeProjectsEyebrow,
-        homePageDefaults.projectsEyebrow
-      ),
-      homeProjectsHeading: withSiteDefault(
-        initialData?.homeProjectsHeading,
-        homePageDefaults.projectsHeading
-      ),
-      homeProjectsSubheading: withSiteDefault(
-        initialData?.homeProjectsSubheading,
-        homePageDefaults.projectsSubheading
-      ),
-      homeWhyEyebrow: withSiteDefault(initialData?.homeWhyEyebrow, homePageDefaults.whyEyebrow),
-      homeWhyHeading: withSiteDefault(initialData?.homeWhyHeading, homePageDefaults.whyHeading),
-      homeCard1Title: withSiteDefault(initialData?.homeCard1Title, homePageDefaults.card1Title),
-      homeCard1Body: withSiteDefault(initialData?.homeCard1Body, homePageDefaults.card1Body),
-      homeCard2Title: withSiteDefault(initialData?.homeCard2Title, homePageDefaults.card2Title),
-      homeCard2Body: withSiteDefault(initialData?.homeCard2Body, homePageDefaults.card2Body),
-      homeCard3Title: withSiteDefault(initialData?.homeCard3Title, homePageDefaults.card3Title),
-      homeCard3Body: withSiteDefault(initialData?.homeCard3Body, homePageDefaults.card3Body),
-      homeCtaEyebrow: withSiteDefault(initialData?.homeCtaEyebrow, homePageDefaults.ctaEyebrow),
-      homeCtaHeading: withSiteDefault(initialData?.homeCtaHeading, homePageDefaults.ctaHeading),
-      homeCtaBody: withSiteDefault(initialData?.homeCtaBody, homePageDefaults.ctaBody),
-      ...globalSiteCopyDefaultValues(initialData),
+      footerText: initialData?.footerText ?? "",
+      contactHeroEyebrow: initialData?.contactHeroEyebrow ?? "",
+      contactHeroTitle: initialData?.contactHeroTitle ?? "",
+      contactHeroIntro: initialData?.contactHeroIntro ?? "",
+      contactCorporateLabel: initialData?.contactCorporateLabel ?? "",
+      contactRegisteredLabel: initialData?.contactRegisteredLabel ?? "",
+      contactHoursTitle: initialData?.contactHoursTitle ?? "",
+      contactHoursWeekdays: initialData?.contactHoursWeekdays ?? "",
+      contactHoursSunday: initialData?.contactHoursSunday ?? "",
+      contactHoursNote: initialData?.contactHoursNote ?? "",
+      contactFormTitle: initialData?.contactFormTitle ?? "",
+      contactFormIntro: initialData?.contactFormIntro ?? "",
+      aboutHeroEyebrow: initialData?.aboutHeroEyebrow ?? "",
+      aboutHeroTitle: initialData?.aboutHeroTitle ?? "",
+      aboutHeroLead: initialData?.aboutHeroLead ?? "",
+      aboutStoryTitle: initialData?.aboutStoryTitle ?? "",
+      aboutCommitmentsTitle: initialData?.aboutCommitmentsTitle ?? "",
+      aboutC1Title: initialData?.aboutC1Title ?? "",
+      aboutC1Body: initialData?.aboutC1Body ?? "",
+      aboutC2Title: initialData?.aboutC2Title ?? "",
+      aboutC2Body: initialData?.aboutC2Body ?? "",
+      aboutC3Title: initialData?.aboutC3Title ?? "",
+      aboutC3Body: initialData?.aboutC3Body ?? "",
+      aboutWhereTitle: initialData?.aboutWhereTitle ?? "",
+      aboutWhereIntro: initialData?.aboutWhereIntro ?? "",
+      aboutCtaTitle: initialData?.aboutCtaTitle ?? "",
+      aboutCtaBody: initialData?.aboutCtaBody ?? "",
+      homeProjectsEyebrow: initialData?.homeProjectsEyebrow ?? "",
+      homeProjectsHeading: initialData?.homeProjectsHeading ?? "",
+      homeProjectsSubheading: initialData?.homeProjectsSubheading ?? "",
+      homeWhyEyebrow: initialData?.homeWhyEyebrow ?? "",
+      homeWhyHeading: initialData?.homeWhyHeading ?? "",
+      homeCard1Title: initialData?.homeCard1Title ?? "",
+      homeCard1Body: initialData?.homeCard1Body ?? "",
+      homeCard2Title: initialData?.homeCard2Title ?? "",
+      homeCard2Body: initialData?.homeCard2Body ?? "",
+      homeCard3Title: initialData?.homeCard3Title ?? "",
+      homeCard3Body: initialData?.homeCard3Body ?? "",
+      homeCtaEyebrow: initialData?.homeCtaEyebrow ?? "",
+      homeCtaHeading: initialData?.homeCtaHeading ?? "",
+      homeCtaBody: initialData?.homeCtaBody ?? "",
     },
   });
 
   const onSubmit = async (data: FormData) => {
     setSaving(true);
     try {
-      let cleaned: Record<string, unknown> = {
+      const cleaned = {
         ...data,
         aboutStoryBodyHtml,
         homeCard1Image: card1Image,
         homeCard2Image: card2Image,
         homeCard3Image: card3Image,
       };
-      if (typeof cleaned.corporateMapEmbedUrl === "string" && cleaned.corporateMapEmbedUrl) {
+      if (cleaned.corporateMapEmbedUrl) {
         const match = cleaned.corporateMapEmbedUrl.match(/src=["']([^"']+)["']/);
         if (match) cleaned.corporateMapEmbedUrl = match[1];
-      }
-      try {
-        cleaned = parseGlobalJsonFromForm(cleaned);
-      } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Invalid JSON in one of the global fields.");
-        setSaving(false);
-        return;
       }
 
       const res = await fetch("/api/admin/settings", {
@@ -291,7 +282,7 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
   }) => (
     <div>
       <label className="block text-sm font-medium text-stone-700 mb-1.5">{label}</label>
-      {hint && <p className="text-stone-600 text-xs mb-2">{hint}</p>}
+      {hint && <p className="text-stone-400 text-xs mb-2">{hint}</p>}
       <input ref={inputRef} type="file" accept="image/*" onChange={onUpload} className="hidden" />
       {value ? (
         <div className="relative w-full max-w-xs rounded-xl overflow-hidden border border-stone-200">
@@ -335,7 +326,7 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
     <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
       <div className="px-6 py-4 bg-stone-50 border-b border-stone-100">
         <h2 className="font-semibold text-stone-900 text-sm">{title}</h2>
-        {description && <p className="text-stone-600 text-xs mt-0.5">{description}</p>}
+        {description && <p className="text-stone-400 text-xs mt-0.5">{description}</p>}
       </div>
       <div className="p-6 space-y-4">{children}</div>
     </div>
@@ -345,17 +336,28 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
     label,
     hint,
     error,
+    emptyDefault,
     children,
   }: {
     label: string;
     hint?: string;
     error?: string;
+    /** When the CMS field is blank, the public site uses this text — shown as a hint. */
+    emptyDefault?: string;
     children: React.ReactNode;
   }) => (
     <div>
       <label className="block text-sm font-medium text-stone-700 mb-1.5">{label}</label>
-      {hint && <p className="text-stone-700 text-xs mb-2">{hint}</p>}
+      {hint && <p className="text-stone-400 text-xs mb-2">{hint}</p>}
       {children}
+      {emptyDefault && (
+        <p
+          className="text-[11px] text-stone-500 mt-1.5 leading-snug"
+          title={emptyDefault}
+        >
+          If left empty: {truncateDefaultHint(emptyDefault)}
+        </p>
+      )}
       {error && <p className="text-red-600 text-xs mt-1">{error}</p>}
     </div>
   );
@@ -432,105 +434,200 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
       </Section>
 
       {/* ── Contact page ─────────────────────────────────────────────────── */}
-      <Section title="Contact page — hero" description="Purple header at the top of /contact.">
-        <Field label="Eyebrow">
-          <input {...register("contactHeroEyebrow")} className={inputClass} />
+      <Section
+        title="Contact page — hero"
+        description="Controls the purple header section at the top of /contact. Leave blank to use the built-in default text."
+      >
+        <Field label="Eyebrow" hint='Small label above the title, e.g. "Contact"' emptyDefault={contactPageDefaults.heroEyebrow}>
+          <input
+            {...register("contactHeroEyebrow")}
+            className={inputClass}
+            placeholder="Contact"
+          />
         </Field>
-        <Field label="Page title">
-          <textarea {...register("contactHeroTitle")} rows={3} className={textareaClass} />
+        <Field label="Page title" hint="Use a new line (Enter) to create a line break in the title." emptyDefault={contactPageDefaults.heroTitle}>
+          <input
+            {...register("contactHeroTitle")}
+            className={inputClass}
+            placeholder="Two offices, one team, real phones."
+          />
         </Field>
-        <Field label="Intro paragraph">
-          <textarea {...register("contactHeroIntro")} rows={4} className={textareaClass} />
+        <Field label="Intro paragraph" emptyDefault={contactPageDefaults.heroIntro}>
+          <textarea
+            {...register("contactHeroIntro")}
+            rows={3}
+            className={textareaClass}
+            placeholder="Walk in, call, or fill in the form…"
+          />
         </Field>
       </Section>
 
       <Section
-        title="Contact page — offices, hours, enquiry"
-        description="Office card labels, hours copy, and enquiry form heading and intro."
+        title="Contact page — sections"
+        description="Labels and copy for the office cards, hours box, and enquiry form."
       >
         <div className="grid grid-cols-2 gap-4">
-          <Field label="Corporate office card label">
-            <input {...register("contactCorporateLabel")} className={inputClass} />
+          <Field label="Corporate office card label" emptyDefault={contactPageDefaults.corporateLabel}>
+            <input
+              {...register("contactCorporateLabel")}
+              className={inputClass}
+              placeholder="Corporate office — Chennai"
+            />
           </Field>
-          <Field label="Registered office card label">
-            <input {...register("contactRegisteredLabel")} className={inputClass} />
+          <Field label="Registered office card label" emptyDefault={contactPageDefaults.registeredLabel}>
+            <input
+              {...register("contactRegisteredLabel")}
+              className={inputClass}
+              placeholder="Registered office — Kumbakonam"
+            />
           </Field>
         </div>
-        <Field label="Office hours box title">
-          <input {...register("contactHoursTitle")} className={inputClass} />
+        <Field label="Office hours box title" emptyDefault={contactPageDefaults.hoursTitle}>
+          <input
+            {...register("contactHoursTitle")}
+            className={inputClass}
+            placeholder="When we're in office"
+          />
         </Field>
         <div className="grid grid-cols-2 gap-4">
-          <Field label="Weekdays line">
-            <input {...register("contactHoursWeekdays")} className={inputClass} />
+          <Field
+            label="Weekdays line"
+            hint='e.g. "Monday – Saturday · 9:00am – 6:00pm"'
+            emptyDefault={contactPageDefaults.hoursWeekdays}
+          >
+            <input
+              {...register("contactHoursWeekdays")}
+              className={inputClass}
+              placeholder="Monday – Saturday · 9:00am – 6:00pm"
+            />
           </Field>
-          <Field label="Sunday line">
-            <input {...register("contactHoursSunday")} className={inputClass} />
+          <Field
+            label="Sunday line"
+            hint='e.g. "Sunday · 10:00am – 2:00pm"'
+            emptyDefault={contactPageDefaults.hoursSunday}
+          >
+            <input
+              {...register("contactHoursSunday")}
+              className={inputClass}
+              placeholder="Sunday · 10:00am – 2:00pm"
+            />
           </Field>
         </div>
-        <Field label="Hours note (small text below)">
-          <textarea {...register("contactHoursNote")} rows={3} className={textareaClass} />
+        <Field label="Hours note (small text below)" emptyDefault={contactPageDefaults.hoursNote}>
+          <textarea
+            {...register("contactHoursNote")}
+            rows={2}
+            className={textareaClass}
+            placeholder="Sunday hours are limited — call ahead so an advisor is available when you arrive."
+          />
         </Field>
         <div className="grid grid-cols-2 gap-4">
-          <Field label="Enquiry form title">
-            <input {...register("contactFormTitle")} className={inputClass} />
+          <Field label="Enquiry form title" emptyDefault={contactPageDefaults.formTitle}>
+            <input
+              {...register("contactFormTitle")}
+              className={inputClass}
+              placeholder="Send us an enquiry"
+            />
           </Field>
         </div>
-        <Field label="Enquiry form intro">
-          <textarea {...register("contactFormIntro")} rows={3} className={textareaClass} />
+        <Field label="Enquiry form intro" emptyDefault={contactPageDefaults.formIntro}>
+          <textarea
+            {...register("contactFormIntro")}
+            rows={2}
+            className={textareaClass}
+            placeholder="Two fields are required — your name and your number…"
+          />
         </Field>
       </Section>
 
       {/* ── About page ───────────────────────────────────────────────────── */}
-      <Section title="About page — hero" description="Purple header at the top of /about.">
-        <Field label="Eyebrow">
-          <input {...register("aboutHeroEyebrow")} className={inputClass} />
+      <Section
+        title="About page — hero"
+        description="Controls the purple header section at the top of /about. Leave blank to use the built-in default text."
+      >
+        <Field label="Eyebrow" emptyDefault={aboutPageDefaults.heroEyebrow}>
+          <input
+            {...register("aboutHeroEyebrow")}
+            className={inputClass}
+            placeholder="About Shivashree Developers"
+          />
         </Field>
-        <Field label="Page title">
-          <textarea {...register("aboutHeroTitle")} rows={3} className={textareaClass} />
+        <Field
+          label="Page title"
+          hint="Use a new line (Enter) to create a line break in the heading."
+          emptyDefault={aboutPageDefaults.heroTitle}
+        >
+          <textarea
+            {...register("aboutHeroTitle")}
+            rows={2}
+            className={textareaClass}
+            placeholder={"A Kumbakonam builder.\nNow also in Chennai."}
+          />
         </Field>
-        <Field label="Lead paragraph">
-          <textarea {...register("aboutHeroLead")} rows={5} className={textareaClass} />
+        <Field label="Lead paragraph" emptyDefault={aboutPageDefaults.heroLead}>
+          <textarea
+            {...register("aboutHeroLead")}
+            rows={3}
+            className={textareaClass}
+            placeholder="We started in 2000 with a small G+3 in Kumbakonam…"
+          />
         </Field>
       </Section>
 
       <Section
-        title="About page — story"
-        description="Shown on /about only when you save a title and/or body. Vision, mission, process, and quality blocks are edited under Global site copy below."
+        title="About page — story section"
+        description='The prose body under "Why we still build only here." Supports rich text (bold, italic, links, etc.).'
       >
-        <Field label="Section title">
-          <input {...register("aboutStoryTitle")} className={inputClass} />
+        <Field label="Section title" emptyDefault={aboutPageDefaults.storyTitle}>
+          <input
+            {...register("aboutStoryTitle")}
+            className={inputClass}
+            placeholder="Why we still build only here."
+          />
         </Field>
         <div>
-          <label className="block text-sm font-medium text-stone-700 mb-1.5">Story body</label>
+          <label className="block text-sm font-medium text-stone-700 mb-1.5">
+            Story body
+          </label>
           <RichTextEditor
             value={aboutStoryBodyHtml}
             onChange={setAboutStoryBodyHtml}
-            placeholder=""
+            placeholder="Tell the company story here…"
           />
+          <p
+            className="text-[11px] text-stone-500 mt-1.5 leading-snug"
+            title="Optional rich text; the story block on /about is hidden until title or body is set."
+          >
+            Optional — the story block appears on /about only when title or body has content.
+          </p>
         </div>
       </Section>
 
       <Section
         title="About page — commitments"
-        description="Three numbered cards on /about (after the story block when it is visible)."
+        description='The three numbered items under "What you can hold us to."'
       >
-        <Field label="Section title">
-          <input {...register("aboutCommitmentsTitle")} className={inputClass} />
+        <Field label="Section title" emptyDefault={aboutPageDefaults.commitmentsTitle}>
+          <input
+            {...register("aboutCommitmentsTitle")}
+            className={inputClass}
+            placeholder="What you can hold us to."
+          />
         </Field>
         {(
           [
-            { t: "aboutC1Title" as const, b: "aboutC1Body" as const, n: "01" },
-            { t: "aboutC2Title" as const, b: "aboutC2Body" as const, n: "02" },
-            { t: "aboutC3Title" as const, b: "aboutC3Body" as const, n: "03" },
-          ] as const
-        ).map(({ t, b, n }) => (
+            { t: "aboutC1Title" as const, b: "aboutC1Body" as const, n: "01", dt: aboutPageDefaults.c1Title, db: aboutPageDefaults.c1Body },
+            { t: "aboutC2Title" as const, b: "aboutC2Body" as const, n: "02", dt: aboutPageDefaults.c2Title, db: aboutPageDefaults.c2Body },
+            { t: "aboutC3Title" as const, b: "aboutC3Body" as const, n: "03", dt: aboutPageDefaults.c3Title, db: aboutPageDefaults.c3Body },
+          ]
+        ).map(({ t, b, n, dt, db }) => (
           <div key={n} className="border border-stone-200 rounded-lg p-4 space-y-3">
             <p className="text-xs font-bold text-brand-purple-700">{n}</p>
-            <Field label="Commitment title">
+            <Field label="Commitment title" emptyDefault={dt}>
               <input {...register(t)} className={inputClass} />
             </Field>
-            <Field label="Commitment body">
-              <textarea {...register(b)} rows={4} className={textareaClass} />
+            <Field label="Commitment body" emptyDefault={db}>
+              <textarea {...register(b)} rows={3} className={textareaClass} />
             </Field>
           </div>
         ))}
@@ -538,65 +635,116 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
 
       <Section
         title="About page — where to find us"
-        description="Heading and intro above the office cards. Addresses come from Corporate and Registered Office above."
+        description='The office address section. Addresses come from the Corporate/Registered Office fields above.'
       >
-        <Field label="Section title">
-          <input {...register("aboutWhereTitle")} className={inputClass} />
+        <Field label="Section title" emptyDefault={aboutPageDefaults.whereTitle}>
+          <input
+            {...register("aboutWhereTitle")}
+            className={inputClass}
+            placeholder="Where to find us in person."
+          />
         </Field>
-        <Field label="Section intro">
-          <textarea {...register("aboutWhereIntro")} rows={3} className={textareaClass} />
+        <Field label="Section intro" emptyDefault={aboutPageDefaults.whereIntro}>
+          <textarea
+            {...register("aboutWhereIntro")}
+            rows={2}
+            className={textareaClass}
+            placeholder="We'd much rather you walked in than filled in a form…"
+          />
         </Field>
       </Section>
 
-      <Section title="About page — CTA" description="Dark block at the bottom of /about with enquiry form.">
-        <Field label="CTA heading">
-          <input {...register("aboutCtaTitle")} className={inputClass} />
+      <Section
+        title="About page — CTA section"
+        description="The dark purple CTA block at the bottom of the About page."
+      >
+        <Field label="CTA heading" emptyDefault={aboutPageDefaults.ctaTitle}>
+          <input
+            {...register("aboutCtaTitle")}
+            className={inputClass}
+            placeholder="Tell us what you're looking for."
+          />
         </Field>
-        <Field label="CTA body text">
-          <textarea {...register("aboutCtaBody")} rows={4} className={textareaClass} />
+        <Field label="CTA body text" emptyDefault={aboutPageDefaults.ctaBody}>
+          <textarea
+            {...register("aboutCtaBody")}
+            rows={3}
+            className={textareaClass}
+            placeholder="Whether you're a first-time buyer, an NRI investor…"
+          />
         </Field>
       </Section>
 
       {/* ── Homepage — projects section ──────────────────────────────────── */}
       <Section
         title="Homepage — projects section"
-        description="Eyebrow, heading, and intro above the project cards on the homepage."
+        description="The eyebrow, heading and intro above the project cards on the homepage. Leave blank to use defaults."
       >
-        <Field label="Eyebrow">
-          <input {...register("homeProjectsEyebrow")} className={inputClass} />
+        <Field label="Eyebrow (small caps label)" hint='e.g. "Discover Your Dream With Us"' emptyDefault={homePageDefaults.projectsEyebrow}>
+          <input
+            {...register("homeProjectsEyebrow")}
+            className={inputClass}
+            placeholder="Discover Your Dream With Us"
+          />
         </Field>
-        <Field label="Heading">
-          <textarea {...register("homeProjectsHeading")} rows={2} className={textareaClass} />
+        <Field label="Heading" emptyDefault={homePageDefaults.projectsHeading}>
+          <input
+            {...register("homeProjectsHeading")}
+            className={inputClass}
+            placeholder="Step Into Excellence with Shivashree Developers — Where Dreams Find a Home"
+          />
         </Field>
-        <Field label="Subheading / intro paragraph">
-          <textarea {...register("homeProjectsSubheading")} rows={4} className={textareaClass} />
+        <Field label="Subheading / intro paragraph" emptyDefault={homePageDefaults.projectsSubheading}>
+          <textarea
+            {...register("homeProjectsSubheading")}
+            rows={3}
+            className={textareaClass}
+            placeholder="For over a decade, we have been creating exceptional apartments…"
+          />
         </Field>
       </Section>
 
       {/* ── Homepage — Why Us section ────────────────────────────────────── */}
       <Section
         title='Homepage — "Why Us?" section'
-        description="Eyebrow, section heading, and three cards (title, body, image each)."
+        description='The three feature cards with images. Each card has a title, body and an uploadable photo.'
       >
-        <Field label="Section eyebrow">
-          <input {...register("homeWhyEyebrow")} className={inputClass} />
+        <Field label="Section eyebrow" emptyDefault={homePageDefaults.whyEyebrow}>
+          <input
+            {...register("homeWhyEyebrow")}
+            className={inputClass}
+            placeholder="Why Us?"
+          />
         </Field>
-        <Field label="Section heading">
-          <input {...register("homeWhyHeading")} className={inputClass} />
+        <Field label="Section heading" emptyDefault={homePageDefaults.whyHeading}>
+          <input
+            {...register("homeWhyHeading")}
+            className={inputClass}
+            placeholder="Crafting Spaces with Care and Precision"
+          />
         </Field>
 
         {/* Card 1 */}
         <div className="border border-stone-200 rounded-xl p-4 space-y-4 bg-stone-50">
           <p className="text-xs font-bold text-brand-purple-700 uppercase tracking-wide">Card 1</p>
-          <Field label="Title">
-            <input {...register("homeCard1Title")} className={inputClass} />
+          <Field label="Title" emptyDefault={homePageDefaults.card1Title}>
+            <input
+              {...register("homeCard1Title")}
+              className={inputClass}
+              placeholder="A Legacy of Trust, A Decade of Expertise"
+            />
           </Field>
-          <Field label="Body text">
-            <textarea {...register("homeCard1Body")} rows={4} className={textareaClass} />
+          <Field label="Body text" emptyDefault={homePageDefaults.card1Body}>
+            <textarea
+              {...register("homeCard1Body")}
+              rows={3}
+              className={textareaClass}
+              placeholder="For over a decade, Shivashree Developers has been a trusted name…"
+            />
           </Field>
           <ImageSlot
             label="Card image"
-            hint="Landscape, at least 800×500 px."
+            hint="Recommended: landscape photo, at least 800×500 px."
             value={card1Image}
             onUpload={(e) => handleCardImageUpload(e, "1")}
             onClear={() => setCard1Image(null)}
@@ -608,15 +756,24 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
         {/* Card 2 */}
         <div className="border border-stone-200 rounded-xl p-4 space-y-4 bg-stone-50">
           <p className="text-xs font-bold text-brand-purple-700 uppercase tracking-wide">Card 2</p>
-          <Field label="Title">
-            <input {...register("homeCard2Title")} className={inputClass} />
+          <Field label="Title" emptyDefault={homePageDefaults.card2Title}>
+            <input
+              {...register("homeCard2Title")}
+              className={inputClass}
+              placeholder="Building Trust, Delivering Excellence"
+            />
           </Field>
-          <Field label="Body text">
-            <textarea {...register("homeCard2Body")} rows={4} className={textareaClass} />
+          <Field label="Body text" emptyDefault={homePageDefaults.card2Body}>
+            <textarea
+              {...register("homeCard2Body")}
+              rows={3}
+              className={textareaClass}
+              placeholder="Trust and excellence define everything we do…"
+            />
           </Field>
           <ImageSlot
             label="Card image"
-            hint="Landscape, at least 800×500 px."
+            hint="Recommended: landscape photo, at least 800×500 px."
             value={card2Image}
             onUpload={(e) => handleCardImageUpload(e, "2")}
             onClear={() => setCard2Image(null)}
@@ -628,15 +785,24 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
         {/* Card 3 */}
         <div className="border border-stone-200 rounded-xl p-4 space-y-4 bg-stone-50">
           <p className="text-xs font-bold text-brand-purple-700 uppercase tracking-wide">Card 3</p>
-          <Field label="Title">
-            <input {...register("homeCard3Title")} className={inputClass} />
+          <Field label="Title" emptyDefault={homePageDefaults.card3Title}>
+            <input
+              {...register("homeCard3Title")}
+              className={inputClass}
+              placeholder="Creating Spaces with Diligence and Precision"
+            />
           </Field>
-          <Field label="Body text">
-            <textarea {...register("homeCard3Body")} rows={4} className={textareaClass} />
+          <Field label="Body text" emptyDefault={homePageDefaults.card3Body}>
+            <textarea
+              {...register("homeCard3Body")}
+              rows={3}
+              className={textareaClass}
+              placeholder="Every space we build is planned carefully…"
+            />
           </Field>
           <ImageSlot
             label="Card image"
-            hint="Landscape, at least 800×500 px."
+            hint="Recommended: landscape photo, at least 800×500 px."
             value={card3Image}
             onUpload={(e) => handleCardImageUpload(e, "3")}
             onClear={() => setCard3Image(null)}
@@ -647,24 +813,33 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
       </Section>
 
       {/* ── Homepage — CTA section ───────────────────────────────────────── */}
-      <Section title="Homepage — CTA / enquiry" description="Dark section with enquiry form at the bottom of the homepage.">
-        <Field label="Eyebrow">
-          <input {...register("homeCtaEyebrow")} className={inputClass} />
+      <Section
+        title="Homepage — CTA / enquiry section"
+        description="The dark purple section with the enquiry form at the bottom of the homepage."
+      >
+        <Field label="Eyebrow" emptyDefault={homePageDefaults.ctaEyebrow}>
+          <input
+            {...register("homeCtaEyebrow")}
+            className={inputClass}
+            placeholder="Enquire Now"
+          />
         </Field>
-        <Field label="Heading">
-          <input {...register("homeCtaHeading")} className={inputClass} />
+        <Field label="Heading" emptyDefault={homePageDefaults.ctaHeading}>
+          <input
+            {...register("homeCtaHeading")}
+            className={inputClass}
+            placeholder="At the heart of our work is a commitment to customer satisfaction."
+          />
         </Field>
-        <Field label="Body text">
-          <textarea {...register("homeCtaBody")} rows={4} className={textareaClass} />
+        <Field label="Body text" emptyDefault={homePageDefaults.ctaBody}>
+          <textarea
+            {...register("homeCtaBody")}
+            rows={3}
+            className={textareaClass}
+            placeholder="Your dream home isn't just built — it's brought to life…"
+          />
         </Field>
       </Section>
-
-      <GlobalSiteCopyFields
-        register={register as unknown as UseFormRegister<FieldValues>}
-        errors={errors as unknown as FieldErrors<FieldValues>}
-        inputClass={inputClass}
-        textareaClass={textareaClass}
-      />
 
       <div className="pb-8">
         <button
