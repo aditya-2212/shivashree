@@ -134,7 +134,7 @@ interface PropertyData {
   city: string;
   locality: string;
   fullAddress: string;
-  status: "PROPOSED" | "ONGOING" | "COMPLETED";
+  status: "PROPOSED" | "ONGOING" | "COMPLETED" | "SOLD_OUT";
   priceStartingFrom?: number | null;
   reraNumber?: string | null;
   heroImage?: string | null;
