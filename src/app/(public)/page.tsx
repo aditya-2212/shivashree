@@ -15,7 +15,7 @@ import {
 import { formatPrice, parseJsonField } from "@/lib/utils";
 import type { Metadata } from "next";
 
-export const revalidate = 3600;
+export const revalidate = 30;
 
 export const metadata: Metadata = {
   title:
@@ -58,6 +58,10 @@ const statusBadge = {
   COMPLETED: {
     label: "Ready to Move",
     chip: "bg-emerald-50 text-emerald-700 border-emerald-100",
+  },
+  SOLD_OUT: {
+    label: "Sold Out",
+    chip: "bg-stone-100 text-stone-600 border-stone-200",
   },
 } as const;
 

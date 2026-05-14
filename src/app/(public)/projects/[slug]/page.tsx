@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!property) return {};
 
   const bhkTypes = parseJsonField<string[]>(property.bhkTypes, []);
-  const defaultTitle = `${property.title} — ${bhkTypes.join(" & ")} ${property.status === "COMPLETED" ? "Apartments" : "Flats"} in ${property.city}`;
+  const defaultTitle = `${property.title} — ${bhkTypes.join(" & ")} ${property.status === "COMPLETED" || property.status === "SOLD_OUT" ? "Apartments" : "Flats"} in ${property.city}`;
 
   return {
     title: property.seoTitle ?? defaultTitle,
@@ -77,6 +77,13 @@ const statusConfig = {
     accentText: "text-emerald-700",
     accentBg: "bg-emerald-50",
     accentBorder: "border-emerald-100",
+  },
+  SOLD_OUT: {
+    label: "Sold Out",
+    chip: "bg-stone-100 text-stone-600 border-stone-200",
+    accentText: "text-stone-600",
+    accentBg: "bg-stone-50",
+    accentBorder: "border-stone-200",
   },
 } as const;
 
@@ -450,7 +457,9 @@ export default async function ProjectDetailPage({ params }: Props) {
                     ? "Units are ready for handover. Site visits available 7 days a week with prior appointment."
                     : property.status === "ONGOING"
                       ? "Construction in progress. Floor plans and pricing are finalised — bookings open."
-                      : "Designs are being finalised. Register interest now to get pre-launch pricing."}
+                      : property.status === "SOLD_OUT"
+                        ? "All units have been sold. Contact us for resale opportunities."
+                        : "Designs are being finalised. Register interest now to get pre-launch pricing."}
                 </p>
               </div>
             </div>

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 interface Params {
   params: Promise<{ id: string }>;
@@ -42,6 +43,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
       },
     });
 
+    revalidatePath("/");
     return NextResponse.json(slide);
   } catch (error) {
     console.error("Hero slide update error:", error);
@@ -57,6 +59,7 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
 
   try {
     await prisma.heroSlide.delete({ where: { id: parseInt(id) } });
+    revalidatePath("/");
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Hero slide delete error:", error);

@@ -38,6 +38,14 @@ const sections = [
     dot: "bg-emerald-500",
     chip: "bg-emerald-50 text-emerald-700 border-emerald-100",
   },
+  {
+    key: "SOLD_OUT" as const,
+    label: "Sold Out",
+    sub: "All units have been sold. Contact us for resale opportunities.",
+    anchorId: "sold-out",
+    dot: "bg-stone-400",
+    chip: "bg-stone-100 text-stone-600 border-stone-200",
+  },
 ];
 
 export default async function ProjectsPage() {

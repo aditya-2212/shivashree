@@ -81,7 +81,7 @@ const propertySchema = z.object({
   city: z.string().min(1, "City is required"),
   locality: z.string().min(1, "Locality is required"),
   fullAddress: z.string().min(1, "Full address is required"),
-  status: z.enum(["PROPOSED", "ONGOING", "COMPLETED"]),
+  status: z.enum(["PROPOSED", "ONGOING", "COMPLETED", "SOLD_OUT"]),
   priceStartingFrom: z.string().optional(),
   reraNumber: z.string().optional(),
   bhkTypes: z.array(z.string()).min(1, "Select at least one BHK type"),
@@ -699,16 +699,18 @@ export default function PropertyForm({ mode, initialData }: Props) {
             This controls which section the project appears in on the website.
           </p>
           <div className="flex gap-3 flex-wrap">
-            {(["PROPOSED", "ONGOING", "COMPLETED"] as const).map((s) => {
+            {(["PROPOSED", "ONGOING", "COMPLETED", "SOLD_OUT"] as const).map((s) => {
               const labels = {
                 PROPOSED: "Proposed — Coming Soon",
                 ONGOING: "Ongoing — Under Construction",
                 COMPLETED: "Completed — Ready to Move",
+                SOLD_OUT: "Completed — Sold Out",
               };
               const colors = {
                 PROPOSED: "border-blue-400 bg-blue-50 text-blue-700",
                 ONGOING: "border-brand-purple-300 bg-brand-purple-50 text-brand-purple-600",
                 COMPLETED: "border-green-400 bg-green-50 text-green-700",
+                SOLD_OUT: "border-amber-400 bg-amber-50 text-amber-700",
               };
               const isSelected = watch("status") === s;
               return (
@@ -1166,10 +1168,10 @@ export default function PropertyForm({ mode, initialData }: Props) {
             <Label>Page Title</Label>
             <span
               className={`text-xs ${
-                seoTitle.length > 70 ? "text-red-500" : "text-stone-400"
+                seoTitle.length > 100 ? "text-red-500" : "text-stone-400"
               }`}
             >
-              {seoTitle.length}/70
+              {seoTitle.length}/100
             </span>
           </div>
           <input
@@ -1178,7 +1180,7 @@ export default function PropertyForm({ mode, initialData }: Props) {
             placeholder="e.g. Shivashree Mahalakshmi — 2 & 3 BHK Flats in Kumbakonam"
           />
           <p className="text-stone-400 text-xs mt-1">
-            Keep under 70 characters. Will auto-generate from project name if
+            Keep under 100 characters. Will auto-generate from project name if
             left empty.
           </p>
         </div>
@@ -1188,10 +1190,10 @@ export default function PropertyForm({ mode, initialData }: Props) {
             <Label>Meta Description</Label>
             <span
               className={`text-xs ${
-                seoDesc.length > 200 ? "text-red-500" : "text-stone-400"
+                seoDesc.length > 320 ? "text-red-500" : "text-stone-400"
               }`}
             >
-              {seoDesc.length}/200
+              {seoDesc.length}/320
             </span>
           </div>
           <textarea
@@ -1201,7 +1203,7 @@ export default function PropertyForm({ mode, initialData }: Props) {
             placeholder="A brief description of this property for search engines (1-2 sentences)."
           />
           <p className="text-stone-400 text-xs mt-1">
-            Aim for 150–200 characters.
+            Aim for 150–320 characters.
           </p>
         </div>
       </FormSection>

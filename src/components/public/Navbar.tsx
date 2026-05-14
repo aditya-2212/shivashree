@@ -28,12 +28,14 @@ const statusLabel: Record<string, string> = {
   PROPOSED: "Coming Soon",
   ONGOING: "Now Selling",
   COMPLETED: "Ready to Move",
+  SOLD_OUT: "Sold Out",
 };
 
 const statusDot: Record<string, string> = {
   ONGOING: "bg-brand-purple-600",
   PROPOSED: "bg-brand-blue-500",
   COMPLETED: "bg-emerald-500",
+  SOLD_OUT: "bg-stone-400",
 };
 
 export default function Navbar({ properties, whatsappNumber }: Props) {
