@@ -14,6 +14,7 @@ import {
 import { formatPrice, parseJsonField } from "@/lib/utils";
 import type { Metadata } from "next";
 import { homePageDefaults as D } from "@/lib/site-defaults";
+import { normalizeHeroCtaUrl } from "@/lib/hero-cta-url";
 
 export const revalidate = 30;
 
@@ -76,7 +77,10 @@ export default async function HomePage() {
   const propertiesWithImages = properties.filter((p) => p.heroImage);
   const heroData =
     heroSlides.length > 0
-      ? heroSlides
+      ? heroSlides.map((s) => ({
+          ...s,
+          ctaUrl: normalizeHeroCtaUrl(s.ctaUrl),
+        }))
       : propertiesWithImages.length > 0
         ? propertiesWithImages.slice(0, 2).map((p, i) => ({
             id: -(i + 1),
