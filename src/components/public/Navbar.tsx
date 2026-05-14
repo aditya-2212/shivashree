@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -51,9 +51,10 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
   const isHome = pathname === "/";
   const transparent = isHome && !scrolled;
 
-  // useLayoutEffect fires synchronously before the browser paints, preventing
-  // a white-bar flash when the browser restores scroll position on reload.
-  useLayoutEffect(() => {
+  // useEffect is intentional — avoids SSR/hydration mismatch.
+  // scrolled starts false so the navbar is always transparent on first paint;
+  // the effect immediately reads the real scroll position and corrects if needed.
+  useEffect(() => {
     const checkScroll = () =>
       setScrolled(window.scrollY > window.innerHeight * 0.7);
     checkScroll();
@@ -62,8 +63,15 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
   }, []);
 
   // Re-check on every route change (Navbar stays mounted across navigations).
+  // Temporarily disable smooth-scroll so the programmatic scroll-to-top is
+  // instant, ensuring scrollY reads 0 when we check on the new page.
   useEffect(() => {
-    setScrolled(window.scrollY > window.innerHeight * 0.7);
+    document.documentElement.classList.add("navigating");
+    const id = requestAnimationFrame(() => {
+      setScrolled(window.scrollY > window.innerHeight * 0.7);
+      document.documentElement.classList.remove("navigating");
+    });
+    return () => cancelAnimationFrame(id);
   }, [pathname]);
 
   const openProjects = () => {

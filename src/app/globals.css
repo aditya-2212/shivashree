@@ -44,6 +44,12 @@
     scroll-behavior: smooth;
   }
 
+  /* Disable smooth scroll during Next.js route transitions so the navbar
+     transparent check always sees scrollY = 0 when a new page is painted. */
+  html.navigating {
+    scroll-behavior: auto;
+  }
+
   body {
     font-feature-settings: "kern" 1, "liga" 1;
     -webkit-font-smoothing: antialiased;
