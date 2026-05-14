@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -50,15 +50,17 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
   const isHome = pathname === "/";
   const transparent = isHome && !scrolled;
 
-  useEffect(() => {
-    const onScroll = () =>
+  // useLayoutEffect fires synchronously before the browser paints, preventing
+  // a white-bar flash when the browser restores scroll position on reload.
+  useLayoutEffect(() => {
+    const checkScroll = () =>
       setScrolled(window.scrollY > window.innerHeight * 0.7);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    checkScroll();
+    window.addEventListener("scroll", checkScroll, { passive: true });
+    return () => window.removeEventListener("scroll", checkScroll);
   }, []);
 
-  // Re-evaluate scroll state on every route change (layout persists across nav).
+  // Re-check on every route change (Navbar stays mounted across navigations).
   useEffect(() => {
     setScrolled(window.scrollY > window.innerHeight * 0.7);
   }, [pathname]);
@@ -332,4 +334,4 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
       )}
     </header>
   );
-}
+}
