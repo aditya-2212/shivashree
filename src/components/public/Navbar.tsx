@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 interface NavProperty {
   title: string;
   slug: string;
-  status: "PROPOSED" | "ONGOING" | "COMPLETED";
+  status: "PROPOSED" | "ONGOING" | "COMPLETED" | "SOLD_OUT";
 }
 
 interface Props {
