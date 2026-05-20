@@ -60,7 +60,10 @@ export default function HeroSection({ slides }: Props) {
     // Last-resort hero so the page never collapses. This only renders if the
     // CMS has zero hero slides AND zero properties with a hero image.
     return (
-      <section className="relative w-full min-h-[70vh] bg-brand-purple-900 flex items-center pt-24">
+      <section
+        id="home-hero"
+        className="relative w-full min-h-[70vh] bg-brand-purple-900 flex items-center pt-24"
+      >
         <div className="max-w-7xl mx-auto px-6 lg:px-8 text-white">
           <p className="text-brand-blue-200 font-semibold text-sm uppercase tracking-widest mb-4">
             Shivashree Developers
@@ -87,7 +90,10 @@ export default function HeroSection({ slides }: Props) {
   const taglineLines = headingLines.slice(1);
 
   return (
-    <section className="relative w-full min-h-[80vh] md:min-h-[88vh] overflow-hidden bg-brand-purple-900">
+    <section
+      id="home-hero"
+      className="relative w-full min-h-[80vh] md:min-h-[88vh] overflow-hidden bg-brand-purple-900"
+    >
       {/* Background images — rendered as next/image for LCP optimisation.
           Only the first slide uses priority; others are preloaded lazily. */}
       {slides.map((s, i) => (
@@ -115,7 +121,7 @@ export default function HeroSection({ slides }: Props) {
       <div className="absolute inset-0 hero-overlay" />
 
       {/* Content — pointer-events-none so clicks pass through to the nav zones below */}
-      <div className="relative z-30 pointer-events-none h-full min-h-[80vh] md:min-h-[88vh] flex items-center pt-36 pb-16">
+      <div className="relative z-30 pointer-events-none h-full min-h-[80vh] md:min-h-[88vh] flex items-center pt-24 pb-16">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full">
           <div className="max-w-2xl">
             <div

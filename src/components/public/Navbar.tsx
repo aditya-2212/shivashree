@@ -43,32 +43,40 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [projectsOpen, setProjectsOpen] = useState(false);
   const [resourcesOpen, setResourcesOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [overHero, setOverHero] = useState(true);
   const projectsTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const resourcesTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
 
   const isHome = pathname === "/";
-  const transparent = isHome && !scrolled;
+  const heroMode = isHome && overHero;
 
-  // useEffect is intentional — avoids SSR/hydration mismatch.
-  // scrolled starts false so the navbar is always transparent on first paint;
-  // the effect immediately reads the real scroll position and corrects if needed.
+  // Dark nav while #home-hero is on screen; white nav once the hero scrolls away.
   useEffect(() => {
-    const checkScroll = () =>
-      setScrolled(window.scrollY > window.innerHeight * 0.7);
-    checkScroll();
-    window.addEventListener("scroll", checkScroll, { passive: true });
-    return () => window.removeEventListener("scroll", checkScroll);
-  }, []);
+    if (!isHome) {
+      setOverHero(false);
+      return;
+    }
 
-  // Re-check on every route change (Navbar stays mounted across navigations).
-  // Temporarily disable smooth-scroll so the programmatic scroll-to-top is
-  // instant, ensuring scrollY reads 0 when we check on the new page.
+    setOverHero(true);
+
+    const hero = document.getElementById("home-hero");
+    if (!hero) {
+      setOverHero(false);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setOverHero(entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, [isHome]);
+
   useEffect(() => {
     document.documentElement.classList.add("navigating");
     const id = requestAnimationFrame(() => {
-      setScrolled(window.scrollY > window.innerHeight * 0.7);
       document.documentElement.classList.remove("navigating");
     });
     return () => cancelAnimationFrame(id);
@@ -105,10 +113,10 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
   const linkClass = (active = false) =>
     cn(
       "text-sm font-medium transition-colors",
-      transparent
+      heroMode
         ? active
           ? "text-white"
-          : "text-white/85 hover:text-white"
+          : "text-white/90 hover:text-white"
         : active
           ? "text-brand-purple-600"
           : "text-stone-700 hover:text-brand-purple-600"
@@ -118,28 +126,26 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        transparent
-          ? "bg-gradient-to-b from-black/50 via-black/20 to-transparent"
-          : "bg-white/95 backdrop-blur-md shadow-[0_1px_0_rgba(0,0,0,0.04)] border-b border-stone-200/80"
+        heroMode
+          ? "bg-black/45 backdrop-blur-sm"
+          : "bg-white/95 backdrop-blur-md shadow-sm border-b border-stone-200/80"
       )}
     >
       <nav className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex items-center justify-between h-28">
+        <div className="flex items-center justify-between h-20">
           {/* Brand mark */}
           <Link href="/" className="flex items-center gap-3 shrink-0" aria-label="Shivashree Developers — home">
-            <span
-              className={cn(
-                "inline-flex items-center justify-center rounded-md p-1 transition",
-                transparent ? "bg-white/95 shadow-sm" : "bg-transparent"
-              )}
-            >
+            <span className="inline-flex items-center justify-center">
               <Image
                 src="/logo.png"
                 alt="Shivashree Developers"
                 width={240}
                 height={180}
                 priority
-                className="h-20 w-auto"
+                className={cn(
+                  "h-16 w-auto transition",
+                  heroMode && "drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)]"
+                )}
               />
             </span>
           </Link>
@@ -268,7 +274,7 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
             onClick={() => setIsOpen(!isOpen)}
             className={cn(
               "lg:hidden p-2 rounded-lg transition",
-              transparent
+              heroMode
                 ? "text-white hover:bg-white/10"
                 : "text-stone-700 hover:bg-stone-100"
             )}
