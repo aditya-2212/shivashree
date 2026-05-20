@@ -35,6 +35,9 @@ export const metadata: Metadata = {
     siteName: "Shivashree Developers",
     locale: "en_IN",
   },
+  verification: {
+    google: "C2p1IpQRnRFbWvvPGEJpcmnOOAP6tx_b1S7EpL80z4I",
+  },
 };
 
 export default function RootLayout({
