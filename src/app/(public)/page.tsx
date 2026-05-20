@@ -87,12 +87,12 @@ export default async function HomePage() {
             imageUrl: p.heroImage!,
             overlayHeading:
               i === 0
-                ? "Sivasree's Syamala – Arumbakkam\nThe Ultimate Address for Luxury"
-                : "Sivasree's Galaxy at Kumbakonam\nWhere Comfort Meets Culture",
+                ? "Shivashree's Syamala – Arumbakkam"
+                : "Shivashree's Galaxy at Kumbakonam",
             subheading:
               i === 0
-                ? "Designed for Those Who Desire the Finest."
-                : "Where tradition meets luxury, and every sunrise feels spiritual.",
+                ? "The Ultimate Address for Luxury. Designed for Those Who Desire the Finest."
+                : "Where Comfort Meets Culture. Where tradition meets luxury, and every sunrise feels spiritual.",
             ctaLabel: "Enquire Now",
             ctaUrl: "/contact",
           }))

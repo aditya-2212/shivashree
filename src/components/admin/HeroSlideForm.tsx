@@ -204,7 +204,7 @@ export default function HeroSlideForm({ mode, initialData }: Props) {
               placeholder={"e.g. Apartments in Kumbakonam & Chennai\nBuilt by people who live here."}
             />
             <p className="text-stone-400 text-xs mt-1">
-              Use a new line to create a line break in the heading.
+              First line is the large property name. Extra lines appear smaller as a tagline — or put marketing copy in Subheading instead.
             </p>
             {errors.overlayHeading && (
               <p className="text-red-600 text-xs mt-1">{errors.overlayHeading.message}</p>

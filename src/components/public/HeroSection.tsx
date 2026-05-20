@@ -82,6 +82,9 @@ export default function HeroSection({ slides }: Props) {
   }
 
   const slide = slides[current];
+  const headingLines = slide.overlayHeading.split("\n").map((l) => l.trim()).filter(Boolean);
+  const primaryHeading = headingLines[0] ?? slide.overlayHeading;
+  const taglineLines = headingLines.slice(1);
 
   return (
     <section className="relative w-full min-h-[80vh] md:min-h-[88vh] overflow-hidden bg-brand-purple-900">
@@ -126,15 +129,25 @@ export default function HeroSection({ slides }: Props) {
               <p className="text-white/85 font-semibold text-sm uppercase tracking-widest mb-4">
                 {slide.eyebrow ?? "Shivashree Developers · Kumbakonam & Chennai"}
               </p>
-              <h1 className="text-4xl md:text-6xl font-bold text-white leading-[1.05] mb-6 whitespace-pre-line tracking-tight">
-                {slide.overlayHeading}
+              <h1 className="text-4xl md:text-6xl font-bold text-white leading-[1.05] tracking-tight">
+                {primaryHeading}
               </h1>
+              {taglineLines.length > 0 && (
+                <p className="mt-3 md:mt-4 text-xl md:text-2xl font-medium text-white/80 leading-snug max-w-xl">
+                  {taglineLines.join(" ")}
+                </p>
+              )}
               {slide.subheading && (
-                <p className="text-white/85 text-lg md:text-xl mb-8 leading-relaxed max-w-xl">
+                <p
+                  className={cn(
+                    "text-white/75 text-base md:text-lg leading-relaxed max-w-xl",
+                    taglineLines.length > 0 ? "mt-3" : "mt-5 md:mt-6"
+                  )}
+                >
                   {slide.subheading}
                 </p>
               )}
-              <div className="flex flex-col sm:flex-row gap-3 pointer-events-auto">
+              <div className="flex flex-col sm:flex-row gap-3 pointer-events-auto mt-8">
                 <Link
                   href={slide.ctaUrl}
                   className="inline-flex items-center justify-center bg-white text-brand-purple-700 hover:bg-brand-purple-50 font-semibold px-7 py-3.5 rounded-xl transition text-base shadow-md"
