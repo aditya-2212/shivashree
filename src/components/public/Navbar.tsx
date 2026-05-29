@@ -16,6 +16,10 @@ interface NavProperty {
 interface Props {
   properties: NavProperty[];
   whatsappNumber?: string;
+  /** Whether the current route is the homepage. Provided by the server (via
+   *  middleware → layout) so the navbar renders in the right mode on first
+   *  paint instead of flashing white before client JS runs. */
+  isHome: boolean;
 }
 
 const statusOrder: Record<string, number> = {
@@ -39,7 +43,7 @@ const statusDot: Record<string, string> = {
   SOLD_OUT: "bg-stone-400",
 };
 
-export default function Navbar({ properties, whatsappNumber }: Props) {
+export default function Navbar({ properties, whatsappNumber, isHome: isHomeInitial }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [projectsOpen, setProjectsOpen] = useState(false);
   const [resourcesOpen, setResourcesOpen] = useState(false);
@@ -48,7 +52,13 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
   const resourcesTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
 
-  const isHome = pathname === "/";
+  // Seed from the server-provided value (correct on first paint), then keep it
+  // in sync with client-side navigation — the layout/prop won't re-run then.
+  const [isHome, setIsHome] = useState(isHomeInitial);
+  useEffect(() => {
+    if (pathname) setIsHome(pathname === "/");
+  }, [pathname]);
+
   const heroMode = isHome && overHero;
 
   // Dark nav while #home-hero is on screen; white nav once the hero scrolls away.
