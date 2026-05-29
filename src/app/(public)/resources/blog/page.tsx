@@ -4,31 +4,37 @@ import Image from "next/image";
 import { Calendar, Clock, User, ArrowRight } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import type { Metadata } from "next";
+import { blogListingDefaults as D } from "@/lib/site-defaults";
 
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
-  title: "Real Estate Blog | Apartments in Kumbakonam & Chennai Insights",
-  description:
-    "Explore expert insights on buying 2 & 3 BHK apartments in Kumbakonam and Chennai. Get real estate tips, investment guides, market trends, and home buying advice from Shivashree Developers.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const s = await prisma.siteSettings.findUnique({ where: { id: 1 } });
+  return {
+    title: s?.blogMetaTitle?.trim() || D.metaTitle,
+    description: s?.blogMetaDescription?.trim() || D.metaDescription,
+  };
+}
 
 export default async function BlogPage() {
-  const posts = await prisma.blogPost.findMany({
-    where: { isPublished: true },
-    orderBy: { publishedAt: "desc" },
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      excerpt: true,
-      coverImage: true,
-      authorName: true,
-      category: true,
-      publishedAt: true,
-      readTimeMinutes: true,
-    },
-  });
+  const [posts, s] = await Promise.all([
+    prisma.blogPost.findMany({
+      where: { isPublished: true },
+      orderBy: { publishedAt: "desc" },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        excerpt: true,
+        coverImage: true,
+        authorName: true,
+        category: true,
+        publishedAt: true,
+        readTimeMinutes: true,
+      },
+    }),
+    prisma.siteSettings.findUnique({ where: { id: 1 } }),
+  ]);
 
   return (
     <>
@@ -36,15 +42,13 @@ export default async function BlogPage() {
       <section className="pt-36 pb-16 bg-brand-purple-900 text-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="text-brand-blue-200 font-semibold text-sm uppercase tracking-widest mb-3">
-            Notes &amp; guides
+            {s?.blogHeroEyebrow?.trim() || D.heroEyebrow}
           </p>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
-            Things we&rsquo;ve learned worth writing down.
+            {s?.blogHeroHeading?.trim() || D.heroHeading}
           </h1>
           <p className="text-white/80 text-lg max-w-2xl">
-            Notes on buying an apartment in Tamil Nadu, neighbourhood
-            snapshots from Kumbakonam and Chennai, and the occasional update
-            on a project we&rsquo;re building.
+            {s?.blogHeroIntro?.trim() || D.heroIntro}
           </p>
         </div>
       </section>
@@ -54,7 +58,7 @@ export default async function BlogPage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           {posts.length === 0 ? (
             <div className="text-center py-20 text-stone-400">
-              <p className="text-lg">No posts published yet. Check back soon.</p>
+              <p className="text-lg">{s?.blogEmptyText?.trim() || D.emptyText}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -126,13 +130,13 @@ export default async function BlogPage() {
         <section className="py-10 bg-stone-50 border-t border-stone-200">
           <div className="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <p className="text-stone-700">
-              Looking for a project, not a guide?{" "}
+              {s?.blogCtaText?.trim() || D.ctaText}{" "}
             </p>
             <Link
               href="/projects"
               className="inline-flex items-center gap-2 text-brand-purple-700 font-semibold hover:text-brand-purple-800 transition"
             >
-              See current projects
+              {s?.blogCtaButtonLabel?.trim() || D.ctaButtonLabel}
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

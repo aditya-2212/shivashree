@@ -145,6 +145,19 @@ export const aboutPageDefaults = {
   promise4Desc: "Your happiness is our top priority, even after the handover.",
 } as const;
 
+export const blogListingDefaults = {
+  metaTitle: "Real Estate Blog | Apartments in Kumbakonam & Chennai Insights",
+  metaDescription:
+    "Explore expert insights on buying 2 & 3 BHK apartments in Kumbakonam and Chennai. Get real estate tips, investment guides, market trends, and home buying advice from Shivashree Developers.",
+  heroEyebrow: "Notes & guides",
+  heroHeading: "Things we've learned worth writing down.",
+  heroIntro:
+    "Notes on buying an apartment in Tamil Nadu, neighbourhood snapshots from Kumbakonam and Chennai, and the occasional update on a project we're building.",
+  emptyText: "No posts published yet. Check back soon.",
+  ctaText: "Looking for a project, not a guide?",
+  ctaButtonLabel: "See current projects",
+} as const;
+
 export const faqsPageDefaults = {
   metaTitle: "Real Estate FAQs | Buying Apartments in Kumbakonam & Chennai",
   metaDescription:

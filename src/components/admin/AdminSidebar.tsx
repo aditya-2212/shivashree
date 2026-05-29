@@ -14,6 +14,10 @@ import {
   LogOut,
   ExternalLink,
   ImagePlay,
+  Home,
+  Info,
+  Phone,
+  Library,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -30,11 +34,41 @@ const navItems = [
   { href: "/admin/blog", label: "Notes & guides", icon: FileText },
   { href: "/admin/faqs", label: "FAQs", icon: HelpCircle },
   { href: "/admin/leads", label: "Enquiries", icon: Inbox },
-  { href: "/admin/settings", label: "Site settings", icon: Settings },
 ];
+
+// Per-page text/images. Each opens a focused editor with the current content
+// pre-filled. Global details (office, social, footer) live in Site settings.
+const contentItems = [
+  { href: "/admin/content/home", label: "Home page", icon: Home },
+  { href: "/admin/content/about", label: "About page", icon: Info },
+  { href: "/admin/content/contact", label: "Contact page", icon: Phone },
+  { href: "/admin/content/resources", label: "Resources pages", icon: Library },
+];
+
+const settingsItem = { href: "/admin/settings", label: "Site settings", icon: Settings };
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+
+  const renderItem = (item: { href: string; label: string; icon: typeof Settings }) => {
+    const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+    const Icon = item.icon;
+    return (
+      <Link
+        key={item.href}
+        href={item.href}
+        className={cn(
+          "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group",
+          isActive
+            ? "bg-white text-brand-purple-700"
+            : "text-white/75 hover:bg-white/10 hover:text-white"
+        )}
+      >
+        <Icon className="w-5 h-5 shrink-0" />
+        <span className="text-sm font-medium">{item.label}</span>
+      </Link>
+    );
+  };
 
   return (
     <aside className="w-64 shrink-0 bg-brand-purple-900 text-white min-h-screen flex flex-col">
@@ -60,27 +94,15 @@ export default function AdminSidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-4 space-y-0.5">
-        {navItems.map((item) => {
-          const isActive =
-            pathname === item.href || pathname.startsWith(item.href + "/");
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group",
-                isActive
-                  ? "bg-white text-brand-purple-700"
-                  : "text-white/75 hover:bg-white/10 hover:text-white"
-              )}
-            >
-              <Icon className="w-5 h-5 shrink-0" />
-              <span className="text-sm font-medium">{item.label}</span>
-            </Link>
-          );
-        })}
+      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+        {navItems.map(renderItem)}
+
+        <p className="px-3 pt-5 pb-1 text-[11px] font-semibold uppercase tracking-wider text-white/40">
+          Page content
+        </p>
+        {contentItems.map(renderItem)}
+
+        <div className="pt-5">{renderItem(settingsItem)}</div>
       </nav>
 
       {/* View Site + Sign Out */}

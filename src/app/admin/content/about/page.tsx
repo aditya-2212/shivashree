@@ -2,9 +2,10 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import SiteSettingsForm from "@/components/admin/SiteSettingsForm";
+import ContentForm from "@/components/admin/ContentForm";
+import { ABOUT_SECTIONS } from "@/lib/content-fields";
 
-export default async function SettingsPage() {
+export default async function AboutContentPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/admin/login");
 
@@ -13,14 +14,17 @@ export default async function SettingsPage() {
   return (
     <div className="p-8 max-w-2xl">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-stone-900">Site settings</h1>
+        <h1 className="text-2xl font-bold text-stone-900">About page</h1>
         <p className="text-stone-500 text-sm mt-1">
-          Global details shared across the site — office addresses, contact channels,
-          social links and footer. To edit the text on a specific page, use
-          &ldquo;Page content&rdquo; in the sidebar. Changes go live immediately after saving.
+          Every section of the About page. Boxes show the current text — just change
+          what you need and save.
         </p>
       </div>
-      <SiteSettingsForm initialData={settings} />
+      <ContentForm
+        sections={ABOUT_SECTIONS}
+        initialData={settings}
+        successMessage="About page updated! Changes are now live."
+      />
     </div>
   );
 }
