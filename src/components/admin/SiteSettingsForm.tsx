@@ -13,7 +13,6 @@ import {
   homePageDefaults,
   aboutPageDefaults,
   faqsPageDefaults,
-  truncateDefaultHint,
 } from "@/lib/site-defaults";
 
 const schema = z.object({
@@ -415,11 +414,9 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
       {hint && <p className="text-stone-400 text-xs mb-2">{hint}</p>}
       {children}
       {emptyDefault && (
-        <p
-          className="text-[11px] text-stone-500 mt-1.5 leading-snug"
-          title={emptyDefault}
-        >
-          If left empty: {truncateDefaultHint(emptyDefault)}
+        <p className="text-[11px] text-stone-500 mt-1.5 leading-snug whitespace-pre-line rounded-md bg-stone-50 border border-stone-100 px-2.5 py-1.5">
+          <span className="font-semibold text-stone-400">Currently on the site:</span>{" "}
+          {emptyDefault}
         </p>
       )}
       {error && <p className="text-red-600 text-xs mt-1">{error}</p>}

@@ -60,18 +60,31 @@ export default function Navbar({ properties, whatsappNumber }: Props) {
 
     setOverHero(true);
 
-    const hero = document.getElementById("home-hero");
-    if (!hero) {
-      setOverHero(false);
-      return;
-    }
+    // The hero lives in the page (a child of this layout), so its DOM node is
+    // mounted by the time this effect runs. If for any reason it isn't there
+    // yet, stay in hero (dark/transparent) mode rather than flashing the white
+    // bar — on the homepage the hero is always present. We also retry on the
+    // next frame to cover any race where the page mounts a tick later.
+    let observer: IntersectionObserver | null = null;
+    const attach = () => {
+      const hero = document.getElementById("home-hero");
+      if (!hero) return false;
+      observer = new IntersectionObserver(
+        ([entry]) => setOverHero(entry.isIntersecting),
+        { threshold: 0 }
+      );
+      observer.observe(hero);
+      return true;
+    };
 
-    const observer = new IntersectionObserver(
-      ([entry]) => setOverHero(entry.isIntersecting),
-      { threshold: 0 }
-    );
-    observer.observe(hero);
-    return () => observer.disconnect();
+    let raf = 0;
+    if (!attach()) {
+      raf = requestAnimationFrame(() => attach());
+    }
+    return () => {
+      observer?.disconnect();
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, [isHome]);
 
   useEffect(() => {
