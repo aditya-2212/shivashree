@@ -14,6 +14,24 @@ const nextConfig: NextConfig = {
   compress: true,
   async redirects() {
     return [
+      // --- Legacy domain: sivasree.com -> shivashreedevelopers.com ---
+      // sivasree.com (and www) is served by this same Vercel project; these
+      // host-conditioned redirects fire only for requests to that domain.
+      // Specific mapping must come first (Next returns the first match).
+      {
+        source: "/flats-for-sale-in-kumbakonam",
+        has: [{ type: "host", value: "(www\\.)?sivasree\\.com" }],
+        destination:
+          "https://www.shivashreedevelopers.com/projects/mahalakshmi-2-3-bhk-apartments-for-sale-in-kumbakonam",
+        permanent: true,
+      },
+      {
+        // Everything else on the old domain -> new homepage.
+        source: "/:path*",
+        has: [{ type: "host", value: "(www\\.)?sivasree\\.com" }],
+        destination: "https://www.shivashreedevelopers.com",
+        permanent: true,
+      },
       {
         source: "/projects/shivashrees-mahalakshmi-swamimalai-kumbakonam",
         destination: "/projects/mahalakshmi-2-3-bhk-apartments-for-sale-in-kumbakonam",
