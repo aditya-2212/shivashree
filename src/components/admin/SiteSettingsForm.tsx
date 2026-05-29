@@ -1,5 +1,6 @@
 "use client";
 
+import type { SiteSettings } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -11,6 +12,7 @@ import {
   contactPageDefaults,
   homePageDefaults,
   aboutPageDefaults,
+  faqsPageDefaults,
   truncateDefaultHint,
 } from "@/lib/site-defaults";
 
@@ -69,67 +71,74 @@ const schema = z.object({
   homeCtaEyebrow: z.string().optional(),
   homeCtaHeading: z.string().optional(),
   homeCtaBody: z.string().optional(),
+  homeFormTitle: z.string().optional(),
+  homeFormNote: z.string().optional(),
+  homeCallLabel: z.string().optional(),
+  homeCallSuffix: z.string().optional(),
+  // Per-page SEO
+  homeMetaTitle: z.string().optional(),
+  homeMetaDescription: z.string().optional(),
+  aboutMetaTitle: z.string().optional(),
+  aboutMetaDescription: z.string().optional(),
+  contactMetaTitle: z.string().optional(),
+  contactMetaDescription: z.string().optional(),
+  faqsMetaTitle: z.string().optional(),
+  faqsMetaDescription: z.string().optional(),
+  // About — vision & mission
+  aboutVisionLabel: z.string().optional(),
+  aboutVisionBody: z.string().optional(),
+  aboutMissionLabel: z.string().optional(),
+  aboutMissionBody: z.string().optional(),
+  // About — process
+  aboutProcessEyebrow: z.string().optional(),
+  aboutProcessHeading: z.string().optional(),
+  aboutProcess1Title: z.string().optional(),
+  aboutProcess1Body: z.string().optional(),
+  aboutProcess2Title: z.string().optional(),
+  aboutProcess2Body: z.string().optional(),
+  aboutProcess3Title: z.string().optional(),
+  aboutProcess3Body: z.string().optional(),
+  aboutProcess4Title: z.string().optional(),
+  aboutProcess4Body: z.string().optional(),
+  // About — quality
+  aboutQualityEyebrow: z.string().optional(),
+  aboutQualityHeading: z.string().optional(),
+  aboutQualityIntro: z.string().optional(),
+  aboutQualitySubheading: z.string().optional(),
+  aboutQuality1Title: z.string().optional(),
+  aboutQuality1Body: z.string().optional(),
+  aboutQuality2Title: z.string().optional(),
+  aboutQuality2Body: z.string().optional(),
+  aboutQuality3Title: z.string().optional(),
+  aboutQuality3Body: z.string().optional(),
+  aboutQuality4Title: z.string().optional(),
+  aboutQuality4Body: z.string().optional(),
+  aboutQuality5Title: z.string().optional(),
+  aboutQuality5Body: z.string().optional(),
+  // About — promise
+  aboutPromiseTitle: z.string().optional(),
+  aboutPromiseNote: z.string().optional(),
+  aboutPromise1Label: z.string().optional(),
+  aboutPromise1Desc: z.string().optional(),
+  aboutPromise2Label: z.string().optional(),
+  aboutPromise2Desc: z.string().optional(),
+  aboutPromise3Label: z.string().optional(),
+  aboutPromise3Desc: z.string().optional(),
+  aboutPromise4Label: z.string().optional(),
+  aboutPromise4Desc: z.string().optional(),
+  // FAQs page
+  faqsHeroEyebrow: z.string().optional(),
+  faqsHeroHeading: z.string().optional(),
+  faqsHeroIntro: z.string().optional(),
+  faqsCtaText: z.string().optional(),
+  faqsCtaButtonLabel: z.string().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
 
-interface SiteSettingsData {
-  corporateOfficeAddress: string;
-  corporateOfficeEmail: string;
-  corporateOfficePhone: string;
-  registeredOfficeAddress: string;
-  registeredOfficeTel: string;
-  whatsappNumber: string;
-  facebookUrl: string | null;
-  instagramUrl: string | null;
-  youtubeUrl: string | null;
-  corporateMapEmbedUrl: string | null;
-  footerText: string;
-  contactHeroEyebrow: string | null;
-  contactHeroTitle: string | null;
-  contactHeroIntro: string | null;
-  contactCorporateLabel: string | null;
-  contactRegisteredLabel: string | null;
-  contactHoursTitle: string | null;
-  contactHoursWeekdays: string | null;
-  contactHoursSunday: string | null;
-  contactHoursNote: string | null;
-  contactFormTitle: string | null;
-  contactFormIntro: string | null;
-  aboutHeroEyebrow: string | null;
-  aboutHeroTitle: string | null;
-  aboutHeroLead: string | null;
-  aboutStoryTitle: string | null;
-  aboutStoryBodyHtml: string | null;
-  aboutCommitmentsTitle: string | null;
-  aboutC1Title: string | null;
-  aboutC1Body: string | null;
-  aboutC2Title: string | null;
-  aboutC2Body: string | null;
-  aboutC3Title: string | null;
-  aboutC3Body: string | null;
-  aboutWhereTitle: string | null;
-  aboutWhereIntro: string | null;
-  aboutCtaTitle: string | null;
-  aboutCtaBody: string | null;
-  homeProjectsEyebrow: string | null;
-  homeProjectsHeading: string | null;
-  homeProjectsSubheading: string | null;
-  homeWhyEyebrow: string | null;
-  homeWhyHeading: string | null;
-  homeCard1Title: string | null;
-  homeCard1Body: string | null;
-  homeCard1Image: string | null;
-  homeCard2Title: string | null;
-  homeCard2Body: string | null;
-  homeCard2Image: string | null;
-  homeCard3Title: string | null;
-  homeCard3Body: string | null;
-  homeCard3Image: string | null;
-  homeCtaEyebrow: string | null;
-  homeCtaHeading: string | null;
-  homeCtaBody: string | null;
-}
+// The form reads every column off the singleton SiteSettings row, so we use the
+// Prisma-generated type directly rather than restating ~100 fields by hand.
+type SiteSettingsData = SiteSettings;
 
 export default function SiteSettingsForm({ initialData }: { initialData: SiteSettingsData | null }) {
   const [saving, setSaving] = useState(false);
@@ -227,6 +236,61 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
       homeCtaEyebrow: initialData?.homeCtaEyebrow ?? "",
       homeCtaHeading: initialData?.homeCtaHeading ?? "",
       homeCtaBody: initialData?.homeCtaBody ?? "",
+      homeFormTitle: initialData?.homeFormTitle ?? "",
+      homeFormNote: initialData?.homeFormNote ?? "",
+      homeCallLabel: initialData?.homeCallLabel ?? "",
+      homeCallSuffix: initialData?.homeCallSuffix ?? "",
+      homeMetaTitle: initialData?.homeMetaTitle ?? "",
+      homeMetaDescription: initialData?.homeMetaDescription ?? "",
+      aboutMetaTitle: initialData?.aboutMetaTitle ?? "",
+      aboutMetaDescription: initialData?.aboutMetaDescription ?? "",
+      contactMetaTitle: initialData?.contactMetaTitle ?? "",
+      contactMetaDescription: initialData?.contactMetaDescription ?? "",
+      faqsMetaTitle: initialData?.faqsMetaTitle ?? "",
+      faqsMetaDescription: initialData?.faqsMetaDescription ?? "",
+      aboutVisionLabel: initialData?.aboutVisionLabel ?? "",
+      aboutVisionBody: initialData?.aboutVisionBody ?? "",
+      aboutMissionLabel: initialData?.aboutMissionLabel ?? "",
+      aboutMissionBody: initialData?.aboutMissionBody ?? "",
+      aboutProcessEyebrow: initialData?.aboutProcessEyebrow ?? "",
+      aboutProcessHeading: initialData?.aboutProcessHeading ?? "",
+      aboutProcess1Title: initialData?.aboutProcess1Title ?? "",
+      aboutProcess1Body: initialData?.aboutProcess1Body ?? "",
+      aboutProcess2Title: initialData?.aboutProcess2Title ?? "",
+      aboutProcess2Body: initialData?.aboutProcess2Body ?? "",
+      aboutProcess3Title: initialData?.aboutProcess3Title ?? "",
+      aboutProcess3Body: initialData?.aboutProcess3Body ?? "",
+      aboutProcess4Title: initialData?.aboutProcess4Title ?? "",
+      aboutProcess4Body: initialData?.aboutProcess4Body ?? "",
+      aboutQualityEyebrow: initialData?.aboutQualityEyebrow ?? "",
+      aboutQualityHeading: initialData?.aboutQualityHeading ?? "",
+      aboutQualityIntro: initialData?.aboutQualityIntro ?? "",
+      aboutQualitySubheading: initialData?.aboutQualitySubheading ?? "",
+      aboutQuality1Title: initialData?.aboutQuality1Title ?? "",
+      aboutQuality1Body: initialData?.aboutQuality1Body ?? "",
+      aboutQuality2Title: initialData?.aboutQuality2Title ?? "",
+      aboutQuality2Body: initialData?.aboutQuality2Body ?? "",
+      aboutQuality3Title: initialData?.aboutQuality3Title ?? "",
+      aboutQuality3Body: initialData?.aboutQuality3Body ?? "",
+      aboutQuality4Title: initialData?.aboutQuality4Title ?? "",
+      aboutQuality4Body: initialData?.aboutQuality4Body ?? "",
+      aboutQuality5Title: initialData?.aboutQuality5Title ?? "",
+      aboutQuality5Body: initialData?.aboutQuality5Body ?? "",
+      aboutPromiseTitle: initialData?.aboutPromiseTitle ?? "",
+      aboutPromiseNote: initialData?.aboutPromiseNote ?? "",
+      aboutPromise1Label: initialData?.aboutPromise1Label ?? "",
+      aboutPromise1Desc: initialData?.aboutPromise1Desc ?? "",
+      aboutPromise2Label: initialData?.aboutPromise2Label ?? "",
+      aboutPromise2Desc: initialData?.aboutPromise2Desc ?? "",
+      aboutPromise3Label: initialData?.aboutPromise3Label ?? "",
+      aboutPromise3Desc: initialData?.aboutPromise3Desc ?? "",
+      aboutPromise4Label: initialData?.aboutPromise4Label ?? "",
+      aboutPromise4Desc: initialData?.aboutPromise4Desc ?? "",
+      faqsHeroEyebrow: initialData?.faqsHeroEyebrow ?? "",
+      faqsHeroHeading: initialData?.faqsHeroHeading ?? "",
+      faqsHeroIntro: initialData?.faqsHeroIntro ?? "",
+      faqsCtaText: initialData?.faqsCtaText ?? "",
+      faqsCtaButtonLabel: initialData?.faqsCtaButtonLabel ?? "",
     },
   });
 
@@ -361,6 +425,38 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
       {error && <p className="text-red-600 text-xs mt-1">{error}</p>}
     </div>
   );
+
+  // Field definitions for the repeating About-page groups, kept as data so the
+  // JSX below stays readable. `t`/`b` are the form field names; `dt`/`db` the
+  // matching default text used as the "If left empty" hint.
+  const A = aboutPageDefaults;
+  const processSteps = [
+    { n: "01", t: "aboutProcess1Title", b: "aboutProcess1Body", dt: A.process1Title, db: A.process1Body },
+    { n: "02", t: "aboutProcess2Title", b: "aboutProcess2Body", dt: A.process2Title, db: A.process2Body },
+    { n: "03", t: "aboutProcess3Title", b: "aboutProcess3Body", dt: A.process3Title, db: A.process3Body },
+    { n: "04", t: "aboutProcess4Title", b: "aboutProcess4Body", dt: A.process4Title, db: A.process4Body },
+  ] as const;
+  const qualityPoints = [
+    { n: "1", t: "aboutQuality1Title", b: "aboutQuality1Body", dt: A.quality1Title, db: A.quality1Body },
+    { n: "2", t: "aboutQuality2Title", b: "aboutQuality2Body", dt: A.quality2Title, db: A.quality2Body },
+    { n: "3", t: "aboutQuality3Title", b: "aboutQuality3Body", dt: A.quality3Title, db: A.quality3Body },
+    { n: "4", t: "aboutQuality4Title", b: "aboutQuality4Body", dt: A.quality4Title, db: A.quality4Body },
+    { n: "5", t: "aboutQuality5Title", b: "aboutQuality5Body", dt: A.quality5Title, db: A.quality5Body },
+  ] as const;
+  const promiseItems = [
+    { n: "1", t: "aboutPromise1Label", b: "aboutPromise1Desc", dt: A.promise1Label, db: A.promise1Desc },
+    { n: "2", t: "aboutPromise2Label", b: "aboutPromise2Desc", dt: A.promise2Label, db: A.promise2Desc },
+    { n: "3", t: "aboutPromise3Label", b: "aboutPromise3Desc", dt: A.promise3Label, db: A.promise3Desc },
+    { n: "4", t: "aboutPromise4Label", b: "aboutPromise4Desc", dt: A.promise4Label, db: A.promise4Desc },
+  ] as const;
+
+  // The four per-page SEO blocks (title + description), with their defaults.
+  const seoBlocks = [
+    { page: "Homepage", t: "homeMetaTitle", d: "homeMetaDescription", dt: homePageDefaults.metaTitle, dd: homePageDefaults.metaDescription },
+    { page: "About page", t: "aboutMetaTitle", d: "aboutMetaDescription", dt: aboutPageDefaults.metaTitle, dd: aboutPageDefaults.metaDescription },
+    { page: "Contact page", t: "contactMetaTitle", d: "contactMetaDescription", dt: contactPageDefaults.metaTitle, dd: contactPageDefaults.metaDescription },
+    { page: "FAQs page", t: "faqsMetaTitle", d: "faqsMetaDescription", dt: faqsPageDefaults.metaTitle, dd: faqsPageDefaults.metaDescription },
+  ] as const;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -839,6 +935,178 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
             placeholder="Your dream home isn't just built — it's brought to life…"
           />
         </Field>
+      </Section>
+
+      {/* ── Homepage — callback form copy ────────────────────────────────── */}
+      <Section
+        title="Homepage — callback form copy"
+        description='The small text around the enquiry form and the "prefer to call" line on the homepage.'
+      >
+        <div className="grid grid-cols-2 gap-4">
+          <Field label="Form title" emptyDefault={homePageDefaults.formTitle}>
+            <input {...register("homeFormTitle")} className={inputClass} placeholder="Request a callback" />
+          </Field>
+          <Field label="Form note (small text)" emptyDefault={homePageDefaults.formNote}>
+            <input {...register("homeFormNote")} className={inputClass} placeholder="No spam. No mailing list. Just a phone call." />
+          </Field>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <Field
+            label='"Prefer to call" lead-in'
+            hint="Text shown just before the phone number link."
+            emptyDefault={homePageDefaults.callLabel}
+          >
+            <input {...register("homeCallLabel")} className={inputClass} placeholder="Prefer to call? Dial" />
+          </Field>
+          <Field
+            label='"Prefer to call" trailing text'
+            hint="Text shown just after the phone number (e.g. office hours)."
+            emptyDefault={homePageDefaults.callSuffix}
+          >
+            <input {...register("homeCallSuffix")} className={inputClass} placeholder="— Monday to Saturday, 9am–6pm." />
+          </Field>
+        </div>
+      </Section>
+
+      {/* ── About page — Vision & Mission ────────────────────────────────── */}
+      <Section
+        title="About page — Vision & Mission"
+        description="The two boxes in the middle of the About page."
+      >
+        <div className="grid grid-cols-2 gap-4">
+          <Field label="Vision label" emptyDefault={aboutPageDefaults.visionLabel}>
+            <input {...register("aboutVisionLabel")} className={inputClass} placeholder="Our Vision" />
+          </Field>
+          <Field label="Mission label" emptyDefault={aboutPageDefaults.missionLabel}>
+            <input {...register("aboutMissionLabel")} className={inputClass} placeholder="Our Mission" />
+          </Field>
+        </div>
+        <Field label="Vision text" emptyDefault={aboutPageDefaults.visionBody}>
+          <textarea {...register("aboutVisionBody")} rows={3} className={textareaClass} />
+        </Field>
+        <Field label="Mission text" emptyDefault={aboutPageDefaults.missionBody}>
+          <textarea {...register("aboutMissionBody")} rows={3} className={textareaClass} />
+        </Field>
+      </Section>
+
+      {/* ── About page — Our Process ─────────────────────────────────────── */}
+      <Section
+        title="About page — Our Process"
+        description="The numbered steps explaining how buying works."
+      >
+        <Field label="Eyebrow" emptyDefault={aboutPageDefaults.processEyebrow}>
+          <input {...register("aboutProcessEyebrow")} className={inputClass} placeholder="Our Process" />
+        </Field>
+        <Field label="Section heading" emptyDefault={aboutPageDefaults.processHeading}>
+          <textarea {...register("aboutProcessHeading")} rows={2} className={textareaClass} />
+        </Field>
+        {processSteps.map((step) => (
+          <div key={step.n} className="border border-stone-200 rounded-lg p-4 space-y-3">
+            <p className="text-xs font-bold text-brand-purple-700">{step.n}</p>
+            <Field label="Step title" emptyDefault={step.dt}>
+              <input {...register(step.t)} className={inputClass} />
+            </Field>
+            <Field label="Step body" emptyDefault={step.db}>
+              <textarea {...register(step.b)} rows={2} className={textareaClass} />
+            </Field>
+          </div>
+        ))}
+      </Section>
+
+      {/* ── About page — Quality Guarantee ───────────────────────────────── */}
+      <Section
+        title="About page — Quality Guarantee"
+        description='The "Our Quality Guarantee" section and its numbered points.'
+      >
+        <Field label="Eyebrow" emptyDefault={aboutPageDefaults.qualityEyebrow}>
+          <input {...register("aboutQualityEyebrow")} className={inputClass} placeholder="Our Quality Guarantee" />
+        </Field>
+        <Field label="Section heading" emptyDefault={aboutPageDefaults.qualityHeading}>
+          <textarea {...register("aboutQualityHeading")} rows={2} className={textareaClass} />
+        </Field>
+        <Field label="Section intro" emptyDefault={aboutPageDefaults.qualityIntro}>
+          <textarea {...register("aboutQualityIntro")} rows={2} className={textareaClass} />
+        </Field>
+        <Field label='"What sets us apart" subheading' emptyDefault={aboutPageDefaults.qualitySubheading}>
+          <input {...register("aboutQualitySubheading")} className={inputClass} placeholder="What Sets Our Quality Apart?" />
+        </Field>
+        {qualityPoints.map((pt) => (
+          <div key={pt.n} className="border border-stone-200 rounded-lg p-4 space-y-3">
+            <p className="text-xs font-bold text-brand-purple-700">{pt.n}</p>
+            <Field label="Point title" emptyDefault={pt.dt}>
+              <input {...register(pt.t)} className={inputClass} />
+            </Field>
+            <Field label="Point body" emptyDefault={pt.db}>
+              <textarea {...register(pt.b)} rows={2} className={textareaClass} />
+            </Field>
+          </div>
+        ))}
+      </Section>
+
+      {/* ── About page — Our Promise ─────────────────────────────────────── */}
+      <Section
+        title="About page — Our Promise"
+        description='The "Our Promise to You" list in the dark box.'
+      >
+        <Field label="Box title" emptyDefault={aboutPageDefaults.promiseTitle}>
+          <input {...register("aboutPromiseTitle")} className={inputClass} placeholder="Our Promise to You" />
+        </Field>
+        {promiseItems.map((it) => (
+          <div key={it.n} className="border border-stone-200 rounded-lg p-4 space-y-3">
+            <p className="text-xs font-bold text-brand-purple-700">{it.n}</p>
+            <Field label="Promise label" emptyDefault={it.dt}>
+              <input {...register(it.t)} className={inputClass} />
+            </Field>
+            <Field label="Promise description" emptyDefault={it.db}>
+              <textarea {...register(it.b)} rows={2} className={textareaClass} />
+            </Field>
+          </div>
+        ))}
+        <Field label="Closing note (small text under the list)" emptyDefault={aboutPageDefaults.promiseNote}>
+          <textarea {...register("aboutPromiseNote")} rows={2} className={textareaClass} />
+        </Field>
+      </Section>
+
+      {/* ── FAQs page ────────────────────────────────────────────────────── */}
+      <Section
+        title="FAQs page"
+        description="The purple header and the bottom call-to-action on /resources/faqs. (The questions themselves are managed under FAQs.)"
+      >
+        <Field label="Hero eyebrow" emptyDefault={faqsPageDefaults.heroEyebrow}>
+          <input {...register("faqsHeroEyebrow")} className={inputClass} placeholder="FAQs" />
+        </Field>
+        <Field label="Hero heading" emptyDefault={faqsPageDefaults.heroHeading}>
+          <input {...register("faqsHeroHeading")} className={inputClass} placeholder="The questions buyers actually ask us." />
+        </Field>
+        <Field label="Hero intro" emptyDefault={faqsPageDefaults.heroIntro}>
+          <textarea {...register("faqsHeroIntro")} rows={3} className={textareaClass} />
+        </Field>
+        <div className="grid grid-cols-2 gap-4">
+          <Field label="Bottom CTA text" emptyDefault={faqsPageDefaults.ctaText}>
+            <input {...register("faqsCtaText")} className={inputClass} placeholder="Question not answered above? Ask us directly." />
+          </Field>
+          <Field label="Bottom CTA button label" emptyDefault={faqsPageDefaults.ctaButtonLabel}>
+            <input {...register("faqsCtaButtonLabel")} className={inputClass} placeholder="Contact us" />
+          </Field>
+        </div>
+      </Section>
+
+      {/* ── Search engine / SEO ──────────────────────────────────────────── */}
+      <Section
+        title="Search engine listing (SEO)"
+        description="The blue title and grey description each page shows in Google search results and the browser tab. Leave blank to use the built-in defaults."
+      >
+        {seoBlocks.map((blk) => (
+          <div key={blk.page} className="border border-stone-200 rounded-lg p-4 space-y-3">
+            <p className="text-xs font-bold text-brand-purple-700 uppercase tracking-wide">{blk.page}</p>
+            <Field label="Meta title" emptyDefault={blk.dt}>
+              <input {...register(blk.t)} className={inputClass} />
+            </Field>
+            <Field label="Meta description" hint="Aim for 150–160 characters." emptyDefault={blk.dd}>
+              <textarea {...register(blk.d)} rows={2} className={textareaClass} />
+            </Field>
+          </div>
+        ))}
       </Section>
 
       <div className="pb-8">

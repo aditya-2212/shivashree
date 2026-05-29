@@ -18,12 +18,13 @@ import { normalizeHeroCtaUrl } from "@/lib/hero-cta-url";
 
 export const revalidate = 30;
 
-export const metadata: Metadata = {
-  title:
-    "Luxury 2 & 3 BHK Apartments for sale in Kumbakonam & Chennai | Shivashree Developers",
-  description:
-    "Explore premium 2 & 3 BHK apartments in Kumbakonam and Chennai by Shivashree Developers. Modern amenities, prime locations, quality construction and affordable pricing. Book your dream home today.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const s = await prisma.siteSettings.findUnique({ where: { id: 1 } });
+  return {
+    title: s?.homeMetaTitle?.trim() || D.metaTitle,
+    description: s?.homeMetaDescription?.trim() || D.metaDescription,
+  };
+}
 
 const statusBadge = {
   PROPOSED: {
@@ -346,14 +347,14 @@ export default async function HomePage() {
               </p>
               {settings?.corporateOfficePhone && (
                 <p className="text-white/60 text-sm">
-                  Prefer to call? Dial{" "}
+                  {settings?.homeCallLabel?.trim() || D.callLabel}{" "}
                   <a
                     href={`tel:${settings.corporateOfficePhone}`}
                     className="text-white font-semibold underline underline-offset-4 hover:text-brand-blue-200"
                   >
                     {settings.corporateOfficePhone}
                   </a>{" "}
-                  — Monday to Saturday, 9am–6pm.
+                  {settings?.homeCallSuffix?.trim() || D.callSuffix}
                 </p>
               )}
             </div>
@@ -361,10 +362,10 @@ export default async function HomePage() {
             <div className="lg:col-span-6">
               <div className="bg-white rounded-2xl p-6 md:p-8 shadow-xl">
                 <h3 className="text-lg font-bold text-stone-900 mb-1">
-                  Request a callback
+                  {settings?.homeFormTitle?.trim() || D.formTitle}
                 </h3>
                 <p className="text-stone-500 text-sm mb-5">
-                  No spam. No mailing list. Just a phone call.
+                  {settings?.homeFormNote?.trim() || D.formNote}
                 </p>
                 <EnquiryForm source="homepage-cta" />
               </div>

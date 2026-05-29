@@ -127,6 +127,9 @@ model BlogPost {
   category        String
   tags            String    @db.Text // JSON array
   readTimeMinutes Int       @default(5)
+  // SEO overrides — fall back to title/excerpt when empty (see blog [slug] page).
+  seoTitle        String?
+  seoDescription  String?   @db.Text
   isPublished     Boolean   @default(false)
   publishedAt     DateTime?
   createdAt       DateTime  @default(now())
@@ -251,6 +254,73 @@ model SiteSettings {
   homeCtaEyebrow           String?
   homeCtaHeading           String? @db.Text
   homeCtaBody              String? @db.Text
+  homeFormTitle            String?
+  homeFormNote             String? @db.Text
+  homeCallLabel            String?
+  homeCallSuffix           String?
+
+  // ─── Per-page SEO meta (browser tab + Google snippet) ──────────────────────────
+  homeMetaTitle            String? @db.Text
+  homeMetaDescription      String? @db.Text
+  aboutMetaTitle           String? @db.Text
+  aboutMetaDescription     String? @db.Text
+  contactMetaTitle         String? @db.Text
+  contactMetaDescription   String? @db.Text
+  faqsMetaTitle            String? @db.Text
+  faqsMetaDescription      String? @db.Text
+
+  // ─── About page — Vision & Mission ─────────────────────────────────────────────
+  aboutVisionLabel         String?
+  aboutVisionBody          String? @db.Text
+  aboutMissionLabel        String?
+  aboutMissionBody         String? @db.Text
+
+  // ─── About page — Our Process ──────────────────────────────────────────────────
+  aboutProcessEyebrow      String?
+  aboutProcessHeading      String? @db.Text
+  aboutProcess1Title       String?
+  aboutProcess1Body        String? @db.Text
+  aboutProcess2Title       String?
+  aboutProcess2Body        String? @db.Text
+  aboutProcess3Title       String?
+  aboutProcess3Body        String? @db.Text
+  aboutProcess4Title       String?
+  aboutProcess4Body        String? @db.Text
+
+  // ─── About page — Quality Guarantee ────────────────────────────────────────────
+  aboutQualityEyebrow      String?
+  aboutQualityHeading      String? @db.Text
+  aboutQualityIntro        String? @db.Text
+  aboutQualitySubheading   String?
+  aboutQuality1Title       String?
+  aboutQuality1Body        String? @db.Text
+  aboutQuality2Title       String?
+  aboutQuality2Body        String? @db.Text
+  aboutQuality3Title       String?
+  aboutQuality3Body        String? @db.Text
+  aboutQuality4Title       String?
+  aboutQuality4Body        String? @db.Text
+  aboutQuality5Title       String?
+  aboutQuality5Body        String? @db.Text
+
+  // ─── About page — Our Promise ──────────────────────────────────────────────────
+  aboutPromiseTitle        String?
+  aboutPromiseNote         String? @db.Text
+  aboutPromise1Label       String?
+  aboutPromise1Desc        String? @db.Text
+  aboutPromise2Label       String?
+  aboutPromise2Desc        String? @db.Text
+  aboutPromise3Label       String?
+  aboutPromise3Desc        String? @db.Text
+  aboutPromise4Label       String?
+  aboutPromise4Desc        String? @db.Text
+
+  // ─── FAQs page copy ────────────────────────────────────────────────────────────
+  faqsHeroEyebrow          String?
+  faqsHeroHeading          String? @db.Text
+  faqsHeroIntro            String? @db.Text
+  faqsCtaText              String? @db.Text
+  faqsCtaButtonLabel       String?
 
   updatedAt             DateTime @updatedAt
 

@@ -8,9 +8,12 @@ export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
   const s = await prisma.siteSettings.findUnique({ where: { id: 1 } });
+  const fallbackTitle = s?.contactHeroTitle
+    ? `${s.contactHeroTitle} | Shivashree Developers`
+    : D.metaTitle;
   return {
-    title: s?.contactHeroTitle ? `${s.contactHeroTitle} | Shivashree Developers` : D.metaTitle,
-    description: D.metaDescription,
+    title: s?.contactMetaTitle?.trim() || fallbackTitle,
+    description: s?.contactMetaDescription?.trim() || D.metaDescription,
   };
 }
 

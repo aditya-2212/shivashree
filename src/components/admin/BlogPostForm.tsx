@@ -12,9 +12,12 @@ import { estimateReadTime } from "@/lib/utils";
 
 const schema = z.object({
   title: z.string().min(1, "Title is required"),
+  slug: z.string().optional(),
   excerpt: z.string().min(10, "Excerpt must be at least 10 characters"),
   authorName: z.string().min(1, "Author name is required"),
   category: z.string().min(1, "Category is required"),
+  seoTitle: z.string().optional(),
+  seoDescription: z.string().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -22,11 +25,14 @@ type FormData = z.infer<typeof schema>;
 interface BlogData {
   id?: number;
   title: string;
+  slug?: string;
   excerpt: string;
   body: string;
   authorName: string;
   category: string;
   coverImage?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
   isPublished: boolean;
 }
 
@@ -63,9 +69,12 @@ export default function BlogPostForm({ mode, initialData }: Props) {
     resolver: zodResolver(schema),
     defaultValues: {
       title: initialData?.title ?? "",
+      slug: initialData?.slug ?? "",
       excerpt: initialData?.excerpt ?? "",
       authorName: initialData?.authorName ?? "Shivashree Developers",
       category: initialData?.category ?? "Real Estate",
+      seoTitle: initialData?.seoTitle ?? "",
+      seoDescription: initialData?.seoDescription ?? "",
     },
   });
 
@@ -96,6 +105,9 @@ export default function BlogPostForm({ mode, initialData }: Props) {
     try {
       const payload = {
         ...formData,
+        slug: formData.slug?.trim() || undefined,
+        seoTitle: formData.seoTitle?.trim() || null,
+        seoDescription: formData.seoDescription?.trim() || null,
         body,
         coverImage,
         readTimeMinutes: estimateReadTime(body),
@@ -246,6 +258,61 @@ export default function BlogPostForm({ mode, initialData }: Props) {
         {errors.excerpt && (
           <p className="text-red-600 text-xs mt-1">{errors.excerpt.message}</p>
         )}
+      </div>
+
+      {/* SEO & URL */}
+      <div className="border border-stone-200 rounded-xl p-4 space-y-4 bg-stone-50">
+        <p className="text-xs font-bold text-brand-purple-700 uppercase tracking-wide">
+          SEO &amp; URL
+        </p>
+        <div>
+          <label className="block text-sm font-medium text-stone-700 mb-1.5">
+            Blog URL{" "}
+            <span className="text-stone-400 font-normal">(slug)</span>
+          </label>
+          <div className="flex items-center rounded-lg border border-stone-300 bg-white overflow-hidden focus-within:ring-2 focus-within:ring-brand-purple-500">
+            <span className="pl-3 pr-1 text-stone-400 text-sm select-none whitespace-nowrap">
+              /resources/blog/
+            </span>
+            <input
+              {...register("slug")}
+              className="flex-1 px-1 py-2.5 text-stone-900 text-sm placeholder:text-stone-400 focus:outline-none"
+              placeholder="auto-generated-from-title"
+            />
+          </div>
+          <p className="text-[11px] text-stone-500 mt-1.5 leading-snug">
+            Leave blank to auto-generate from the title. Lowercase letters, numbers and
+            hyphens only — anything else is cleaned up automatically.
+          </p>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-stone-700 mb-1.5">
+            Meta Title
+          </label>
+          <input
+            {...register("seoTitle")}
+            className={inputClass}
+            placeholder="Defaults to the post title if left blank"
+          />
+          <p className="text-[11px] text-stone-500 mt-1.5 leading-snug">
+            Shown in the browser tab and Google results. If empty, the post title is used.
+          </p>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-stone-700 mb-1.5">
+            Meta Description
+          </label>
+          <textarea
+            {...register("seoDescription")}
+            rows={2}
+            className={inputClass + " resize-none"}
+            placeholder="Defaults to the excerpt if left blank"
+          />
+          <p className="text-[11px] text-stone-500 mt-1.5 leading-snug">
+            The grey snippet under the title in Google results. Aim for 150–160 characters.
+            If empty, the excerpt is used.
+          </p>
+        </div>
       </div>
 
       {/* Body */}

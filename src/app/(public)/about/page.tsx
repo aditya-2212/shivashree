@@ -7,68 +7,40 @@ import { aboutPageDefaults as AD } from "@/lib/site-defaults";
 
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
-  title: "About Shivashree Developers | Trusted Builders in Kumbakonam & Chennai",
-  description:
-    "Learn about Shivashree Developers, a trusted real estate company in Kumbakonam delivering premium 2 & 3 BHK apartments with quality construction, transparency, and customer satisfaction.",
-};
-
-const PROCESS_STEPS = [
-  {
-    n: "01",
-    title: "Explore Options",
-    body: "We help you choose from a range of thoughtfully designed apartments in prime locations. Whether it's the size, layout, or amenities, we guide you in finding the perfect fit for your needs.",
-  },
-  {
-    n: "02",
-    title: "Explore layouts and finishes",
-    body: "Review floor plans, specifications, and finishes with our team so you can compare options and choose what fits your family before you book.",
-  },
-  {
-    n: "03",
-    title: "Book and Secure",
-    body: "Once you've chosen your dream apartment, we ensure a smooth booking process with transparent documentation and flexible payment plans to suit your budget.",
-  },
-  {
-    n: "04",
-    title: "Handover and Support",
-    body: "After construction is complete, we hand over your apartment, fully inspected and ready for you to move in. Our team remains available for any post-handover assistance you may need.",
-  },
-];
-
-const QUALITY_POINTS = [
-  {
-    title: "Premium Materials",
-    body: "We use only the finest materials, sourced from trusted suppliers, to ensure every apartment is built to the highest standards.",
-  },
-  {
-    title: "Expert Craftsmanship",
-    body: "Our team of experienced architects, engineers, and construction professionals ensures precision and excellence at every stage of development.",
-  },
-  {
-    title: "Attention to Detail",
-    body: "From structural integrity to interior finishes, we leave no detail overlooked, ensuring a perfect blend of aesthetics and functionality.",
-  },
-  {
-    title: "Sustainable Practices",
-    body: "We incorporate eco-friendly building techniques and materials to create spaces that are environmentally conscious and energy-efficient.",
-  },
-  {
-    title: "Rigorous Quality Checks",
-    body: "Every project undergoes multiple levels of inspection and quality control to meet both industry standards and our own stringent benchmarks.",
-  },
-];
-
-const PROMISES = [
-  { label: "Durability", desc: "Apartments designed to stand the test of time." },
-  { label: "Comfort", desc: "Thoughtful layouts and modern amenities for a superior living experience." },
-  { label: "Transparency", desc: "Clear communication and complete documentation at every step." },
-  { label: "Customer Satisfaction", desc: "Your happiness is our top priority, even after the handover." },
-];
+export async function generateMetadata(): Promise<Metadata> {
+  const s = await prisma.siteSettings.findUnique({ where: { id: 1 } });
+  return {
+    title: s?.aboutMetaTitle?.trim() || AD.metaTitle,
+    description: s?.aboutMetaDescription?.trim() || AD.metaDescription,
+  };
+}
 
 export default async function AboutPage() {
   const settings = await prisma.siteSettings.findUnique({ where: { id: 1 } });
   const s = settings;
+
+  // Numbered "Our Process" steps — CMS-driven with built-in defaults.
+  const PROCESS_STEPS = [
+    { n: "01", title: s?.aboutProcess1Title?.trim() || AD.process1Title, body: s?.aboutProcess1Body?.trim() || AD.process1Body },
+    { n: "02", title: s?.aboutProcess2Title?.trim() || AD.process2Title, body: s?.aboutProcess2Body?.trim() || AD.process2Body },
+    { n: "03", title: s?.aboutProcess3Title?.trim() || AD.process3Title, body: s?.aboutProcess3Body?.trim() || AD.process3Body },
+    { n: "04", title: s?.aboutProcess4Title?.trim() || AD.process4Title, body: s?.aboutProcess4Body?.trim() || AD.process4Body },
+  ];
+
+  const QUALITY_POINTS = [
+    { title: s?.aboutQuality1Title?.trim() || AD.quality1Title, body: s?.aboutQuality1Body?.trim() || AD.quality1Body },
+    { title: s?.aboutQuality2Title?.trim() || AD.quality2Title, body: s?.aboutQuality2Body?.trim() || AD.quality2Body },
+    { title: s?.aboutQuality3Title?.trim() || AD.quality3Title, body: s?.aboutQuality3Body?.trim() || AD.quality3Body },
+    { title: s?.aboutQuality4Title?.trim() || AD.quality4Title, body: s?.aboutQuality4Body?.trim() || AD.quality4Body },
+    { title: s?.aboutQuality5Title?.trim() || AD.quality5Title, body: s?.aboutQuality5Body?.trim() || AD.quality5Body },
+  ];
+
+  const PROMISES = [
+    { label: s?.aboutPromise1Label?.trim() || AD.promise1Label, desc: s?.aboutPromise1Desc?.trim() || AD.promise1Desc },
+    { label: s?.aboutPromise2Label?.trim() || AD.promise2Label, desc: s?.aboutPromise2Desc?.trim() || AD.promise2Desc },
+    { label: s?.aboutPromise3Label?.trim() || AD.promise3Label, desc: s?.aboutPromise3Desc?.trim() || AD.promise3Desc },
+    { label: s?.aboutPromise4Label?.trim() || AD.promise4Label, desc: s?.aboutPromise4Desc?.trim() || AD.promise4Desc },
+  ];
 
   const showStory = Boolean(s?.aboutStoryTitle?.trim() || s?.aboutStoryBodyHtml?.trim());
   const showCommitments = Boolean(
@@ -148,21 +120,18 @@ export default async function AboutPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="bg-brand-purple-50 rounded-2xl p-8 border border-brand-purple-100">
               <p className="text-brand-purple-600 font-semibold text-sm uppercase tracking-widest mb-3">
-                Our Vision
+                {s?.aboutVisionLabel?.trim() || AD.visionLabel}
               </p>
               <p className="text-stone-800 text-lg leading-relaxed">
-                To redefine urban living by creating sustainable, innovative, and luxurious spaces
-                that inspire and enrich lives.
+                {s?.aboutVisionBody?.trim() || AD.visionBody}
               </p>
             </div>
             <div className="bg-stone-50 rounded-2xl p-8 border border-stone-200">
               <p className="text-brand-blue-600 font-semibold text-sm uppercase tracking-widest mb-3">
-                Our Mission
+                {s?.aboutMissionLabel?.trim() || AD.missionLabel}
               </p>
               <p className="text-stone-800 text-lg leading-relaxed">
-                At Shivashree Developers, our mission is to deliver exceptional quality, value, and
-                transparency in every project we undertake. We are dedicated to creating
-                environments where families and businesses thrive.
+                {s?.aboutMissionBody?.trim() || AD.missionBody}
               </p>
             </div>
           </div>
@@ -173,11 +142,10 @@ export default async function AboutPage() {
       <section className="py-20 bg-stone-50 border-y border-stone-200">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="text-brand-purple-600 font-semibold text-sm uppercase tracking-widest mb-3">
-            Our Process
+            {s?.aboutProcessEyebrow?.trim() || AD.processEyebrow}
           </p>
           <h2 className="text-3xl md:text-4xl font-bold text-stone-900 mb-12 tracking-tight max-w-2xl">
-            At Shivashree Developers, we understand that purchasing an apartment is more than just
-            a transaction — it&rsquo;s a life-changing decision.
+            {s?.aboutProcessHeading?.trim() || AD.processHeading}
           </h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
@@ -227,21 +195,20 @@ export default async function AboutPage() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="text-brand-purple-600 font-semibold text-sm uppercase tracking-widest mb-3">
-            Our Quality Guarantee
+            {s?.aboutQualityEyebrow?.trim() || AD.qualityEyebrow}
           </p>
           <h2 className="text-3xl md:text-4xl font-bold text-stone-900 mb-4 tracking-tight max-w-2xl">
-            Quality isn&rsquo;t just a commitment — it&rsquo;s the foundation of everything we do.
+            {s?.aboutQualityHeading?.trim() || AD.qualityHeading}
           </h2>
           <p className="text-stone-600 text-lg max-w-2xl mb-12 leading-relaxed">
-            We take pride in delivering apartments that exceed expectations, combining world-class
-            craftsmanship with thoughtful design and lasting durability.
+            {s?.aboutQualityIntro?.trim() || AD.qualityIntro}
           </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* What sets us apart */}
             <div>
               <h3 className="font-bold text-stone-900 text-xl mb-6">
-                What Sets Our Quality Apart?
+                {s?.aboutQualitySubheading?.trim() || AD.qualitySubheading}
               </h3>
               <ol className="space-y-6">
                 {QUALITY_POINTS.map((point, i) => (
@@ -260,7 +227,9 @@ export default async function AboutPage() {
 
             {/* Our Promise */}
             <div className="bg-brand-purple-900 rounded-2xl p-8 text-white">
-              <h3 className="font-bold text-xl mb-6">Our Promise to You</h3>
+              <h3 className="font-bold text-xl mb-6">
+                {s?.aboutPromiseTitle?.trim() || AD.promiseTitle}
+              </h3>
               <ul className="space-y-5">
                 {PROMISES.map((p) => (
                   <li key={p.label} className="flex gap-3">
@@ -273,8 +242,7 @@ export default async function AboutPage() {
                 ))}
               </ul>
               <p className="text-white/60 text-sm mt-8 leading-relaxed border-t border-white/10 pt-6">
-                At Shivashree Developers, we don&rsquo;t just build apartments; we build trust and
-                long-lasting relationships with our customers.
+                {s?.aboutPromiseNote?.trim() || AD.promiseNote}
               </p>
             </div>
           </div>

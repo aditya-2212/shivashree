@@ -10,9 +10,11 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { title, excerpt, content, authorName, category, coverImage, isPublished, publishedAt, readTimeMinutes } = body;
+    const { title, slug: rawSlug, excerpt, content, authorName, category, coverImage, seoTitle, seoDescription, isPublished, publishedAt, readTimeMinutes } = body;
 
-    const baseSlug = slugify(title);
+    // Use the admin-provided slug if given, otherwise derive it from the title.
+    // Either way we slugify to keep URLs clean, then de-dupe against existing posts.
+    const baseSlug = slugify(rawSlug?.trim() || title);
     let slug = baseSlug;
     let attempt = 0;
     while (await prisma.blogPost.findUnique({ where: { slug } })) {
@@ -29,6 +31,8 @@ export async function POST(req: NextRequest) {
         authorName,
         category,
         coverImage: coverImage || null,
+        seoTitle: seoTitle?.trim() || null,
+        seoDescription: seoDescription?.trim() || null,
         tags: JSON.stringify([]),
         readTimeMinutes: readTimeMinutes ?? estimateReadTime(body.body ?? ""),
         isPublished: isPublished ?? false,
