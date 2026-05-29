@@ -150,7 +150,7 @@ export default function Navbar({ properties, whatsappNumber, isHome: isHomeIniti
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         heroMode
-          ? "bg-gradient-to-b from-black/30 to-transparent"
+          ? "bg-transparent"
           : "bg-white/95 backdrop-blur-md shadow-sm border-b border-stone-200/80"
       )}
     >
