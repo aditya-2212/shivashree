@@ -18,6 +18,10 @@ export async function POST(req: NextRequest) {
 
     if (src === "contact-page") {
       try {
+        const settings = await prisma.siteSettings.findUnique({
+          where: { id: 1 },
+          select: { enquiryRecipientEmail: true },
+        });
         await sendContactEnquiryEmail({
           name,
           mobile,
@@ -25,6 +29,7 @@ export async function POST(req: NextRequest) {
           lookingIn: lookingIn || null,
           projectEnquiry: projectEnquiry || null,
           source: src,
+          to: settings?.enquiryRecipientEmail || null,
         });
       } catch (err) {
         console.error("Contact enquiry email error:", err);

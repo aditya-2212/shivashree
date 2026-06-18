@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 
-const SALES_INBOX_DEFAULT = "sales@sivasree.com";
+const SALES_INBOX_DEFAULT = "finance@shivashreedevelopers.com";
 
 export interface ContactEnquiryEmailPayload {
   name: string;
@@ -9,6 +9,8 @@ export interface ContactEnquiryEmailPayload {
   lookingIn?: string | null;
   projectEnquiry?: string | null;
   source: string;
+  /** Recipient override from Site Settings (admin-editable). */
+  to?: string | null;
 }
 
 /** Sends the contact-page enquiry to the sales inbox via Resend. */
@@ -25,7 +27,9 @@ export async function sendContactEnquiryEmail(
     throw new Error("EMAIL_FROM is not configured");
   }
 
-  const to = process.env.SALES_INBOX_EMAIL?.trim() || SALES_INBOX_DEFAULT;
+  // Priority: admin Site Settings → env override → built-in default.
+  const to =
+    payload.to?.trim() || process.env.SALES_INBOX_EMAIL?.trim() || SALES_INBOX_DEFAULT;
 
   const lines = [
     "New enquiry from the Contact Us page",

@@ -193,6 +193,9 @@ model SiteSettings {
   corporateOfficeAddress String @db.Text
   corporateOfficeEmail  String
   corporateOfficePhone  String
+  // Where Contact-page enquiry form submissions are emailed. Editable in admin;
+  // falls back to env SALES_INBOX_EMAIL / built-in default when empty.
+  enquiryRecipientEmail String?
   registeredOfficeAddress String @db.Text
   registeredOfficeTel   String
   whatsappNumber        String

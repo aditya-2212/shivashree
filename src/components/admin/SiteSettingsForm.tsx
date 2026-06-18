@@ -18,6 +18,7 @@ const schema = z.object({
   corporateOfficeAddress: z.string().min(1, "Required"),
   corporateOfficeEmail: z.string().email("Invalid email"),
   corporateOfficePhone: z.string().min(1, "Required"),
+  enquiryRecipientEmail: z.string().optional(),
   corporateMapEmbedUrl: z.string().optional(),
   registeredOfficeAddress: z.string().min(1, "Required"),
   registeredOfficeTel: z.string().min(1, "Required"),
@@ -43,6 +44,7 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
       corporateOfficeAddress: initialData?.corporateOfficeAddress ?? "",
       corporateOfficeEmail: initialData?.corporateOfficeEmail ?? "",
       corporateOfficePhone: initialData?.corporateOfficePhone ?? "",
+      enquiryRecipientEmail: initialData?.enquiryRecipientEmail ?? "",
       corporateMapEmbedUrl: initialData?.corporateMapEmbedUrl ?? "",
       registeredOfficeAddress: initialData?.registeredOfficeAddress ?? "",
       registeredOfficeTel: initialData?.registeredOfficeTel ?? "",
@@ -143,6 +145,21 @@ export default function SiteSettingsForm({ initialData }: { initialData: SiteSet
         </Field>
         <Field label="Telephone" error={errors.registeredOfficeTel?.message}>
           <input {...register("registeredOfficeTel")} className={inputClass} />
+        </Field>
+      </Section>
+
+      <Section title="Enquiry notifications">
+        <Field
+          label="Enquiry email recipient"
+          hint="Where Contact-page enquiry form submissions are emailed. Leave blank to use the site default."
+          error={errors.enquiryRecipientEmail?.message}
+        >
+          <input
+            {...register("enquiryRecipientEmail")}
+            type="email"
+            className={inputClass}
+            placeholder="finance@shivashreedevelopers.com"
+          />
         </Field>
       </Section>
 
