@@ -102,10 +102,15 @@ export default function ContentForm({ sections, initialData, successMessage }: P
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.detail || data.error || `HTTP ${res.status}`);
+      }
       toast.success(successMessage ?? "Saved! Changes are now live on the website.");
-    } catch {
-      toast.error("Failed to save. Please try again.");
+    } catch (err) {
+      toast.error(
+        `Failed to save: ${err instanceof Error ? err.message : "please try again."}`
+      );
     } finally {
       setSaving(false);
     }
