@@ -37,6 +37,7 @@ export async function POST(req: NextRequest) {
           {
             error:
               "We could not send your message by email. Please call us or try again later.",
+            detail: err instanceof Error ? err.message : String(err),
           },
           { status: 503 }
         );
