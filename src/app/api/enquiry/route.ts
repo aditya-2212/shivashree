@@ -16,35 +16,8 @@ export async function POST(req: NextRequest) {
 
     const src = source ?? "website";
 
-    if (src === "contact-page") {
-      try {
-        const settings = await prisma.siteSettings.findUnique({
-          where: { id: 1 },
-          select: { enquiryRecipientEmail: true },
-        });
-        await sendContactEnquiryEmail({
-          name,
-          mobile,
-          email: email || null,
-          lookingIn: lookingIn || null,
-          projectEnquiry: projectEnquiry || null,
-          source: src,
-          to: settings?.enquiryRecipientEmail || null,
-        });
-      } catch (err) {
-        console.error("Contact enquiry email error:", err);
-        return NextResponse.json(
-          {
-            error:
-              "We could not send your message by email. Please call us or try again later.",
-            detail: err instanceof Error ? err.message : String(err),
-          },
-          { status: 503 }
-        );
-      }
-      return NextResponse.json({ success: true }, { status: 201 });
-    }
-
+    // Always capture the enquiry as a lead first, so a submission is never lost
+    // (this is why the homepage/project forms always worked — they save a lead).
     const lead = await prisma.lead.create({
       data: {
         name,
@@ -57,6 +30,27 @@ export async function POST(req: NextRequest) {
         status: "NEW",
       },
     });
+
+    // Every enquiry (homepage, project, contact) also triggers an email
+    // notification — on a best-effort basis. A failed email must NOT fail the
+    // submission: the lead is already saved and visible under Enquiries.
+    try {
+      const settings = await prisma.siteSettings.findUnique({
+        where: { id: 1 },
+        select: { enquiryRecipientEmail: true },
+      });
+      await sendContactEnquiryEmail({
+        name,
+        mobile,
+        email: email || null,
+        lookingIn: lookingIn || null,
+        projectEnquiry: projectEnquiry || null,
+        source: src,
+        to: settings?.enquiryRecipientEmail || null,
+      });
+    } catch (err) {
+      console.error("Enquiry email error (lead saved):", err);
+    }
 
     return NextResponse.json({ success: true, id: lead.id }, { status: 201 });
   } catch (error) {

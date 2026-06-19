@@ -32,7 +32,7 @@ export async function sendContactEnquiryEmail(
     payload.to?.trim() || process.env.SALES_INBOX_EMAIL?.trim() || SALES_INBOX_DEFAULT;
 
   const lines = [
-    "New enquiry from the Contact Us page",
+    "New website enquiry",
     "",
     `Name: ${payload.name}`,
     `Mobile: ${payload.mobile}`,
